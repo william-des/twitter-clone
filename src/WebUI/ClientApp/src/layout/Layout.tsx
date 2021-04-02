@@ -6,7 +6,7 @@ export class Layout extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="max-w-screen-xl mx-auto h-full flex">
 				<NavMenu />
 				{this.props.children}
 			</div>
