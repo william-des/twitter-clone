@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Authentication</title>
+    <link rel="stylesheet" href="~/lib/tailwind.min.css" />
+    <style>
+        .text-primary {
+            color: #1da1f2;
+        }
+
+        .bg-primary {
+            background-color: #1da1f2;
+        }
+    </style>
+</head>
+<body>
+    <main role="main" class="mb-24">
+        @RenderBody()
+    </main>
+    <footer class="fixed bottom-0 text-center w-full text-md bg-gray-300 py-2">
+        This website is a copy of twitter for demo purposes. Learn more at <a class="font-semibold underline" href="https://github.com/wdesgardin/twitter-clone">https://github.com/wdesgardin/twitter-clone</a>
+    </footer>
+</body>
+@RenderSection("Scripts", required: false)
+</html>
