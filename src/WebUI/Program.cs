@@ -25,7 +25,7 @@ namespace TwitterClone.WebUI
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
 
-                    if (context.Database.IsSqlServer())
+                    if (context.Database.IsNpgsql())
                     {
                         context.Database.Migrate();
                     }                   
