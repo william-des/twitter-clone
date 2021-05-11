@@ -21,6 +21,7 @@ export class ClientBase {
 }
 
 export interface IPostsClient {
+    get(): Promise<PostDto[]>;
     create(command: CreatePostCommand): Promise<number>;
 }
 
@@ -33,6 +34,46 @@ export class PostsClient extends ClientBase implements IPostsClient {
         super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(): Promise<PostDto[]> {
+        let url_ = this.baseUrl + "/api/Posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<PostDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PostDto.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PostDto[]>(<any>null);
     }
 
     create(command: CreatePostCommand): Promise<number> {
@@ -78,7 +119,7 @@ export class PostsClient extends ClientBase implements IPostsClient {
 
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
-    get(id: number): Promise<UserDto>;
+    get(id: number): Promise<UserDto2>;
 }
 
 export class UsersClient extends ClientBase implements IUsersClient {
@@ -132,7 +173,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    get(id: number): Promise<UserDto> {
+    get(id: number): Promise<UserDto2> {
         let url_ = this.baseUrl + "/api/Users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -153,14 +194,14 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UserDto> {
+    protected processGet(response: Response): Promise<UserDto2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto.fromJS(resultData200);
+            result200 = UserDto2.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -168,8 +209,100 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto>(<any>null);
+        return Promise.resolve<UserDto2>(<any>null);
     }
+}
+
+export class PostDto implements IPostDto {
+    id?: number;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto | undefined;
+
+    constructor(data?: IPostDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.content = _data["content"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PostDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["content"] = this.content;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IPostDto {
+    id?: number;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto | undefined;
+}
+
+export class UserDto implements IUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        return data; 
+    }
+}
+
+export interface IUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
@@ -252,12 +385,12 @@ export interface ICreateUserCommand {
     applicationUserId?: string | undefined;
 }
 
-export class UserDto implements IUserDto {
+export class UserDto2 implements IUserDto2 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
 
-    constructor(data?: IUserDto) {
+    constructor(data?: IUserDto2) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -274,9 +407,9 @@ export class UserDto implements IUserDto {
         }
     }
 
-    static fromJS(data: any): UserDto {
+    static fromJS(data: any): UserDto2 {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto();
+        let result = new UserDto2();
         result.init(data);
         return result;
     }
@@ -290,7 +423,7 @@ export class UserDto implements IUserDto {
     }
 }
 
-export interface IUserDto {
+export interface IUserDto2 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
