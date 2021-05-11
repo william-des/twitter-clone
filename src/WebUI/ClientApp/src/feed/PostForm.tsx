@@ -33,13 +33,13 @@ const PostForm: React.FC = () => {
 					onChange={onChange}
 				></textarea>
 				<div className="flex">
-					<button className="text-primary text-2xl mr-3">
+					<button className="text-primary text-2xl mr-4">
 						<FontAwesomeIcon icon={faFileImage} />
 					</button>
-					<button className="text-primary text-2xl mr-3">
+					<button className="text-primary text-2xl mr-4">
 						<FontAwesomeIcon icon={faPollH} />
 					</button>
-					<button className="text-primary text-2xl mr-3">
+					<button className="text-primary text-2xl mr-4">
 						<FontAwesomeIcon icon={faSmile} />
 					</button>
 					<button className="text-primary text-2xl">
