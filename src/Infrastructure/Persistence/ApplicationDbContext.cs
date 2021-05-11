@@ -1,4 +1,4 @@
-using TwitterClone.Application.Common.Interfaces;
+﻿using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Common;
 using TwitterClone.Domain.Entities;
 using TwitterClone.Infrastructure.Identity;
@@ -19,6 +19,10 @@ namespace TwitterClone.Infrastructure.Persistence
         private readonly IDateTime _dateTime;
         private readonly IDomainEventService _domainEventService;
 
+        public DbSet<User> DomainUsers { get; set; }
+        
+        public DbSet<Post> Posts { get; set; }
+
         public ApplicationDbContext(
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions,
@@ -30,8 +34,6 @@ namespace TwitterClone.Infrastructure.Persistence
             _domainEventService = domainEventService;
             _dateTime = dateTime;
         }
-
-        public DbSet<User> DomainUsers { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

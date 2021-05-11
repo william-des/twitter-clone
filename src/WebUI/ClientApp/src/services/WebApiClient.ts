@@ -20,6 +20,62 @@ export class ClientBase {
     };
 }
 
+export interface IPostsClient {
+    create(command: CreatePostCommand): Promise<number>;
+}
+
+export class PostsClient extends ClientBase implements IPostsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    create(command: CreatePostCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+}
+
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
     get(id: number): Promise<UserDto>;
@@ -114,6 +170,42 @@ export class UsersClient extends ClientBase implements IUsersClient {
         }
         return Promise.resolve<UserDto>(<any>null);
     }
+}
+
+export class CreatePostCommand implements ICreatePostCommand {
+    content?: string | undefined;
+
+    constructor(data?: ICreatePostCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.content = _data["content"];
+        }
+    }
+
+    static fromJS(data: any): CreatePostCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePostCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["content"] = this.content;
+        return data; 
+    }
+}
+
+export interface ICreatePostCommand {
+    content?: string | undefined;
 }
 
 export class CreateUserCommand implements ICreateUserCommand {

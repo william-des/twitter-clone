@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Npgsql;
+using TwitterClone.Domain.Entities;
 
 [SetUpFixture]
 public class Testing
@@ -92,6 +93,11 @@ public class Testing
         return await RunAsUserAsync("test@local", "Testing1234!", new string[] { });
     }
 
+    public static async Task<int> RunAsDefaultDomainUserAsync()
+    {
+        return await RunAsDomainUserAsync("test@local", "Testing1234!", new string[] { });
+    }
+
     public static async Task<string> RunAsAdministratorAsync()
     {
         return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { "Administrator" });
@@ -129,6 +135,24 @@ public class Testing
         var errors = string.Join(Environment.NewLine, result.ToApplicationResult().Errors);
 
         throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
+    }
+
+    public static async Task<int> RunAsDomainUserAsync(string userName, string password, string[] roles) {
+        var applicationUserId = await RunAsUserAsync(userName, password, roles);
+
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        
+        var user = new User {
+            ApplicationUserId = applicationUserId,
+            FullName = userName,
+            Username = userName
+        };
+        context.DomainUsers.Add(user);
+
+        await context.SaveChangesAsync();
+
+        return user.Id;
     }
 
     public static async Task ResetState()
