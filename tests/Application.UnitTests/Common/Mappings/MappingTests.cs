@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TwitterClone.Application.Common.Mappings;
-using TwitterClone.Application.TodoLists.Queries.GetTodos;
 using TwitterClone.Domain.Entities;
 using NUnit.Framework;
 using System;
@@ -29,15 +28,15 @@ namespace TwitterClone.Application.UnitTests.Common.Mappings
             _configuration.AssertConfigurationIsValid();
         }
         
-        [Test]
-        [TestCase(typeof(TodoList), typeof(TodoListDto))]
-        [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
-        public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
-        {
-            var instance = GetInstanceOf(source);
+        // [Test]
+        // [TestCase(typeof(TodoList), typeof(TodoListDto))]
+        // [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+        // public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+        // {
+        //     var instance = GetInstanceOf(source);
 
-            _mapper.Map(instance, source, destination);
-        }
+        //     _mapper.Map(instance, source, destination);
+        // }
 
         private object GetInstanceOf(Type type)
         {

@@ -1,4 +1,4 @@
-﻿using TwitterClone.Application.Common.Interfaces;
+using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Common;
 using TwitterClone.Domain.Entities;
 using TwitterClone.Infrastructure.Identity;
@@ -30,10 +30,6 @@ namespace TwitterClone.Infrastructure.Persistence
             _domainEventService = domainEventService;
             _dateTime = dateTime;
         }
-
-        public DbSet<TodoItem> TodoItems { get; set; }
-
-        public DbSet<TodoList> TodoLists { get; set; }
 
         public DbSet<User> DomainUsers { get; set; }
 
