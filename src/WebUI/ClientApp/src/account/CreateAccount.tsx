@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import authService from "../components/api-authorization/AuthorizeService";
+import authService from "../auth/AuthorizeService";
 import { CreateUserCommand, ICreateUserCommand, UsersClient } from "../services/WebApiClient";
 
 export const CreateAccount: React.FC = () => {

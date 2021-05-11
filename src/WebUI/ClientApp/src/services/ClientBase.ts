@@ -1,4 +1,4 @@
-import authService from "../components/api-authorization/AuthorizeService";
+import authService from "../auth/AuthorizeService";
 
 export class ClientBase {
 

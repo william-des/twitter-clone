@@ -7,7 +7,7 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import authService from "../components/api-authorization/AuthorizeService";
+import authService from "../auth/AuthorizeService";
 export class ClientBase {
 
     protected transformOptions = async (options: RequestInit): Promise<RequestInit> => {

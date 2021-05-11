@@ -1,13 +1,13 @@
 import React from "react";
 import { Route, Switch } from "react-router";
-import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
-import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizationRoutes";
-import { ApplicationPaths } from "./components/api-authorization/ApiAuthorizationConstants";
+import AuthorizeRoute from "./auth/AuthorizeRoute";
+import ApiAuthorizationRoutes from "./auth/ApiAuthorizationRoutes";
+import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
 import { Layout } from "./layout/Layout";
 import { CreateAccount } from "./account/CreateAccount";
-
-import "./styles.css";
 import Feed from "./feed/Feed";
+import "./styles.css";
+
 export const App: React.FC = () => {
 	return (
 		<Switch>
