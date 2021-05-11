@@ -8,6 +8,10 @@ import { CreateAccount } from "./account/CreateAccount";
 import Feed from "./feed/Feed";
 import "./styles.css";
 
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+TimeAgo.addDefaultLocale(en);
+
 export const App: React.FC = () => {
 	return (
 		<Switch>

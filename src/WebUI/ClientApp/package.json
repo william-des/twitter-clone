@@ -20,6 +20,7 @@
 		"react-router-bootstrap": "^0.25.0",
 		"react-router-dom": "^5.1.2",
 		"react-scripts": "^4.0.3",
+		"react-time-ago": "^6.2.2",
 		"rimraf": "^2.6.2"
 	},
 	"devDependencies": {
