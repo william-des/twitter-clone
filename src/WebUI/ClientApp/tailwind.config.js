@@ -8,11 +8,14 @@ module.exports = {
 				secondary: "#1da0f2",
 				white: "#fff",
 				tertiary: "#ccd6dd",
+				quaternary: "#ebeef0",
 			},
 		},
 	},
 	variants: {
-		extend: {},
+		extend: {
+			opacity: ["disabled"],
+		},
 	},
 	plugins: [],
 };

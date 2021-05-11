@@ -77,7 +77,7 @@ export const NavMenu: React.FC = () => {
 			</ul>
 			{state.isAuthenticated && (
 				<React.Fragment>
-					<button className="w-5/6 bg-primary p-3 font-semibold text-white rounded-full mt-4">Tweet</button>
+					<button className="custom-btn mr-4 p-3 mt-4">Tweet</button>
 					<AccountCard userName={state.user.name} />
 				</React.Fragment>
 			)}
