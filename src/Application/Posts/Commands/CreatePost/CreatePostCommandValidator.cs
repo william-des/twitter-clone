@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace TwitterClone.Application.Posts.Commands
+namespace TwitterClone.Application.Posts.Commands.CreatePost
 {
     public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
     {

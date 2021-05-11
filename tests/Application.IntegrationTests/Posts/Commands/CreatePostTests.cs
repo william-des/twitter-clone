@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using TwitterClone.Application.Common.Exceptions;
-using TwitterClone.Application.Posts.Commands;
+using TwitterClone.Application.Posts.Commands.CreatePost;
 using TwitterClone.Domain.Entities;
 using static Testing;
 

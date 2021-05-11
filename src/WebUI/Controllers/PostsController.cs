@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TwitterClone.Application.Common.Security;
-using TwitterClone.Application.Posts.Commands;
+using TwitterClone.Application.Posts.Commands.CreatePost;
 
 namespace TwitterClone.WebUI.Controllers
 {

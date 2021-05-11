@@ -4,7 +4,7 @@ using MediatR;
 using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Entities;
 
-namespace TwitterClone.Application.Posts.Commands
+namespace TwitterClone.Application.Posts.Commands.CreatePost
 {
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, int>
     {
