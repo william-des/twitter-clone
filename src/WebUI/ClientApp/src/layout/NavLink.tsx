@@ -18,11 +18,11 @@ const NavLink: React.FC<MenuLinkProps> = (props) => {
 			to={props.to}
 			exact={props.exact}
 		>
-			<div className="w-6 mr-4 flex items-center justify-center">
+			<div className="w-6 flex items-center justify-center">
 				<FontAwesomeIcon icon={props.icon} />
 			</div>
-
-			{props.children}
+			<span className="ml-4 hidden md:inline">{props.children}</span>
+			
 		</ReactNavLink>
 	);
 };

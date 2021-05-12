@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authService from "../auth/AuthorizeService";
-import { AccountCard } from "./AccountCard";
+import { AccountCard } from "../account/AccountCard";
 import NavLink from "./NavLink";
 
 export const NavMenu: React.FC = () => {
@@ -25,7 +25,7 @@ export const NavMenu: React.FC = () => {
 	}, []);
 
 	return (
-		<header className="flex-none flex flex-col p-2 w-64">
+		<header className="flex-none flex flex-col p-2 md:w-64">
 			<ul>
 				<li className="my-1">
 					<Link
@@ -77,7 +77,7 @@ export const NavMenu: React.FC = () => {
 			</ul>
 			{state.isAuthenticated && (
 				<React.Fragment>
-					<button className="custom-btn mr-4 p-3 mt-4">Tweet</button>
+					<button className="custom-btn mr-7 p-3 mt-4 hidden md:inline">Tweet</button>
 					<AccountCard userName={state.user.name} />
 				</React.Fragment>
 			)}
