@@ -4,6 +4,7 @@ import ReactTimeAgo from "react-time-ago";
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import LinkParser from "./LinkParser";
 
 const PostCard: React.FC<IPostDto> = (props) => {
 	const randomInt = () => Math.ceil(Math.random() * 100);
@@ -18,7 +19,9 @@ const PostCard: React.FC<IPostDto> = (props) => {
 						@{props.createdBy.username} · <ReactTimeAgo date={props.created} timeStyle="twitter" />
 					</span>
 				</div>
-				<p className="whitespace-pre-line mb-1">{props.content}</p>
+				<p className="whitespace-pre-line mb-1">
+					<LinkParser>{props.content}</LinkParser>
+				</p>
 				<div className="flex justify-between w-5/6 text-gray-500 font-light">
 					<button className="w-16 text-left">
 						<FontAwesomeIcon icon={faComment} className="mr-2" />
