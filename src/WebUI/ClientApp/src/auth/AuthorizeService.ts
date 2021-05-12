@@ -1,5 +1,5 @@
 import { UserManager, WebStorageStateStore } from "oidc-client";
-import { IUserDto, UsersClient } from "../services/WebApiClient";
+import { IUserDto, UsersClient } from "../core/WebApiClient";
 import { ApplicationPaths, ApplicationName } from "./ApiAuthorizationConstants";
 
 export class AuthorizeService {

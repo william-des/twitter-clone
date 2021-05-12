@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import authService from "../auth/AuthorizeService";
-import { CreateUserCommand, ICreateUserCommand, UsersClient } from "../services/WebApiClient";
+import { CreateUserCommand, ICreateUserCommand, UsersClient } from "../core/WebApiClient";
 
 export const CreateAccount: React.FC = () => {
 	const [state, setState] = useState<ICreateUserCommand>({ fullName: "", username: "" });

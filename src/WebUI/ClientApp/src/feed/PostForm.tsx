@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CreatePostCommand, PostsClient } from "../services/WebApiClient";
+import { CreatePostCommand, PostsClient } from "../core/WebApiClient";
 
 const PostForm: React.FC = () => {
 	const [content, setContent] = useState("");

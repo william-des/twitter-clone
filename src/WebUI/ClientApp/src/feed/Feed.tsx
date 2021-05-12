@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IPostDto, PostDto, PostsClient } from "../services/WebApiClient";
+import { IPostDto, PostDto, PostsClient } from "../core/WebApiClient";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 

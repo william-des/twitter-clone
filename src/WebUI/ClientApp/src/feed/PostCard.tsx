@@ -1,5 +1,5 @@
 import React from "react";
-import { IPostDto } from "../services/WebApiClient";
+import { IPostDto } from "../core/WebApiClient";
 import ReactTimeAgo from "react-time-ago";
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
