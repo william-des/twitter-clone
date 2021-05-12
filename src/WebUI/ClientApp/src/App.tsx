@@ -6,13 +6,9 @@ import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
 import { Layout } from "./layout/Layout";
 import { Register } from "./auth/Register";
 import Feed from "./feed/Feed";
-import "./styles.css";
-
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 import { Provider } from "react-redux";
 import store from "./core/Store";
-TimeAgo.addDefaultLocale(en);
+import "./styles.css";
 
 export const App: React.FC = () => {
 	return (
