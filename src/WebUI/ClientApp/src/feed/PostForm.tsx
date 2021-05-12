@@ -3,6 +3,8 @@ import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CreatePostCommand, PostsClient } from "../core/WebApiClient";
+import { useDispatch } from "react-redux";
+import { addPost } from "./PostActions";
 
 const PostForm: React.FC = () => {
 	const [content, setContent] = useState("");
@@ -11,11 +13,15 @@ const PostForm: React.FC = () => {
 
 	const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value);
 
+	const dispatch = useDispatch();
 	const onSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (isContentEmpty()) return;
 
-		await new PostsClient().create(new CreatePostCommand({ content }));
+		const client = new PostsClient();
+		const id = await client.create(new CreatePostCommand({ content }));
+		const created = await client.get(id);
+		dispatch(addPost(created));
 
 		setContent("");
 	};

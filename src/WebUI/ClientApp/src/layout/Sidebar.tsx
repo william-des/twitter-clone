@@ -12,8 +12,8 @@ const Sidebar: React.FC = () => {
 			<div className="rounded-xl bg-gray-100 mt-4">
 				<h3 className="font-bold border-b py-3 px-4 text-xl">Trends for you</h3>
 				<div className="border-b py-3 px-4 text-sm">
-					<div className="text-gray-600">AI · Trending</div>
-					<h2 className="font-semibold">Tensorflow</h2>
+					<div className="text-gray-600">Scam · Trending</div>
+					<h2 className="font-semibold">Accueil, bilan, synthèse</h2>
 					<div className="text-gray-600">3.01M Tweets</div>
 				</div>
 				<div className="border-b py-3 px-4 text-sm">
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
 				</div>
 				<div className="text-primary py-3 px-4">Show more</div>
 			</div>
-			<p className="text-sm text-gray-600 m-3">This website is a copy of twitter for demo purposes.</p>
+			<p className="text-sm text-gray-600 m-3">Terms of Service</p>
 		</div>
 	);
 };

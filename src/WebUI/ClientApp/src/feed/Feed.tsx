@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { IPostDto, PostDto, PostsClient } from "../core/WebApiClient";
+import { useDispatch } from "react-redux";
+import { useReduxState } from "../core/Store";
+import { PostDto, PostsClient } from "../core/WebApiClient";
+import { setPosts } from "./PostActions";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 
 const Feed: React.FC = () => {
-	const [posts, setPosts] = useState<IPostDto[]>([]);
+	const posts = useReduxState((state) => state.posts.all);
 
+	const dispatch = useDispatch();
 	const loadPosts = async () => {
-		const posts = await new PostsClient().get();
-		setPosts(posts);
+		const posts = await new PostsClient().getAll();
+		dispatch(setPosts(posts));
 	};
-
 	useEffect(() => {
 		loadPosts();
 	}, []);
