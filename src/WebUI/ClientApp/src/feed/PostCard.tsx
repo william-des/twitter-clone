@@ -19,7 +19,7 @@ const PostCard: React.FC<IPostDto> = (props) => {
 					</span>
 				</div>
 				<p className="whitespace-pre-line mb-1">{props.content}</p>
-				<div className="flex justify-between w-4/5 text-gray-500 font-light">
+				<div className="flex justify-between w-5/6 text-gray-500 font-light">
 					<button className="w-16 text-left">
 						<FontAwesomeIcon icon={faComment} className="mr-2" />
 						{randomInt()}

@@ -10,6 +10,9 @@ module.exports = {
 				tertiary: "#ccd6dd",
 				quaternary: "#ebeef0",
 			},
+			spacing: {
+				128: "42rem",
+			},
 		},
 	},
 	variants: {
