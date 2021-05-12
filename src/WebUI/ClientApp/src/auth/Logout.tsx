@@ -22,7 +22,7 @@ export class Logout extends Component<any, any> {
 		const action = this.props.action;
 		switch (action) {
 			case LogoutActions.Logout:
-				if (!!window.history.state.state.local) {
+				if (!!window.history?.state?.state?.local) {
 					this.logout(this.getReturnUrl());
 				} else {
 					// This prevents regular links to <app>/authentication/logout from triggering a logout

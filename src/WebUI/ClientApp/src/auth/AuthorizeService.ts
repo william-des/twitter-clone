@@ -1,4 +1,5 @@
 import { UserManager, WebStorageStateStore } from "oidc-client";
+import { IUserDto, UsersClient } from "../services/WebApiClient";
 import { ApplicationPaths, ApplicationName } from "./ApiAuthorizationConstants";
 
 export class AuthorizeService {
@@ -6,11 +7,13 @@ export class AuthorizeService {
 	_nextSubscriptionId = 0;
 	_user = null;
 	_isAuthenticated = false;
+	_domainUser: IUserDto = null;
 
 	// By default pop ups are disabled because they don't work properly on Edge.
 	// If you want to enable pop up authentication simply set this flag to false.
 	_popUpDisabled = true;
 	private userManager: any;
+	private usersClient: UsersClient = new UsersClient();
 
 	async isAuthenticated() {
 		const user = await this.getUser();
@@ -31,6 +34,21 @@ export class AuthorizeService {
 		await this.ensureUserManagerInitialized();
 		const user = await this.userManager.getUser();
 		return user && user.access_token;
+	}
+
+	async getDomainUser() {
+		const user = await this.getUser();
+		if (!user) return;
+
+		if (!this._domainUser) {
+			try {
+				this._domainUser = await this.usersClient.get(user.sub);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+
+		return this._domainUser;
 	}
 
 	// We try to authenticate the user in three different ways:
@@ -135,6 +153,7 @@ export class AuthorizeService {
 	}
 
 	updateState(user) {
+		console.log(user);
 		this._user = user;
 		this._isAuthenticated = !!this._user;
 		this.notifySubscribers();

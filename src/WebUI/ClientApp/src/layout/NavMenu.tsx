@@ -8,13 +8,18 @@ import { AccountCard } from "../account/AccountCard";
 import NavLink from "./NavLink";
 
 export const NavMenu: React.FC = () => {
-	const [state, setState] = useState({ isAuthenticated: false, user: undefined });
+	const [state, setState] = useState({ isAuthenticated: false, user: undefined, domainUser: undefined });
 
 	const populateState = async () => {
-		const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()]);
+		const [isAuthenticated, user, domainUser] = await Promise.all([
+			authService.isAuthenticated(),
+			authService.getUser(),
+			authService.getDomainUser(),
+		]);
 		setState({
 			isAuthenticated,
 			user,
+			domainUser,
 		});
 	};
 
@@ -78,7 +83,7 @@ export const NavMenu: React.FC = () => {
 			{state.isAuthenticated && (
 				<React.Fragment>
 					<button className="custom-btn mr-7 p-3 mt-4 hidden md:inline">Tweet</button>
-					<AccountCard userName={state.user.name} />
+					<AccountCard {...state.domainUser}/>
 				</React.Fragment>
 			)}
 		</header>

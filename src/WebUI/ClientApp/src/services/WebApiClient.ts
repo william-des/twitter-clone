@@ -119,7 +119,8 @@ export class PostsClient extends ClientBase implements IPostsClient {
 
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
-    get(id: number): Promise<UserDto2>;
+    get(applicationUserId: string | null | undefined): Promise<UserDto3>;
+    get2(id: number): Promise<UserDto2>;
 }
 
 export class UsersClient extends ClientBase implements IUsersClient {
@@ -173,11 +174,10 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    get(id: number): Promise<UserDto2> {
-        let url_ = this.baseUrl + "/api/Users/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    get(applicationUserId: string | null | undefined): Promise<UserDto3> {
+        let url_ = this.baseUrl + "/api/Users?";
+        if (applicationUserId !== undefined && applicationUserId !== null)
+            url_ += "applicationUserId=" + encodeURIComponent("" + applicationUserId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -194,7 +194,46 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UserDto2> {
+    protected processGet(response: Response): Promise<UserDto3> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDto3.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto3>(<any>null);
+    }
+
+    get2(id: number): Promise<UserDto2> {
+        let url_ = this.baseUrl + "/api/Users/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet2(_response);
+        });
+    }
+
+    protected processGet2(response: Response): Promise<UserDto2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -427,6 +466,54 @@ export interface IUserDto2 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+}
+
+export class UserDto3 implements IUserDto3 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    applicationUserId?: string | undefined;
+
+    constructor(data?: IUserDto3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.applicationUserId = _data["applicationUserId"];
+        }
+    }
+
+    static fromJS(data: any): UserDto3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["applicationUserId"] = this.applicationUserId;
+        return data; 
+    }
+}
+
+export interface IUserDto3 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    applicationUserId?: string | undefined;
 }
 
 export class SwaggerException extends Error {

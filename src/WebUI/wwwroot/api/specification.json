@@ -96,6 +96,40 @@
             "JWT": []
           }
         ]
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_Get",
+        "parameters": [
+          {
+            "name": "applicationUserId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto3"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Users/{id}": {
@@ -103,7 +137,7 @@
         "tags": [
           "Users"
         ],
-        "operationId": "Users_Get",
+        "operationId": "Users_Get2",
         "parameters": [
           {
             "name": "id",
@@ -223,6 +257,28 @@
             "nullable": true
           },
           "username": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserDto3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationUserId": {
             "type": "string",
             "nullable": true
           }

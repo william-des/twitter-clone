@@ -2,18 +2,18 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using TwitterClone.Application.Common.Exceptions;
-using TwitterClone.Application.Users.Queries.GetUser;
+using TwitterClone.Application.Users.Queries.GetUserByApplicationId;
 using TwitterClone.Domain.Entities;
 using static Testing;
 
 namespace TwitterClone.Application.IntegrationTests.Users.Queries
 {
-    public class GetUserTests : TestBase
+    public class GetUserByApplicationIdTests : TestBase
     {
         [Test]
-        public void ShouldRequireValidUserId()
+        public void ShouldRequireValidApplicationUserId()
         {
-            var query = new GetUserQuery { Id = 99 };
+            var query = new GetUserByApplicationIdQuery { ApplicationUserId = "unknown" };
 
             FluentActions.Invoking(() =>
                 SendAsync(query)).Should().Throw<NotFoundException>();
@@ -22,14 +22,16 @@ namespace TwitterClone.Application.IntegrationTests.Users.Queries
         [Test]
         public async Task ShouldReturnUser()
         {
+            var userId = await RunAsDefaultUserAsync();
+
             var user = new User {
                 Username = "johndoe",
                 FullName = "John Doe",
-                ApplicationUserId = "123"
+                ApplicationUserId = userId
             };
             await AddAsync(user);
 
-            var query = new GetUserQuery { Id = user.Id };
+            var query = new GetUserByApplicationIdQuery { ApplicationUserId = user.ApplicationUserId };
 
             var result = await SendAsync(query);
 
