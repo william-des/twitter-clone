@@ -10,18 +10,22 @@ import "./styles.css";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { Provider } from "react-redux";
+import store from "./core/Store";
 TimeAgo.addDefaultLocale(en);
 
 export const App: React.FC = () => {
 	return (
-		<Switch>
-			<AuthorizeRoute path="/create-account" component={CreateAccount} />
-			<Route path="/">
-				<Layout>
-					<Route exact path="/" component={Feed} />
-					<Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-				</Layout>
-			</Route>
-		</Switch>
+		<Provider store={store}>
+			<Switch>
+				<AuthorizeRoute path="/create-account" component={CreateAccount} />
+				<Route path="/">
+					<Layout>
+						<Route exact path="/" component={Feed} />
+						<Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+					</Layout>
+				</Route>
+			</Switch>
+		</Provider>
 	);
 };
