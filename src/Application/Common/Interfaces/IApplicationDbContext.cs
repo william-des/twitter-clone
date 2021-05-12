@@ -8,7 +8,7 @@ namespace TwitterClone.Application.Common.Interfaces
     public interface IApplicationDbContext
     {
         DbSet<User> DomainUsers { get; set; }
-        
+        DbSet<Media> Medias { get; set; }
         DbSet<Post> Posts { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

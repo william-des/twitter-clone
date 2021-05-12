@@ -20,6 +20,59 @@ export class ClientBase {
     };
 }
 
+export interface IMediasClient {
+    get(id: string): Promise<FileResponse>;
+}
+
+export class MediasClient extends ClientBase implements IMediasClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(id: string): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Medias/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+}
+
 export interface IPostsClient {
     getAll(): Promise<PostDto[]>;
     create(command: CreatePostCommand): Promise<number>;
@@ -344,6 +397,7 @@ export class UserDto implements IUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+    pictureId?: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -359,6 +413,7 @@ export class UserDto implements IUserDto {
             this.id = _data["id"];
             this.fullName = _data["fullName"];
             this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
         }
     }
 
@@ -374,6 +429,7 @@ export class UserDto implements IUserDto {
         data["id"] = this.id;
         data["fullName"] = this.fullName;
         data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
         return data; 
     }
 }
@@ -382,6 +438,7 @@ export interface IUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+    pictureId?: string | undefined;
 }
 
 export class PostDto2 implements IPostDto2 {
@@ -436,6 +493,7 @@ export class UserDto2 implements IUserDto2 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+    pictureId?: string | undefined;
 
     constructor(data?: IUserDto2) {
         if (data) {
@@ -451,6 +509,7 @@ export class UserDto2 implements IUserDto2 {
             this.id = _data["id"];
             this.fullName = _data["fullName"];
             this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
         }
     }
 
@@ -466,6 +525,7 @@ export class UserDto2 implements IUserDto2 {
         data["id"] = this.id;
         data["fullName"] = this.fullName;
         data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
         return data; 
     }
 }
@@ -474,6 +534,7 @@ export interface IUserDto2 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
+    pictureId?: string | undefined;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
@@ -605,6 +666,7 @@ export class UserDto4 implements IUserDto4 {
     fullName?: string | undefined;
     username?: string | undefined;
     applicationUserId?: string | undefined;
+    pictureId?: string | undefined;
 
     constructor(data?: IUserDto4) {
         if (data) {
@@ -621,6 +683,7 @@ export class UserDto4 implements IUserDto4 {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.applicationUserId = _data["applicationUserId"];
+            this.pictureId = _data["pictureId"];
         }
     }
 
@@ -637,6 +700,7 @@ export class UserDto4 implements IUserDto4 {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["applicationUserId"] = this.applicationUserId;
+        data["pictureId"] = this.pictureId;
         return data; 
     }
 }
@@ -646,6 +710,14 @@ export interface IUserDto4 {
     fullName?: string | undefined;
     username?: string | undefined;
     applicationUserId?: string | undefined;
+    pictureId?: string | undefined;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

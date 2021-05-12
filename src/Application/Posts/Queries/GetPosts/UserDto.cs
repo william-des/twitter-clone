@@ -8,5 +8,6 @@ namespace TwitterClone.Application.Posts.Queries.GetPosts
         public int Id { get; set; }
         public string FullName { get; set; }
         public string Username { get; set; }
+        public string PictureId { get; set; }
     }
 }

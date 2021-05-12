@@ -8,10 +8,10 @@ namespace TwitterClone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasIndex(e => e.ApplicationUserId).IsUnique();
-            builder.Property(e => e.FullName).HasMaxLength(60);
-            builder.Property(e => e.Username).HasMaxLength(30);
-            builder.HasIndex(e => e.Username).IsUnique();
+            builder.HasIndex(u => u.ApplicationUserId).IsUnique();
+            builder.Property(u => u.FullName).HasMaxLength(60);
+            builder.Property(u => u.Username).HasMaxLength(30);
+            builder.HasIndex(u => u.Username).IsUnique();
         }
     }
 }

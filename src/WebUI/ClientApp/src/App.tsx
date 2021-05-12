@@ -4,7 +4,7 @@ import AuthorizeRoute from "./auth/AuthorizeRoute";
 import ApiAuthorizationRoutes from "./auth/ApiAuthorizationRoutes";
 import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
 import { Layout } from "./layout/Layout";
-import { CreateAccount } from "./account/CreateAccount";
+import { Register } from "./auth/Register";
 import Feed from "./feed/Feed";
 import "./styles.css";
 
@@ -18,7 +18,7 @@ export const App: React.FC = () => {
 	return (
 		<Provider store={store}>
 			<Switch>
-				<AuthorizeRoute path="/create-account" component={CreateAccount} />
+				<AuthorizeRoute path="/create-account" component={Register} />
 				<Route path="/">
 					<Layout>
 						<Route exact path="/" component={Feed} />

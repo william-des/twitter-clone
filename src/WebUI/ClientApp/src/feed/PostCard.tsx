@@ -5,13 +5,14 @@ import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LinkParser from "./LinkParser";
+import UserPicture from "../user/UserPicture";
 
 const PostCard: React.FC<IPostDto> = (props) => {
 	const randomInt = () => Math.ceil(Math.random() * 100);
 
 	return (
 		<article className="border-b p-3 flex">
-			<img src={"https://thispersondoesnotexist.com/image"} className="h-12 w-12 rounded-full mr-4" />
+			<UserPicture pictureId={props?.createdBy?.pictureId} className="h-12 w-12 mr-4" />
 			<div className="flex flex-1 flex-col">
 				<div className="flex">
 					<h2 className="font-semibold mr-1">{props.createdBy.fullName}</h2>

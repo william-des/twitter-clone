@@ -6,6 +6,39 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Medias/{id}": {
+      "get": {
+        "tags": [
+          "Medias"
+        ],
+        "operationId": "Medias_Get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Posts": {
       "get": {
         "tags": [
@@ -245,6 +278,10 @@
           "username": {
             "type": "string",
             "nullable": true
+          },
+          "pictureId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -287,6 +324,10 @@
             "nullable": true
           },
           "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "pictureId": {
             "type": "string",
             "nullable": true
           }
@@ -355,6 +396,10 @@
             "nullable": true
           },
           "applicationUserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "pictureId": {
             "type": "string",
             "nullable": true
           }

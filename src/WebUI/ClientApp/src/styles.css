@@ -18,3 +18,7 @@ body,
 .custom-btn {
 	@apply bg-primary font-semibold text-white rounded-full;
 }
+
+img {
+	object-fit: cover;
+}

@@ -5,8 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CreatePostCommand, PostsClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
 import { addPost } from "./PostActions";
+import UserPicture from "../user/UserPicture";
 
-const PostForm: React.FC = () => {
+interface PostFormProps {
+	pictureId?: string;
+}
+
+const PostForm: React.FC<PostFormProps> = (props) => {
 	const [content, setContent] = useState("");
 
 	const isContentEmpty = () => content.trim().length == 0;
@@ -28,7 +33,7 @@ const PostForm: React.FC = () => {
 
 	return (
 		<form onSubmit={onSubmit} className="p-4 flex">
-			<img src="https://thispersondoesnotexist.com/image" className="h-12 w-12 rounded-full mr-4" />
+			<UserPicture pictureId={props.pictureId} className="h-12 w-12 mr-4" />
 			<div className="flex flex-1 flex-col">
 				<textarea
 					className="flex-1 mt-3 resize-none text-xl outline-none"
