@@ -10,5 +10,6 @@ namespace TwitterClone.Application.Posts.Queries.GetPosts
         public string Content { get; set; }
         public DateTime Created { get; set; }
         public UserDto CreatedBy { get; set; }
+        public string MediaId { get; set; }
     }
 }

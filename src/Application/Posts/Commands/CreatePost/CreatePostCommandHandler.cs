@@ -17,7 +17,7 @@ namespace TwitterClone.Application.Posts.Commands.CreatePost
 
         public async Task<int> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-            var post = new Post { Content = request.Content };
+            var post = new Post { Content = request.Content, MediaId = request.MediaId };
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync(cancellationToken);

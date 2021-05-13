@@ -23,6 +23,9 @@ const PostCard: React.FC<IPostDto> = (props) => {
 				<p className="whitespace-pre-line mb-1">
 					<LinkParser>{props.content}</LinkParser>
 				</p>
+				{!!props.mediaId && (
+					<img src={`api/medias/${props.mediaId}`} className="border border-gray-300 rounded-xl my-2" />
+				)}
 				<div className="flex justify-between w-5/6 text-gray-500 font-light">
 					<button className="w-16 text-left">
 						<FontAwesomeIcon icon={faComment} className="mr-2" />

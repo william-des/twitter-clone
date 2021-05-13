@@ -39,6 +39,43 @@
         }
       }
     },
+    "/api/Medias": {
+      "post": {
+        "tags": [
+          "Medias"
+        ],
+        "operationId": "Medias_Create",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "guid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Posts": {
       "get": {
         "tags": [
@@ -260,6 +297,10 @@
                 "$ref": "#/components/schemas/UserDto"
               }
             ]
+          },
+          "mediaId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -308,6 +349,10 @@
                 "$ref": "#/components/schemas/UserDto2"
               }
             ]
+          },
+          "mediaId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -339,6 +384,11 @@
         "properties": {
           "content": {
             "type": "string",
+            "nullable": true
+          },
+          "mediaId": {
+            "type": "string",
+            "format": "guid",
             "nullable": true
           }
         }

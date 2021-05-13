@@ -22,6 +22,7 @@ export class ClientBase {
 
 export interface IMediasClient {
     get(id: string): Promise<FileResponse>;
+    create(file: FileParameter | null | undefined): Promise<string>;
 }
 
 export class MediasClient extends ClientBase implements IMediasClient {
@@ -70,6 +71,47 @@ export class MediasClient extends ClientBase implements IMediasClient {
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    create(file: FileParameter | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Medias";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
     }
 }
 
@@ -350,6 +392,7 @@ export class PostDto implements IPostDto {
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto | undefined;
+    mediaId?: string | undefined;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -366,6 +409,7 @@ export class PostDto implements IPostDto {
             this.content = _data["content"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.mediaId = _data["mediaId"];
         }
     }
 
@@ -382,6 +426,7 @@ export class PostDto implements IPostDto {
         data["content"] = this.content;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["mediaId"] = this.mediaId;
         return data; 
     }
 }
@@ -391,6 +436,7 @@ export interface IPostDto {
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto | undefined;
+    mediaId?: string | undefined;
 }
 
 export class UserDto implements IUserDto {
@@ -446,6 +492,7 @@ export class PostDto2 implements IPostDto2 {
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
+    mediaId?: string | undefined;
 
     constructor(data?: IPostDto2) {
         if (data) {
@@ -462,6 +509,7 @@ export class PostDto2 implements IPostDto2 {
             this.content = _data["content"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto2.fromJS(_data["createdBy"]) : <any>undefined;
+            this.mediaId = _data["mediaId"];
         }
     }
 
@@ -478,6 +526,7 @@ export class PostDto2 implements IPostDto2 {
         data["content"] = this.content;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["mediaId"] = this.mediaId;
         return data; 
     }
 }
@@ -487,6 +536,7 @@ export interface IPostDto2 {
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
+    mediaId?: string | undefined;
 }
 
 export class UserDto2 implements IUserDto2 {
@@ -539,6 +589,7 @@ export interface IUserDto2 {
 
 export class CreatePostCommand implements ICreatePostCommand {
     content?: string | undefined;
+    mediaId?: string | undefined;
 
     constructor(data?: ICreatePostCommand) {
         if (data) {
@@ -552,6 +603,7 @@ export class CreatePostCommand implements ICreatePostCommand {
     init(_data?: any) {
         if (_data) {
             this.content = _data["content"];
+            this.mediaId = _data["mediaId"];
         }
     }
 
@@ -565,12 +617,14 @@ export class CreatePostCommand implements ICreatePostCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["content"] = this.content;
+        data["mediaId"] = this.mediaId;
         return data; 
     }
 }
 
 export interface ICreatePostCommand {
     content?: string | undefined;
+    mediaId?: string | undefined;
 }
 
 export class CreateUserCommand implements ICreateUserCommand {
@@ -711,6 +765,11 @@ export interface IUserDto4 {
     username?: string | undefined;
     applicationUserId?: string | undefined;
     pictureId?: string | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {

@@ -9,6 +9,7 @@ namespace TwitterClone.Application.Users.Commands.CreateUser
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {
         private readonly IApplicationDbContext _context;
+        
         public CreateUserCommandValidator(IApplicationDbContext context)
         {
             _context = context;
@@ -39,6 +40,7 @@ namespace TwitterClone.Application.Users.Commands.CreateUser
             return await _context.DomainUsers
                 .AllAsync(p => p.Username.ToLower() != lowerUserName, cancellationToken);
         }
+
         public async Task<bool> NotBeRegistered(CreateUserCommand model, string applicationUserId, CancellationToken cancellationToken)
         {
             return await _context.DomainUsers
