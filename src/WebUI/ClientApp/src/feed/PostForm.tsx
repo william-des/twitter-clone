@@ -13,7 +13,7 @@ interface PostFormProps {
 }
 
 const PostForm: React.FC<PostFormProps> = (props) => {
-	const [state, setState] = useState({ content: "", mediaId: "" });
+	const [state, setState] = useState({ content: "", mediaId: undefined });
 	const isContentEmpty = () => state.content.trim().length == 0;
 	const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setState({ ...state, content: e.target.value });
 
@@ -27,7 +27,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		const created = await client.get(id);
 		dispatch(addPost(created));
 
-		setState({ content: "", mediaId: "" });
+		setState({ content: "", mediaId: undefined });
 	};
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,7 +38,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		const mediaId = await new MediasClient().create({ fileName: file.name, data: file });
 		setState({ ...state, mediaId });
 	};
-	const onDeleteFile = () => setState({ ...state, mediaId: "" });
+	const onDeleteFile = () => setState({ ...state, mediaId: undefined });
 
 	return (
 		<form onSubmit={onSubmit} className="p-4 flex">
@@ -55,11 +55,17 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 				{!!state.mediaId && <UploadPreview mediaId={state.mediaId} onDeleteClick={onDeleteFile} />}
 				<div className="flex">
 					<FormButton onClick={onUploadClick} disabled={!!state.mediaId} icon={faFileImage}>
-						<input type="file" className="hidden" ref={fileInputRef} onChange={onFileChange} />
+						<input
+							type="file"
+							className="hidden"
+							accept=".png,.jpg,.jpeg,image/jpeg,image/png"
+							ref={fileInputRef}
+							onChange={onFileChange}
+						/>
 					</FormButton>
-					<FormButton disabled icon={faPollH}/>
-					<FormButton disabled icon={faSmile}/>
-					<FormButton disabled icon={faCalendarPlus}/>
+					<FormButton disabled icon={faPollH} />
+					<FormButton disabled icon={faSmile} />
+					<FormButton disabled icon={faCalendarPlus} />
 					<button
 						className="custom-btn p-2 px-5 ml-auto disabled:opacity-50"
 						type="submit"
