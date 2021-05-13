@@ -12,7 +12,7 @@ namespace TwitterClone.Application.IntegrationTests.Posts.Queries
     public class GetPostTest: TestBase
     {
         [Test]
-        public void ShouldRequireValidUserId()
+        public void ShouldRequireValidPostId()
         {
             var query = new GetPostQuery { Id = 99 };
 
