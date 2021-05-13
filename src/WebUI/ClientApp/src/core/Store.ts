@@ -4,7 +4,7 @@ import { PostReducer } from "../feed/PostReducer";
 
 const reducers = combineReducers({ posts: PostReducer });
 
-const store = createStore(reducers, (window as any)?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() || compose);
+const store = createStore(reducers, (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?.() || compose);
 
 export default store;
 
