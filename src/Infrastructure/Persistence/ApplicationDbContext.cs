@@ -37,20 +37,31 @@ namespace TwitterClone.Infrastructure.Persistence
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var currentUser = await DomainUsers.FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUserService.UserId, cancellationToken);
 
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = currentUser;
                         entry.Entity.Created = _dateTime.Now;
                         break;
 
                     case EntityState.Modified:
                         entry.Entity.LastModified = _dateTime.Now;
                         break;
+                }
+            }
+
+            var authorAuditedEntries = ChangeTracker.Entries<AuthorAuditableEntity>().Where(e => e.State == EntityState.Added);
+            
+            if(authorAuditedEntries.Any()) 
+            {
+                var currentUser = await DomainUsers
+                    .FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUserService.UserId, cancellationToken);
+
+                foreach (var entry in authorAuditedEntries)
+                {
+                    entry.Entity.CreatedBy = currentUser;
                 }
             }
 
