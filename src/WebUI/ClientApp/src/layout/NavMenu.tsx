@@ -30,62 +30,64 @@ export const NavMenu: React.FC = () => {
 	}, []);
 
 	return (
-		<header className="flex-none flex flex-col p-2 md:w-64">
-			<ul>
-				<li className="my-1">
-					<Link
-						to="/"
-						className="hover-btn text-primary text-3xl h-12 w-12 flex items-center justify-center ml-2"
-					>
-						<FontAwesomeIcon icon={faTwitter} />
-					</Link>
-				</li>
-				<li className="my-1">
-					<NavLink to="/" icon={faHome} exact>
-						Home
-					</NavLink>
-				</li>
-				<li className="my-1">
-					<NavLink to="/explore" icon={faHashtag}>
-						Explore
-					</NavLink>
-				</li>
+		<header className="flex-none w-56px md:w-275px">
+			<div className="fixed flex flex-col h-full w-56px md:w-275px border-r">
+				<ul>
+					<li className="my-1">
+						<Link
+							to="/"
+							className="hover-btn text-primary text-3xl h-12 w-12 flex items-center justify-center ml-2"
+						>
+							<FontAwesomeIcon icon={faTwitter} />
+						</Link>
+					</li>
+					<li className="my-1">
+						<NavLink to="/" icon={faHome} exact>
+							Home
+						</NavLink>
+					</li>
+					<li className="my-1">
+						<NavLink to="/explore" icon={faHashtag}>
+							Explore
+						</NavLink>
+					</li>
+					{state.isAuthenticated && (
+						<React.Fragment>
+							<li className="my-1">
+								<NavLink to="/notifications" icon={faBell}>
+									Notifications
+								</NavLink>
+							</li>
+							<li className="my-1">
+								<NavLink to="/messages" icon={faEnvelope}>
+									Messages
+								</NavLink>
+							</li>
+							<li className="my-1">
+								<NavLink to="/bookmarks" icon={faBookmark}>
+									Bookmarks
+								</NavLink>
+							</li>
+							<li className="my-1">
+								<NavLink to="/lists" icon={faList}>
+									Lists
+								</NavLink>
+							</li>
+							<li className="my-1">
+								<NavLink to="/profile" icon={faUser}>
+									Profile
+								</NavLink>
+							</li>
+						</React.Fragment>
+					)}
+				</ul>
 				{state.isAuthenticated && (
 					<React.Fragment>
-						<li className="my-1">
-							<NavLink to="/notifications" icon={faBell}>
-								Notifications
-							</NavLink>
-						</li>
-						<li className="my-1">
-							<NavLink to="/messages" icon={faEnvelope}>
-								Messages
-							</NavLink>
-						</li>
-						<li className="my-1">
-							<NavLink to="/bookmarks" icon={faBookmark}>
-								Bookmarks
-							</NavLink>
-						</li>
-						<li className="my-1">
-							<NavLink to="/lists" icon={faList}>
-								Lists
-							</NavLink>
-						</li>
-						<li className="my-1">
-							<NavLink to="/profile" icon={faUser}>
-								Profile
-							</NavLink>
-						</li>
+						<button className="custom-btn mr-7 p-3 mt-4 hidden md:inline">Tweet</button>
+						<UserCard {...state.domainUser} />
 					</React.Fragment>
 				)}
-			</ul>
-			{state.isAuthenticated && (
-				<React.Fragment>
-					<button className="custom-btn mr-7 p-3 mt-4 hidden md:inline">Tweet</button>
-					<UserCard {...state.domainUser}/>
-				</React.Fragment>
-			)}
+			</div>
 		</header>
 	);
 };

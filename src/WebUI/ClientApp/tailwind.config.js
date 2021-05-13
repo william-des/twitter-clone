@@ -11,7 +11,9 @@ module.exports = {
 				quaternary: "#ebeef0",
 			},
 			spacing: {
-				128: "42rem",
+				"350px": "350px",
+				"275px": "275px",
+				"56px": "56px",
 			},
 		},
 	},

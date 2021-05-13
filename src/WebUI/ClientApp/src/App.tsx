@@ -15,10 +15,10 @@ export const App: React.FC = () => {
 		<Provider store={store}>
 			<Switch>
 				<AuthorizeRoute path="/create-account" component={Register} />
+				<Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
 				<Route path="/">
 					<Layout>
 						<Route exact path="/" component={Feed} />
-						<Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
 					</Layout>
 				</Route>
 			</Switch>

@@ -30,7 +30,7 @@ const Feed: React.FC = () => {
 	const renderPost = (post: PostDto) => <PostCard {...post} key={post.id} />;
 
 	return (
-		<section className="border-l border-r w-full">
+		<main className="w-full">
 			<h1 className="border-b p-3 text-xl font-bold">Home</h1>
 			{!!domainUser && (
 				<React.Fragment>
@@ -39,7 +39,7 @@ const Feed: React.FC = () => {
 				</React.Fragment>
 			)}
 			{posts.map(renderPost)}
-		</section>
+		</main>
 	);
 };
 
