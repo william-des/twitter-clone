@@ -8,6 +8,7 @@ namespace TwitterClone.Application.Common.Interfaces
     public interface IApplicationDbContext
     {
         DbSet<User> DomainUsers { get; set; }
+        DbSet<Follow> Follows { get; set; }
         DbSet<Media> Medias { get; set; }
         DbSet<Post> Posts { get; set; }
 

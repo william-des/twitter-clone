@@ -1,8 +1,9 @@
 using System;
+using TwitterClone.Domain.Common;
 
 namespace TwitterClone.Domain.Entities
 {
-    public class User
+    public class User : AuditableEntity
     {
         public int Id { get; set; }
         public string ApplicationUserId { get; set; }

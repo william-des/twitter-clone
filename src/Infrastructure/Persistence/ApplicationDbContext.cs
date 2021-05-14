@@ -20,6 +20,7 @@ namespace TwitterClone.Infrastructure.Persistence
         private readonly IDomainEventService _domainEventService;
 
         public DbSet<User> DomainUsers { get; set; }
+        public DbSet<Follow> Follows { get; set; }
         public DbSet<Media> Medias { get; set; }
         public DbSet<Post> Posts { get; set; }
 
