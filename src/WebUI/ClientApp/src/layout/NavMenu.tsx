@@ -30,7 +30,7 @@ export const NavMenu: React.FC = () => {
 	}, []);
 
 	return (
-		<header className="flex-none w-56px md:w-275px">
+		<nav className="flex-none w-56px md:w-275px">
 			<div className="fixed flex flex-col h-full w-56px md:w-275px border-r">
 				<ul>
 					<li className="my-1">
@@ -73,11 +73,13 @@ export const NavMenu: React.FC = () => {
 									Lists
 								</NavLink>
 							</li>
-							<li className="my-1">
-								<NavLink to="/profile" icon={faUser}>
-									Profile
-								</NavLink>
-							</li>
+							{!!state.domainUser?.username && (
+								<li className="my-1">
+									<NavLink to={state.domainUser.username} icon={faUser}>
+										Profile
+									</NavLink>
+								</li>
+							)}
 						</React.Fragment>
 					)}
 				</ul>
@@ -88,6 +90,6 @@ export const NavMenu: React.FC = () => {
 					</React.Fragment>
 				)}
 			</div>
-		</header>
+		</nav>
 	);
 };
