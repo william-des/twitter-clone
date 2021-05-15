@@ -22,3 +22,8 @@ body,
 img {
 	object-fit: cover;
 }
+
+.profile-picture {
+	margin-top: -88px;
+	z-index: 100;
+}

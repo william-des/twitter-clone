@@ -256,6 +256,7 @@ export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
     get(applicationUserId: string | null | undefined): Promise<UserDto4>;
     get2(id: number): Promise<UserDto3>;
+    getUserProfile(username: string | null): Promise<UserProfileVM>;
 }
 
 export class UsersClient extends ClientBase implements IUsersClient {
@@ -384,6 +385,45 @@ export class UsersClient extends ClientBase implements IUsersClient {
             });
         }
         return Promise.resolve<UserDto3>(<any>null);
+    }
+
+    getUserProfile(username: string | null): Promise<UserProfileVM> {
+        let url_ = this.baseUrl + "/api/Users/{username}/profile";
+        if (username === undefined || username === null)
+            throw new Error("The parameter 'username' must be defined.");
+        url_ = url_.replace("{username}", encodeURIComponent("" + username));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUserProfile(_response);
+        });
+    }
+
+    protected processGetUserProfile(response: Response): Promise<UserProfileVM> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserProfileVM.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserProfileVM>(<any>null);
     }
 }
 
@@ -764,6 +804,106 @@ export interface IUserDto4 {
     fullName?: string | undefined;
     username?: string | undefined;
     applicationUserId?: string | undefined;
+    pictureId?: string | undefined;
+}
+
+export class UserProfileVM implements IUserProfileVM {
+    user?: UserDto5 | undefined;
+    postsCount?: number;
+    followersCount?: number;
+    followedCount?: number;
+
+    constructor(data?: IUserProfileVM) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.user = _data["user"] ? UserDto5.fromJS(_data["user"]) : <any>undefined;
+            this.postsCount = _data["postsCount"];
+            this.followersCount = _data["followersCount"];
+            this.followedCount = _data["followedCount"];
+        }
+    }
+
+    static fromJS(data: any): UserProfileVM {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserProfileVM();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["postsCount"] = this.postsCount;
+        data["followersCount"] = this.followersCount;
+        data["followedCount"] = this.followedCount;
+        return data; 
+    }
+}
+
+export interface IUserProfileVM {
+    user?: UserDto5 | undefined;
+    postsCount?: number;
+    followersCount?: number;
+    followedCount?: number;
+}
+
+export class UserDto5 implements IUserDto5 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    created?: Date;
+    pictureId?: string | undefined;
+
+    constructor(data?: IUserDto5) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.pictureId = _data["pictureId"];
+        }
+    }
+
+    static fromJS(data: any): UserDto5 {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto5();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["pictureId"] = this.pictureId;
+        return data; 
+    }
+}
+
+export interface IUserDto5 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    created?: Date;
     pictureId?: string | undefined;
 }
 

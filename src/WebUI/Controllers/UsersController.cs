@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TwitterClone.Application.Users.Commands.CreateUser;
 using TwitterClone.Application.Users.Queries.GetUser;
 using TwitterClone.Application.Users.Queries.GetUserByApplicationId;
+using TwitterClone.Application.Users.Queries.GetUserProfile;
 
 namespace TwitterClone.WebUI.Controllers
 {
@@ -28,6 +29,14 @@ namespace TwitterClone.WebUI.Controllers
         public async Task<ActionResult<Application.Users.Queries.GetUserByApplicationId.UserDto>> Get(string applicationUserId)
         {
             var query = new GetUserByApplicationIdQuery { ApplicationUserId = applicationUserId };
+
+            return await Mediator.Send(query);
+        }
+
+        [HttpGet("{username}/profile")]
+        public async Task<ActionResult<UserProfileVM>> GetUserProfile(string username)
+        {
+            var query = new GetUserProfileQuery { Username = username };
 
             return await Mediator.Send(query);
         }
