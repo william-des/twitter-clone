@@ -541,6 +541,10 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "bannerId": {
+            "type": "string",
+            "nullable": true
           }
         }
       }

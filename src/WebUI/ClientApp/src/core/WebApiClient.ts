@@ -861,6 +861,7 @@ export class UserDto5 implements IUserDto5 {
     username?: string | undefined;
     created?: Date;
     pictureId?: string | undefined;
+    bannerId?: string | undefined;
 
     constructor(data?: IUserDto5) {
         if (data) {
@@ -878,6 +879,7 @@ export class UserDto5 implements IUserDto5 {
             this.username = _data["username"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.pictureId = _data["pictureId"];
+            this.bannerId = _data["bannerId"];
         }
     }
 
@@ -895,6 +897,7 @@ export class UserDto5 implements IUserDto5 {
         data["username"] = this.username;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["pictureId"] = this.pictureId;
+        data["bannerId"] = this.bannerId;
         return data; 
     }
 }
@@ -905,6 +908,7 @@ export interface IUserDto5 {
     username?: string | undefined;
     created?: Date;
     pictureId?: string | undefined;
+    bannerId?: string | undefined;
 }
 
 export interface FileParameter {

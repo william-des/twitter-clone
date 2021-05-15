@@ -11,5 +11,7 @@ namespace TwitterClone.Domain.Entities
         public string Username { get; set; }
         public Media Picture { get; set; }
         public Guid? PictureId { get; set; }
+        public Media Banner { get; set; }
+        public Guid? BannerId { get; set; }
     }
 }

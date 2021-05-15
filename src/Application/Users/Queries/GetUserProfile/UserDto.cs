@@ -11,5 +11,6 @@ namespace TwitterClone.Application.Users.Queries.GetUserProfile
         public string Username { get; set; }
         public DateTime Created { get; set; }
         public string PictureId { get; set; }
+        public string BannerId { get; set; }
     }
 }

@@ -33,12 +33,17 @@ const UserProfile: React.FC = () => {
 	return (
 		<MainContainer title="Profile" subtitle={profile?.postsCount > 0 && `${profile.postsCount} posts`} backBtn>
 			<div className="flex">
-				<div className="h-48 w-full ">
-					<div className="bg-gray-300 h-full"></div>
+				<div className="w-full ">
+					<div
+						className="bg-gray-300 h-44 bg-cover bg-center"
+						style={
+							profile?.user?.bannerId && { backgroundImage: `url(api/medias/${profile.user.bannerId})` }
+						}
+					></div>
 					<div className="p-4">
 						<UserPicture
 							pictureId={profile?.user?.pictureId}
-							className="h-36 w-36 profile-picture border-4 border-white "
+							className="h-36 w-36 profile-picture border-4 border-white z-10"
 						/>
 						<h3 className="text-xl font-bold leading-1">{profile?.user?.fullName || `@${username}`}</h3>
 						{profile?.user?.username && <h4 className="leading-none text-gray-500">{`@${username}`}</h4>}
