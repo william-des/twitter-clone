@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import authService from "../auth/AuthorizeService";
 import { useReduxState } from "../core/Store";
 import { PostDto, PostsClient } from "../core/WebApiClient";
+import MainContainer from "../layout/MainContainer";
 import { setPosts } from "./PostActions";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
@@ -30,8 +31,7 @@ const Feed: React.FC = () => {
 	const renderPost = (post: PostDto) => <PostCard {...post} key={post.id} />;
 
 	return (
-		<main className="w-full">
-			<h1 className="border-b p-3 text-xl font-bold">Home</h1>
+		<MainContainer title="Home">
 			{!!domainUser && (
 				<React.Fragment>
 					<PostForm pictureId={domainUser.pictureId} />
@@ -39,7 +39,7 @@ const Feed: React.FC = () => {
 				</React.Fragment>
 			)}
 			{posts.map(renderPost)}
-		</main>
+		</MainContainer>
 	);
 };
 
