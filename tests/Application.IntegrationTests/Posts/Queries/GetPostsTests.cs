@@ -1,13 +1,13 @@
 using System;
+using System.Threading.Tasks;
+using FluentAssertions;
+using NUnit.Framework;
+using TwitterClone.Application.Posts.Queries.GetPosts;
+using TwitterClone.Domain.Entities;
+using static Testing;
+
 namespace TwitterClone.Application.IntegrationTests.Posts.Queries
 {
-    using System.Threading.Tasks;
-    using FluentAssertions;
-    using NUnit.Framework;
-    using TwitterClone.Application.Posts.Queries.GetPosts;
-    using TwitterClone.Domain.Entities;
-    using static Testing;
-
     public class GetPostsTests : TestBase
     {
         [Test]

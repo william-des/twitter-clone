@@ -5,6 +5,7 @@ using TwitterClone.Application.Common.Security;
 using TwitterClone.Application.Posts.Commands.CreatePost;
 using TwitterClone.Application.Posts.Queries.GetPost;
 using TwitterClone.Application.Posts.Queries.GetPosts;
+using TwitterClone.Application.Posts.Queries.GetUserPosts;
 
 namespace TwitterClone.WebUI.Controllers
 {
@@ -25,6 +26,14 @@ namespace TwitterClone.WebUI.Controllers
         public async Task<ActionResult<int>> Create(CreatePostCommand command)
         {
             return await Mediator.Send(command);
+        }
+
+        [HttpGet("~/users/{id}/posts")]
+        public async Task<IEnumerable<Application.Posts.Queries.GetUserPosts.PostDto>> GetUserPosts(int id)
+        {
+            var query = new GetUserPostsQuery { Id = id };
+
+            return await Mediator.Send(query);
         }
     }
 }

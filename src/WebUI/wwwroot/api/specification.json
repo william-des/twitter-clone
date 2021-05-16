@@ -162,6 +162,41 @@
         }
       }
     },
+    "/users/{id}/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "operationId": "Posts_GetUserPosts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostDto3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users": {
       "post": {
         "tags": [
@@ -221,7 +256,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto4"
+                  "$ref": "#/components/schemas/UserDto5"
                 }
               }
             }
@@ -258,7 +293,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto3"
+                  "$ref": "#/components/schemas/UserDto4"
                 }
               }
             }
@@ -430,19 +465,31 @@
           }
         }
       },
-      "CreateUserCommand": {
+      "PostDto3": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "fullName": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
             "type": "string",
             "nullable": true
           },
-          "username": {
+          "created": {
             "type": "string",
-            "nullable": true
+            "format": "date-time"
           },
-          "applicationUserId": {
+          "createdBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto3"
+              }
+            ]
+          },
+          "mediaId": {
             "type": "string",
             "nullable": true
           }
@@ -463,10 +510,50 @@
           "username": {
             "type": "string",
             "nullable": true
+          },
+          "pictureId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationUserId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
       "UserDto4": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserDto5": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -500,7 +587,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/UserDto5"
+                "$ref": "#/components/schemas/UserDto6"
               }
             ]
           },
@@ -518,7 +605,7 @@
           }
         }
       },
-      "UserDto5": {
+      "UserDto6": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import MainContainer from "../layout/MainContainer";
 import UserPicture from "./UserPicture";
-import { UsersClient } from "../core/WebApiClient";
+import { IPostDto, PostsClient, UsersClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
 import { addProfile, setProfileLoading } from "./ProfileActions";
 import { useReduxState } from "../core/Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
+import PostCard from "../feed/PostCard";
 
 const UserProfile: React.FC = () => {
 	const { username } = useParams() as any;
+
 	const dispatch = useDispatch();
 	const state = useReduxState((state) => state.profile);
 	const profile = state.all[username];
@@ -25,10 +27,22 @@ const UserProfile: React.FC = () => {
 			dispatch(setProfileLoading(false));
 		}
 	};
-
 	useEffect(() => {
+		setPosts(undefined);
 		loadProfile();
 	}, [username]);
+
+	const [posts, setPosts] = useState<IPostDto[]>(undefined);
+	const loadPosts = async () => {
+		if (!profile?.user?.id) return;
+		const posts = await new PostsClient().getUserPosts(profile.user.id);
+		setPosts(posts);
+	};
+	useEffect(() => {
+		loadPosts();
+	}, [profile?.user?.id]);
+
+	const renderPost = (post: IPostDto) => <PostCard {...post} key={post.id} />;
 
 	return (
 		<MainContainer title="Profile" subtitle={profile?.postsCount > 0 && `${profile.postsCount} posts`} backBtn>
@@ -101,7 +115,7 @@ const UserProfile: React.FC = () => {
 							</React.Fragment>
 						)}
 					</div>
-					{state.loading && (
+					{(state.loading || (!posts && profile)) && (
 						<div className="p-4 flex justify-center">
 							<FontAwesomeIcon icon={faSpinner} spin className="text-primary text-2xl" />
 						</div>
@@ -111,6 +125,12 @@ const UserProfile: React.FC = () => {
 							<span className="text-xl font-bold">This account doesn't exist</span>
 							<br />
 							<span className="text-gray-400 mt-2 text-md">Try searching for another.</span>
+						</p>
+					)}
+					{!!posts && posts.map(renderPost)}
+					{posts?.length === 0 && (
+						<p className="text-center mt-12 text-xl font-bold">
+							<span className="text-xl font-bold">This account doesn't have any tweet yet</span>
 						</p>
 					)}
 				</div>
