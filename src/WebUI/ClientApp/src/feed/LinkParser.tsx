@@ -22,7 +22,11 @@ const LinkParser: React.FC<LinkParserProps> = (props) => {
 			}
 
 			elements.push(
-				<NavLink key={match.index} className="text-primary" to="">
+				<NavLink
+					key={match.index}
+					className="text-primary"
+					to={match[0].startsWith("@") ? match[0].substr(1) : ""}
+				>
 					{match[0]}
 				</NavLink>
 			);
