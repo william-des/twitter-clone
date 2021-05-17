@@ -8,6 +8,7 @@ import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
 import FormButton from "./FormButton";
 import Button from "../shared/Button";
+import ResponsiveTextArea from "../shared/ResponsiveTextArea";
 
 interface PostFormProps {
 	pictureId?: string;
@@ -45,14 +46,13 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		<form onSubmit={onSubmit} className="p-4 flex">
 			<UserPicture pictureId={props.pictureId} className="h-12 w-12 mr-4" />
 			<div className="flex flex-1 flex-col">
-				<textarea
-					className="flex-1 mt-3 resize-none text-xl outline-none"
+				<ResponsiveTextArea
+					className="w-full mt-3 mb-1 text-xl outline-none"
 					name="post-content"
-					rows={1}
 					placeholder="What's happening ?"
 					value={state.content}
 					onChange={onChange}
-				></textarea>
+				/>
 				{!!state.mediaId && <UploadPreview mediaId={state.mediaId} onDeleteClick={onDeleteFile} />}
 				<div className="flex">
 					<FormButton onClick={onUploadClick} disabled={!!state.mediaId} icon={faFileImage}>
@@ -67,11 +67,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 					<FormButton disabled icon={faPollH} />
 					<FormButton disabled icon={faSmile} />
 					<FormButton disabled icon={faCalendarPlus} />
-					<Button
-						className="p-2 px-5 ml-auto disabled:opacity-50"
-						type="submit"
-						disabled={isContentEmpty()}
-					>
+					<Button className="p-2 px-5 ml-auto disabled:opacity-50" type="submit" disabled={isContentEmpty()}>
 						Tweet
 					</Button>
 				</div>
