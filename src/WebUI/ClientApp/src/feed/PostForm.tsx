@@ -15,7 +15,7 @@ interface PostFormProps {
 }
 
 const PostForm: React.FC<PostFormProps> = (props) => {
-	const [state, setState] = useState({ content: "", mediaId: undefined });
+	const [state, setState] = useState({ content: "", mediaId: undefined, imgBlob: undefined });
 	const isContentEmpty = () => state.content.trim().length == 0;
 	const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setState({ ...state, content: e.target.value });
 
@@ -29,7 +29,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		const created = await client.get(id);
 		dispatch(addPost(created));
 
-		setState({ content: "", mediaId: undefined });
+		setState({ content: "", mediaId: undefined, imgBlob: undefined });
 	};
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,10 +37,14 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 	const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e?.target?.files?.length < 1) return;
 		const file = e.target.files[0];
+
+		setState((state) => ({ ...state, imgBlob: URL.createObjectURL(file) }));
+
 		const mediaId = await new MediasClient().create({ fileName: file.name, data: file });
-		setState({ ...state, mediaId });
+		setState((state) => ({ ...state, mediaId }));
 	};
-	const onDeleteFile = () => setState({ ...state, mediaId: undefined });
+
+	const onDeleteFile = () => setState({ ...state, mediaId: undefined, imgBlob: undefined });
 
 	return (
 		<form onSubmit={onSubmit} className="p-4 flex">
@@ -53,7 +57,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 					value={state.content}
 					onChange={onChange}
 				/>
-				{!!state.mediaId && <UploadPreview mediaId={state.mediaId} onDeleteClick={onDeleteFile} />}
+				{!!state.imgBlob && <UploadPreview img={state.imgBlob} onDeleteClick={onDeleteFile} />}
 				<div className="flex">
 					<FormButton onClick={onUploadClick} disabled={!!state.mediaId} icon={faFileImage}>
 						<input

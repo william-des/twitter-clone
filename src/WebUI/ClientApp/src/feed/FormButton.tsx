@@ -11,7 +11,10 @@ const FormButton: React.FC<FormButtonProps> = (props) => {
 	const { icon, className, ...btnProps } = props;
 
 	return (
-		<button className={`${className || ""} text-primary text-2xl disabled:opacity-50 mr-4`} {...btnProps}>
+		<button
+			className={`${className || ""} text-primary text-2xl disabled:opacity-50 mr-4 focus:outline-none`}
+			{...btnProps}
+		>
 			{props.children}
 			<FontAwesomeIcon icon={props.icon} />
 		</button>
