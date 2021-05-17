@@ -1,4 +1,4 @@
-import { IFollowsVM } from "../core/WebApiClient";
+import { IFollowsVM } from "../WebApiClient";
 
 export const SET_FOLLOWS = "SET_FOLLOWS";
 export interface SetFollows {

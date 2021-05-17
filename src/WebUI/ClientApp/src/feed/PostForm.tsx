@@ -3,7 +3,7 @@ import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { CreatePostCommand, MediasClient, PostsClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addPost } from "./PostActions";
+import { addPost } from "../core/actions/PostActions";
 import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
 import FormButton from "./FormButton";

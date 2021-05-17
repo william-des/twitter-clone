@@ -12,7 +12,7 @@ import "./styles.css";
 import UserProfile from "./user/UserProfile";
 import authService from "./auth/AuthorizeService";
 import { FollowsClient } from "./core/WebApiClient";
-import { setFollows } from "./user/FollowsActions";
+import { setFollows } from "./core/actions/FollowsActions";
 
 const ApplicationRoutes: React.FC = (props) => {
 	const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const ApplicationRoutes: React.FC = (props) => {
 			authService.unsubscribe(subscription);
 		};
 	});
-	
+
 	return <React.Fragment>{props.children}</React.Fragment>;
 };
 

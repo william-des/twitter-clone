@@ -4,7 +4,7 @@ import authService from "../auth/AuthorizeService";
 import { useReduxState } from "../core/Store";
 import { PostDto, PostsClient } from "../core/WebApiClient";
 import MainContainer from "../layout/MainContainer";
-import { setPosts } from "./PostActions";
+import { setPosts } from "../core/actions/PostActions";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 

@@ -1,4 +1,4 @@
-import { ADD_FOLLOW, FollowsActions, REMOVE_FOLLOW, SET_FOLLOWS } from "./FollowsActions";
+import { ADD_FOLLOW, FollowsActions, REMOVE_FOLLOW, SET_FOLLOWS } from "../actions/FollowsActions";
 
 export interface FollowsState {
 	followed: number[];

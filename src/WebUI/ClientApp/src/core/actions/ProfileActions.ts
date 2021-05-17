@@ -1,4 +1,4 @@
-import { IUserProfileVM } from "../core/WebApiClient";
+import { IUserProfileVM } from "../WebApiClient";
 
 export const ADD_PROFILE = "ADD_PROFILE";
 export interface SetProfile {

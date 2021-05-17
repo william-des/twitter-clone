@@ -4,7 +4,7 @@ import MainContainer from "../layout/MainContainer";
 import UserPicture from "./UserPicture";
 import { IPostDto, PostsClient, UsersClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addProfile, setProfileLoading } from "./ProfileActions";
+import { addProfile, setProfileLoading } from "../core/actions/ProfileActions";
 import { useReduxState } from "../core/Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faSpinner } from "@fortawesome/free-solid-svg-icons";

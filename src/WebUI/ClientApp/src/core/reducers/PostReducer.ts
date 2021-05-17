@@ -1,5 +1,5 @@
-import { IPostDto } from "../core/WebApiClient";
-import { ADD_POST, PostActions, SET_POSTS } from "./PostActions";
+import { IPostDto } from "../WebApiClient";
+import { ADD_POST, PostActions, SET_POSTS } from "../actions/PostActions";
 
 export interface PostState {
 	all: IPostDto[];

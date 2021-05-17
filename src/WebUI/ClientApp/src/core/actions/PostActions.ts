@@ -1,4 +1,4 @@
-import { IPostDto } from "../core/WebApiClient";
+import { IPostDto } from "../WebApiClient";
 
 export const SET_POSTS = "SET_POSTS";
 export interface SetPosts {

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useReduxState } from "../core/Store";
 import { FollowsClient } from "../core/WebApiClient";
 import Button from "../shared/Button";
-import { addFollow, removeFollow } from "./FollowsActions";
+import { addFollow, removeFollow } from "../core/actions/FollowsActions";
 
 interface FollowButtonProps {
 	userId: number;
