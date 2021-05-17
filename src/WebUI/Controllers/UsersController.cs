@@ -34,6 +34,7 @@ namespace TwitterClone.WebUI.Controllers
         }
 
         [HttpGet("{username}/profile")]
+        [AllowAnonymous]
         public async Task<ActionResult<UserProfileVM>> GetUserProfile(string username)
         {
             var query = new GetUserProfileQuery { Username = username };
