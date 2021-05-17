@@ -10,6 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import PostCard from "../feed/PostCard";
+import FollowButton from "./FollowButton";
+import authService from "../auth/AuthorizeService";
 
 const UserProfile: React.FC = () => {
 	const { username } = useParams() as any;
@@ -42,6 +44,15 @@ const UserProfile: React.FC = () => {
 		loadPosts();
 	}, [profile?.user?.id]);
 
+	const [myId, setMyId] = useState(undefined);
+	const loadUser = async () => {
+		const user = await authService.getDomainUser();
+		setMyId(user?.id);
+	};
+	useEffect(() => {
+		loadUser();
+	}, []);
+
 	const renderPost = (post: IPostDto) => <PostCard {...post} key={post.id} />;
 
 	return (
@@ -55,10 +66,15 @@ const UserProfile: React.FC = () => {
 						}
 					></div>
 					<div className="p-4">
-						<UserPicture
-							pictureId={profile?.user?.pictureId}
-							className="h-36 w-36 profile-picture border-4 border-white z-10"
-						/>
+						<div className="flex align-top">
+							<UserPicture
+								pictureId={profile?.user?.pictureId}
+								className="h-36 w-36 profile-picture border-4 border-white z-10"
+							/>
+							{!!profile?.user?.id && profile.user.id != myId && (
+								<FollowButton userId={profile.user.id} className="px-4 py-2 ml-auto text-md mb-auto" />
+							)}
+						</div>
 						<h3 className="text-xl font-bold leading-1">{profile?.user?.fullName || `@${username}`}</h3>
 						{profile?.user?.username && <h4 className="leading-none text-gray-500">{`@${username}`}</h4>}
 						{profile?.user?.created && (

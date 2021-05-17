@@ -6,6 +6,104 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/users/{userId}/follows": {
+      "get": {
+        "tags": [
+          "Follows"
+        ],
+        "operationId": "Follows_GetUserFollows",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowsVM"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/follow": {
+      "post": {
+        "tags": [
+          "Follows"
+        ],
+        "operationId": "Follows_FollowUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/unfollow": {
+      "post": {
+        "tags": [
+          "Follows"
+        ],
+        "operationId": "Follows_UnfollowUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Medias/{id}": {
       "get": {
         "tags": [
@@ -346,6 +444,28 @@
   },
   "components": {
     "schemas": {
+      "FollowsVM": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "followerIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "followedIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
       "PostDto": {
         "type": "object",
         "additionalProperties": false,

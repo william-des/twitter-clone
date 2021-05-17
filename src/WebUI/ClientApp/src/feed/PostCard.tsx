@@ -6,6 +6,7 @@ import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LinkParser from "./LinkParser";
 import UserPicture from "../user/UserPicture";
+import { NavLink } from "react-router-dom";
 
 const PostCard: React.FC<IPostDto> = (props) => {
 	const randomInt = () => Math.ceil(Math.random() * 100);
@@ -15,7 +16,9 @@ const PostCard: React.FC<IPostDto> = (props) => {
 			<UserPicture pictureId={props?.createdBy?.pictureId} className="h-12 w-12 mr-4" />
 			<div className="flex flex-1 flex-col">
 				<div className="flex">
-					<h2 className="font-semibold mr-1">{props.createdBy.fullName}</h2>
+					<h2 className="font-semibold mr-1 hover:underline">
+						<NavLink to={`/${props.createdBy.username}`}>{props.createdBy.fullName}</NavLink>
+					</h2>
 					<span className="text-gray-500 font-light">
 						@{props.createdBy.username} · <ReactTimeAgo date={props.created} timeStyle="twitter" />
 					</span>
