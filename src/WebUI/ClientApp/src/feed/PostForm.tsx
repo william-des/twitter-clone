@@ -7,6 +7,7 @@ import { addPost } from "./PostActions";
 import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
 import FormButton from "./FormButton";
+import Button from "../shared/Button";
 
 interface PostFormProps {
 	pictureId?: string;
@@ -66,13 +67,13 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 					<FormButton disabled icon={faPollH} />
 					<FormButton disabled icon={faSmile} />
 					<FormButton disabled icon={faCalendarPlus} />
-					<button
-						className="custom-btn p-2 px-5 ml-auto disabled:opacity-50"
+					<Button
+						className="p-2 px-5 ml-auto disabled:opacity-50"
 						type="submit"
 						disabled={isContentEmpty()}
 					>
 						Tweet
-					</button>
+					</Button>
 				</div>
 			</div>
 		</form>

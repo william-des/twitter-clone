@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authService from "../auth/AuthorizeService";
+import Button from "../shared/Button";
 import { UserCard } from "../user/UserCard";
 import NavLink from "./NavLink";
 
@@ -85,7 +86,7 @@ export const NavMenu: React.FC = () => {
 				</ul>
 				{state.isAuthenticated && (
 					<React.Fragment>
-						<button className="custom-btn mr-7 p-3 mt-4 hidden md:inline">Tweet</button>
+						<Button className="mr-7 p-3 mt-4 hidden md:inline">Tweet</Button>
 						<UserCard {...state.domainUser} />
 					</React.Fragment>
 				)}

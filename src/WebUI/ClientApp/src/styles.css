@@ -15,10 +15,6 @@ body,
 	@apply hover:bg-secondary hover:bg-opacity-10 transition duration-300 rounded-full;
 }
 
-.custom-btn {
-	@apply bg-primary font-semibold text-white rounded-full;
-}
-
 img {
 	object-fit: cover;
 }

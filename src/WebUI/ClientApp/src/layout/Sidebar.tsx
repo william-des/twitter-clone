@@ -1,6 +1,7 @@
 import React from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FollowButton from "../user/FollowButton";
 
 const Sidebar: React.FC = () => {
 	return (
@@ -43,9 +44,7 @@ const Sidebar: React.FC = () => {
 							<h2 className="font-semibold mr-1">Elon Musk</h2>
 							<span className="text-gray-500 font-light">@ToTheMoon</span>
 						</div>
-						<button className="custom-btn px-4 py-2 ml-auto text-sm my-auto" type="submit">
-							Following
-						</button>
+						<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={1} />
 					</div>
 					<div className="border-b py-3 px-4 flex align-middle">
 						<img src={"https://thispersondoesnotexist.com/image"} className="h-12 w-12 rounded-full mr-4" />
@@ -53,9 +52,7 @@ const Sidebar: React.FC = () => {
 							<h2 className="font-semibold mr-1">Elon Musk</h2>
 							<span className="text-gray-500 font-light">@ToTheMoon</span>
 						</div>
-						<button className="custom-btn px-4 py-2 ml-auto text-sm my-auto" type="submit">
-							Following
-						</button>
+						<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={1} />
 					</div>
 					<div className="text-primary py-3 px-4">Show more</div>
 				</div>
