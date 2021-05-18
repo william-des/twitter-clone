@@ -3,10 +3,10 @@ import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { CreatePostCommand, MediasClient, PostsClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addPost } from "../core/actions/PostActions";
+import { addPosts } from "../core/actions/PostsActions";
 import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
-import FormButton from "./FormButton";
+import PostFormButton from "./PostFormButton";
 import Button from "../shared/Button";
 import ResponsiveTextArea from "../shared/ResponsiveTextArea";
 
@@ -27,7 +27,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		const client = new PostsClient();
 		const id = await client.create(new CreatePostCommand(state));
 		const created = await client.get(id);
-		dispatch(addPost(created));
+		dispatch(addPosts([created]));
 
 		setState({ content: "", mediaId: undefined, imgBlob: undefined });
 	};
@@ -59,7 +59,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 				/>
 				{!!state.imgBlob && <UploadPreview img={state.imgBlob} onDeleteClick={onDeleteFile} />}
 				<div className="flex">
-					<FormButton onClick={onUploadClick} disabled={!!state.mediaId} icon={faFileImage}>
+					<PostFormButton onClick={onUploadClick} disabled={!!state.mediaId} icon={faFileImage}>
 						<input
 							type="file"
 							className="hidden"
@@ -67,10 +67,10 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 							ref={fileInputRef}
 							onChange={onFileChange}
 						/>
-					</FormButton>
-					<FormButton disabled icon={faPollH} />
-					<FormButton disabled icon={faSmile} />
-					<FormButton disabled icon={faCalendarPlus} />
+					</PostFormButton>
+					<PostFormButton disabled icon={faPollH} />
+					<PostFormButton disabled icon={faSmile} />
+					<PostFormButton disabled icon={faCalendarPlus} />
 					<Button className="p-2 px-5 ml-auto disabled:opacity-50" type="submit" disabled={isContentEmpty()}>
 						Tweet
 					</Button>

@@ -2,12 +2,12 @@ import { IconDefinition } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
-interface FormButtonProps
+interface PostFormButtonProps
 	extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
 	icon: IconDefinition;
 }
 
-const FormButton: React.FC<FormButtonProps> = (props) => {
+const PostFormButton: React.FC<PostFormButtonProps> = (props) => {
 	const { icon, className, ...btnProps } = props;
 
 	return (
@@ -21,4 +21,4 @@ const FormButton: React.FC<FormButtonProps> = (props) => {
 	);
 };
 
-export default FormButton;
+export default PostFormButton;

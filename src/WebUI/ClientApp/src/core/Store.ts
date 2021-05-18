@@ -1,10 +1,10 @@
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { combineReducers, compose, createStore } from "redux";
-import { PostReducer } from "./reducers/PostReducer";
+import { PostsReducer } from "./reducers/PostsReducer";
 import { FollowsReducer } from "./reducers/FollowsReducer";
 import { ProfileReducer } from "./reducers/ProfileReducer";
 
-const reducers = combineReducers({ posts: PostReducer, profile: ProfileReducer, follows: FollowsReducer });
+const reducers = combineReducers({ posts: PostsReducer, profile: ProfileReducer, follows: FollowsReducer });
 
 const store = createStore(reducers, (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?.() || compose);
 

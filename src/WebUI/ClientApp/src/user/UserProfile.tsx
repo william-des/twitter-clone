@@ -4,7 +4,6 @@ import MainContainer from "../layout/MainContainer";
 import UserPicture from "./UserPicture";
 import { IPostDto, PostsClient, UsersClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addProfile, setProfileLoading } from "../core/actions/ProfileActions";
 import { useReduxState } from "../core/Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +11,7 @@ import { NavLink } from "react-router-dom";
 import PostCard from "../feed/PostCard";
 import FollowButton from "./FollowButton";
 import authService from "../auth/AuthorizeService";
+import { addProfile, setProfileLoading } from "../core/actions/ProfileActions";
 
 const UserProfile: React.FC = () => {
 	const { username } = useParams() as any;
@@ -30,7 +30,6 @@ const UserProfile: React.FC = () => {
 		}
 	};
 	useEffect(() => {
-		setPosts(undefined);
 		loadProfile();
 	}, [username]);
 
