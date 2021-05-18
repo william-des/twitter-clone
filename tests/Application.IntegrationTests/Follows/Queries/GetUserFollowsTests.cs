@@ -18,7 +18,7 @@ namespace TwitterClone.Application.IntegrationTests.Follows.Queries
             await AddAsync(followed);
             await AddAsync(new Follow { FollowerId = userId, FollowedId = followed.Id});
 
-            var follower = new User { Username = "Follower", FullName = "Follower", ApplicationUserId = "Testing" };
+            var follower = new User { Username = "Follower", FullName = "Follower", ApplicationUserId = "Testing2" };
             await AddAsync(follower);
             await AddAsync(new Follow { FollowerId = follower.Id, FollowedId = userId});
 

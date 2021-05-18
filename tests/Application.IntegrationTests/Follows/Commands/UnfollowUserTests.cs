@@ -11,9 +11,11 @@ namespace TwitterClone.Application.IntegrationTests.Follows.Commands
     public class UnfollowUserCommandTests : TestBase
     {
         [Test]
-        public void ShouldRequireValidUserId()
+        public async Task ShouldRequireValidUserId()
         {
             var command = new UnfollowUserCommand { UserId = 123};
+
+            await RunAsDefaultDomainUserAsync();
 
             FluentActions.Invoking(() =>
                 SendAsync(command)).Should().Throw<NotFoundException>();
