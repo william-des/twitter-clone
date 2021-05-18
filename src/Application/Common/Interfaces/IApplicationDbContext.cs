@@ -9,6 +9,7 @@ namespace TwitterClone.Application.Common.Interfaces
     {
         DbSet<User> DomainUsers { get; set; }
         DbSet<Follow> Follows { get; set; }
+        DbSet<Like> Likes { get; set; }
         DbSet<Media> Medias { get; set; }
         DbSet<Post> Posts { get; set; }
 

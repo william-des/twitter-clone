@@ -21,6 +21,7 @@ namespace TwitterClone.Infrastructure.Persistence
 
         public DbSet<User> DomainUsers { get; set; }
         public DbSet<Follow> Follows { get; set; }
+        public DbSet<Like> Likes { get; set; }
         public DbSet<Media> Medias { get; set; }
         public DbSet<Post> Posts { get; set; }
 
