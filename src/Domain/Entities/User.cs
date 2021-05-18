@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TwitterClone.Domain.Common;
 
 namespace TwitterClone.Domain.Entities
@@ -13,5 +14,7 @@ namespace TwitterClone.Domain.Entities
         public Guid? PictureId { get; set; }
         public Media Banner { get; set; }
         public Guid? BannerId { get; set; }
+        public IEnumerable<Follow> Followers { get; set; } = new List<Follow>();
+        public IEnumerable<Follow> Followeds { get; set; } = new List<Follow>();
     }
 }

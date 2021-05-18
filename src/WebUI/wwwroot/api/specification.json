@@ -104,6 +104,54 @@
         }
       }
     },
+    "/posts/{postId}/like": {
+      "post": {
+        "tags": [
+          "Likes"
+        ],
+        "operationId": "Likes_CreateLike",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Likes"
+        ],
+        "operationId": "Likes_RemoveLike",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Medias/{id}": {
       "get": {
         "tags": [
@@ -488,6 +536,21 @@
           "mediaId": {
             "type": "string",
             "nullable": true
+          },
+          "likedBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            ]
+          },
+          "likedByMe": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

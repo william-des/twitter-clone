@@ -151,6 +151,93 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
     }
 }
 
+export interface ILikesClient {
+    createLike(postId: number): Promise<void>;
+    removeLike(postId: number): Promise<void>;
+}
+
+export class LikesClient extends ClientBase implements ILikesClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    createLike(postId: number): Promise<void> {
+        let url_ = this.baseUrl + "/posts/{postId}/like";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateLike(_response);
+        });
+    }
+
+    protected processCreateLike(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    removeLike(postId: number): Promise<void> {
+        let url_ = this.baseUrl + "/posts/{postId}/like";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRemoveLike(_response);
+        });
+    }
+
+    protected processRemoveLike(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
 export interface IMediasClient {
     get(id: string): Promise<FileResponse>;
     create(file: FileParameter | null | undefined): Promise<string>;
@@ -664,6 +751,9 @@ export class PostDto implements IPostDto {
     created?: Date;
     createdBy?: UserDto | undefined;
     mediaId?: string | undefined;
+    likedBy?: UserDto | undefined;
+    likedByMe?: boolean;
+    likes?: number;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -681,6 +771,9 @@ export class PostDto implements IPostDto {
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.mediaId = _data["mediaId"];
+            this.likedBy = _data["likedBy"] ? UserDto.fromJS(_data["likedBy"]) : <any>undefined;
+            this.likedByMe = _data["likedByMe"];
+            this.likes = _data["likes"];
         }
     }
 
@@ -698,6 +791,9 @@ export class PostDto implements IPostDto {
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["mediaId"] = this.mediaId;
+        data["likedBy"] = this.likedBy ? this.likedBy.toJSON() : <any>undefined;
+        data["likedByMe"] = this.likedByMe;
+        data["likes"] = this.likes;
         return data; 
     }
 }
@@ -708,6 +804,9 @@ export interface IPostDto {
     created?: Date;
     createdBy?: UserDto | undefined;
     mediaId?: string | undefined;
+    likedBy?: UserDto | undefined;
+    likedByMe?: boolean;
+    likes?: number;
 }
 
 export class UserDto implements IUserDto {
