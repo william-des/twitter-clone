@@ -1,19 +1,21 @@
 import {
+	ADD_LIKE,
 	ADD_POSTS,
 	ADD_RE_POST,
 	ADD_USER_POSTS,
 	PostsActions,
 	REMOVE_RE_POST,
 	SET_POSTS_LOADING,
-	SET_POST_LIKED,
 } from "../actions/PostsActions";
 import { IPostDto } from "../WebApiClient";
 
 export interface PostsState {
 	all: IPostDto[];
 	byUser: { [id: number]: IPostDto[] };
-	rePosted: Number[];
+	rePosted: number[];
 	rePosts: { [id: number]: number };
+	liked: number[];
+	likes: { [id: number]: number };
 	loading: boolean;
 }
 
@@ -22,6 +24,8 @@ const initialState: PostsState = {
 	byUser: {},
 	rePosted: [],
 	rePosts: {},
+	liked: [],
+	likes: {},
 	loading: false,
 };
 
@@ -42,6 +46,14 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					...state.rePosts,
 					...action.payload.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.likes }), {}),
 				},
+				liked: [
+					...state.liked,
+					...action.payload.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
+				],
+				likes: {
+					...state.likes,
+					...action.payload.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
+				},
 				loading: false,
 			};
 		case ADD_USER_POSTS:
@@ -55,21 +67,6 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					[action.payload.userId]: [...existingPosts, ...action.payload.posts],
 				},
 			};
-		case SET_POST_LIKED:
-			const index = state.all.findIndex((p) => p.id == action.payload.postId);
-			if (index == -1) return state;
-			return {
-				...state,
-				all: [
-					...state.all.slice(0, index),
-					{
-						...state.all[index],
-						likedByMe: action.payload.liked,
-						likes: (state.all[index].likes || 0) + (action.payload.liked ? 1 : -1),
-					},
-					...state.all.slice(index + 1),
-				],
-			};
 		case ADD_RE_POST:
 			if (state.rePosted.includes(action.payload)) return state;
 			return {
@@ -82,6 +79,19 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 				...state,
 				rePosted: state.rePosted.filter((r) => r != action.payload),
 				rePosts: { ...state.rePosts, [action.payload]: state.rePosts[action.payload] - 1 },
+			};
+		case ADD_LIKE:
+			if (state.liked.includes(action.payload)) return state;
+			return {
+				...state,
+				liked: [...state.liked, action.payload],
+				likes: { ...state.likes, [action.payload]: state.likes[action.payload] + 1 },
+			};
+		case REMOVE_RE_POST:
+			return {
+				...state,
+				liked: state.liked.filter((r) => r != action.payload),
+				likes: { ...state.likes, [action.payload]: state.likes[action.payload] - 1 },
 			};
 		case SET_POSTS_LOADING:
 			return { ...state, loading: action.payload };

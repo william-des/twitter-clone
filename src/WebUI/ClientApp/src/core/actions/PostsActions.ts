@@ -30,16 +30,6 @@ export interface SetPostsLoading {
 }
 export const setPostsLoading = (loading: boolean = true) => ({ type: SET_POSTS_LOADING, payload: loading });
 
-export const SET_POST_LIKED = "SET_POST_LIKED";
-export interface SetPostLiked {
-	type: typeof SET_POST_LIKED;
-	payload: {
-		liked: boolean;
-		postId: number;
-	};
-}
-export const setPostLiked = (postId: number, liked: boolean) => ({ type: SET_POST_LIKED, payload: { postId, liked } });
-
 export const ADD_RE_POST = "ADD_RE_POST";
 export interface AddRePost {
 	type: typeof ADD_RE_POST;
@@ -60,4 +50,24 @@ export const removeRePost = (postId: number) => ({
 	payload: postId,
 });
 
-export type PostsActions = AddPosts | AddUserPosts | SetPostsLoading | SetPostLiked | AddRePost | RemoveRePost;
+export const ADD_LIKE = "ADD_LIKE";
+export interface AddLike {
+	type: typeof ADD_LIKE;
+	payload: number;
+}
+export const addLike = (postId: number) => ({
+	type: ADD_LIKE,
+	payload: postId,
+});
+
+export const REMOVE_LIKE = "REMOVE_LIKE";
+export interface RemoveLike {
+	type: typeof REMOVE_LIKE;
+	payload: number;
+}
+export const removeLike = (postId: number) => ({
+	type: REMOVE_LIKE,
+	payload: postId,
+});
+
+export type PostsActions = AddPosts | AddUserPosts | SetPostsLoading | AddRePost | RemoveRePost | AddLike | RemoveLike;

@@ -9,28 +9,33 @@ import UserPicture from "../user/UserPicture";
 import { NavLink } from "react-router-dom";
 import PostCardButton from "./PostCardButton";
 import { useDispatch } from "react-redux";
-import { addRePost, removeRePost, setPostLiked } from "../core/actions/PostsActions";
+import { addLike, addRePost, removeLike, removeRePost } from "../core/actions/PostsActions";
 import { useReduxState } from "../core/Store";
 
 const PostCard: React.FC<IPostDto> = (props) => {
 	const dispatch = useDispatch();
 
-	const rePosted = useReduxState((p) => p.posts.rePosted.includes(props.id));
-	const rePosts = useReduxState((p) => p.posts.rePosts[props.id]);
+	const state = useReduxState((state) => ({
+		rePosted: state.posts.rePosted.includes(props.id),
+		rePosts: state.posts.rePosts[props.id],
+		liked: state.posts.liked.includes(props.id),
+		likes: state.posts.likes[props.id],
+	}));
 
 	const onLikeClick = async () => {
 		const client = new LikesClient();
 		if (props.likedByMe) {
 			await client.removeLike(props.id);
+			dispatch(removeLike(props.id));
 		} else {
 			await client.createLike(props.id);
+			dispatch(addLike(props.id));
 		}
-		dispatch(setPostLiked(props.id, !props.likedByMe));
 	};
 
 	const onRePostClick = async () => {
 		const client = new RePostsClient();
-		if (rePosted) {
+		if (state.rePosted) {
 			await client.removeRePost(props.id);
 			dispatch(removeRePost(props.id));
 		} else {
@@ -91,15 +96,15 @@ const PostCard: React.FC<IPostDto> = (props) => {
 							icon={faRetweet}
 							color="green-400"
 							onClick={onRePostClick}
-							active={rePosted}
-							value={rePosts}
+							active={state.rePosted}
+							value={state.rePosts}
 						/>
 						<PostCardButton
 							icon={faHeart}
 							color="pink-500"
 							onClick={onLikeClick}
-							active={props.likedByMe}
-							value={props.likes}
+							active={state.liked}
+							value={state.likes}
 						/>
 						<PostCardButton icon={faShareSquare} color="primary" />
 					</div>
