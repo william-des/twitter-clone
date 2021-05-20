@@ -413,6 +413,34 @@
             "JWT": []
           }
         ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_Update",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Users/{id}": {
@@ -765,7 +793,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/UserDto6"
+                "$ref": "#/components/schemas/ProfileUserDto"
               }
             ]
           },
@@ -783,7 +811,7 @@
           }
         }
       },
-      "UserDto6": {
+      "ProfileUserDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -809,6 +837,50 @@
           },
           "bannerId": {
             "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "pictureId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "bannerId": {
+            "type": "string",
+            "format": "guid",
             "nullable": true
           }
         }

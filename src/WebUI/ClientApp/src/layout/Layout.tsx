@@ -1,17 +1,17 @@
-import React, { Component } from "react";
+import React from "react";
+import { useReduxState } from "../core/Store";
 import { NavMenu } from "./NavMenu";
 import Sidebar from "./Sidebar";
 
-export class Layout extends Component {
-	static displayName = Layout.name;
+const Layout: React.FC = (props) => {
+	const scrollEnable = useReduxState((state) => state.layout.scrollEnable);
 
-	render() {
-		return (
-			<div className="max-w-screen-xl mx-auto h-full flex">
-				<NavMenu />
-				{this.props.children}
-				<Sidebar/>
-			</div>
-		);
-	}
-}
+	return (
+		<div className={`max-w-screen-xl mx-auto h-full flex ${!scrollEnable && "overflow-hidden"}`}>
+			<NavMenu />
+			{props.children}
+			<Sidebar />
+		</div>
+	);
+};
+export default Layout;

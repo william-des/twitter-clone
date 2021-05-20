@@ -25,7 +25,7 @@ namespace TwitterClone.Application.Users.Queries.GetUserProfile
         public async Task<UserProfileVM> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
         {
             var user = await _context.DomainUsers
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<ProfileUserDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
 
             if (user == null)

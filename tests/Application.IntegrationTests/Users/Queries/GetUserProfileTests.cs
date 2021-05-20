@@ -25,7 +25,10 @@ namespace TwitterClone.Application.IntegrationTests.Users.Queries
             var user = new User {
                 Username = "johndoe",
                 FullName = "John Doe",
-                ApplicationUserId = "123"
+                ApplicationUserId = "123",
+                Website="kim.com",
+                Location="Vice City",
+                Description="My name is Doe, John Doe",
             };
             await AddAsync(user);
 
@@ -36,6 +39,9 @@ namespace TwitterClone.Application.IntegrationTests.Users.Queries
             result.User.Id.Should().Be(user.Id);
             result.User.FullName.Should().Be(user.FullName);
             result.User.Username.Should().Be(user.Username);
+            result.User.Website.Should().Be(user.Website);
+            result.User.Location.Should().Be(user.Location);
+            result.User.Description.Should().Be(user.Description);
         }
 
         [Test]

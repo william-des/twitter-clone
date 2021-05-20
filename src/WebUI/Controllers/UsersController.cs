@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TwitterClone.Application.Users.Commands.CreateUser;
+using TwitterClone.Application.Users.Commands.UpdateUser;
 using TwitterClone.Application.Users.Queries.GetUser;
 using TwitterClone.Application.Users.Queries.GetUserByApplicationId;
 using TwitterClone.Application.Users.Queries.GetUserProfile;
@@ -40,6 +41,12 @@ namespace TwitterClone.WebUI.Controllers
             var query = new GetUserProfileQuery { Username = username };
 
             return await Mediator.Send(query);
+        }
+
+        [HttpPut]
+        public async Task Update(UpdateUserCommand command) 
+        {
+            await Mediator.Send(command);
         }
     }
 }

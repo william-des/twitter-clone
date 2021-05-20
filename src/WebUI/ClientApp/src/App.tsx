@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router";
 import AuthorizeRoute from "./auth/AuthorizeRoute";
 import ApiAuthorizationRoutes from "./auth/ApiAuthorizationRoutes";
 import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
-import { Layout } from "./layout/Layout";
+import Layout from "./layout/Layout";
 import { Register } from "./auth/Register";
 import Feed from "./feed/Feed";
 import { Provider, useDispatch } from "react-redux";

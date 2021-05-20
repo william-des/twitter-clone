@@ -517,6 +517,7 @@ export class PostsClient extends ClientBase implements IPostsClient {
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
     get(applicationUserId: string | null | undefined): Promise<UserDto5>;
+    update(command: UpdateUserCommand): Promise<void>;
     get2(id: number): Promise<UserDto4>;
     getUserProfile(username: string | null): Promise<UserProfileVM>;
 }
@@ -608,6 +609,42 @@ export class UsersClient extends ClientBase implements IUsersClient {
             });
         }
         return Promise.resolve<UserDto5>(<any>null);
+    }
+
+    update(command: UpdateUserCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/Users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
     }
 
     get2(id: number): Promise<UserDto4> {
@@ -1238,7 +1275,7 @@ export interface IUserDto5 {
 }
 
 export class UserProfileVM implements IUserProfileVM {
-    user?: UserDto6 | undefined;
+    user?: ProfileUserDto | undefined;
     postsCount?: number;
     followersCount?: number;
     followedCount?: number;
@@ -1254,7 +1291,7 @@ export class UserProfileVM implements IUserProfileVM {
 
     init(_data?: any) {
         if (_data) {
-            this.user = _data["user"] ? UserDto6.fromJS(_data["user"]) : <any>undefined;
+            this.user = _data["user"] ? ProfileUserDto.fromJS(_data["user"]) : <any>undefined;
             this.postsCount = _data["postsCount"];
             this.followersCount = _data["followersCount"];
             this.followedCount = _data["followedCount"];
@@ -1279,21 +1316,24 @@ export class UserProfileVM implements IUserProfileVM {
 }
 
 export interface IUserProfileVM {
-    user?: UserDto6 | undefined;
+    user?: ProfileUserDto | undefined;
     postsCount?: number;
     followersCount?: number;
     followedCount?: number;
 }
 
-export class UserDto6 implements IUserDto6 {
+export class ProfileUserDto implements IProfileUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
     created?: Date;
     pictureId?: string | undefined;
     bannerId?: string | undefined;
+    description?: string | undefined;
+    website?: string | undefined;
+    location?: string | undefined;
 
-    constructor(data?: IUserDto6) {
+    constructor(data?: IProfileUserDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1310,12 +1350,15 @@ export class UserDto6 implements IUserDto6 {
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.pictureId = _data["pictureId"];
             this.bannerId = _data["bannerId"];
+            this.description = _data["description"];
+            this.website = _data["website"];
+            this.location = _data["location"];
         }
     }
 
-    static fromJS(data: any): UserDto6 {
+    static fromJS(data: any): ProfileUserDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto6();
+        let result = new ProfileUserDto();
         result.init(data);
         return result;
     }
@@ -1328,15 +1371,77 @@ export class UserDto6 implements IUserDto6 {
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["pictureId"] = this.pictureId;
         data["bannerId"] = this.bannerId;
+        data["description"] = this.description;
+        data["website"] = this.website;
+        data["location"] = this.location;
         return data; 
     }
 }
 
-export interface IUserDto6 {
+export interface IProfileUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
     created?: Date;
+    pictureId?: string | undefined;
+    bannerId?: string | undefined;
+    description?: string | undefined;
+    website?: string | undefined;
+    location?: string | undefined;
+}
+
+export class UpdateUserCommand implements IUpdateUserCommand {
+    fullName?: string | undefined;
+    description?: string | undefined;
+    location?: string | undefined;
+    website?: string | undefined;
+    pictureId?: string | undefined;
+    bannerId?: string | undefined;
+
+    constructor(data?: IUpdateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"];
+            this.description = _data["description"];
+            this.location = _data["location"];
+            this.website = _data["website"];
+            this.pictureId = _data["pictureId"];
+            this.bannerId = _data["bannerId"];
+        }
+    }
+
+    static fromJS(data: any): UpdateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName;
+        data["description"] = this.description;
+        data["location"] = this.location;
+        data["website"] = this.website;
+        data["pictureId"] = this.pictureId;
+        data["bannerId"] = this.bannerId;
+        return data; 
+    }
+}
+
+export interface IUpdateUserCommand {
+    fullName?: string | undefined;
+    description?: string | undefined;
+    location?: string | undefined;
+    website?: string | undefined;
     pictureId?: string | undefined;
     bannerId?: string | undefined;
 }
