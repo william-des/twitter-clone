@@ -1,5 +1,5 @@
 import React from "react";
-import { IPostDto, LikesClient } from "../core/WebApiClient";
+import { IPostDto, LikesClient, RePostsClient } from "../core/WebApiClient";
 import ReactTimeAgo from "react-time-ago";
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
@@ -9,10 +9,14 @@ import UserPicture from "../user/UserPicture";
 import { NavLink } from "react-router-dom";
 import PostCardButton from "./PostCardButton";
 import { useDispatch } from "react-redux";
-import { setPostLiked } from "../core/actions/PostsActions";
+import { addRePost, removeRePost, setPostLiked } from "../core/actions/PostsActions";
+import { useReduxState } from "../core/Store";
 
 const PostCard: React.FC<IPostDto> = (props) => {
 	const dispatch = useDispatch();
+
+	const rePosted = useReduxState((p) => p.posts.rePosted.includes(props.id));
+	const rePosts = useReduxState((p) => p.posts.rePosts[props.id]);
 
 	const onLikeClick = async () => {
 		const client = new LikesClient();
@@ -24,14 +28,46 @@ const PostCard: React.FC<IPostDto> = (props) => {
 		dispatch(setPostLiked(props.id, !props.likedByMe));
 	};
 
-	return (
-		<article className="border-b p-3">
-			{!!props?.likedBy?.username && (
-				<h3 className="text-gray-700 font-semibold ml-9 mb-1 text-sm">
+	const onRePostClick = async () => {
+		const client = new RePostsClient();
+		if (rePosted) {
+			await client.removeRePost(props.id);
+			dispatch(removeRePost(props.id));
+		} else {
+			await client.createRePost(props.id);
+			dispatch(addRePost(props.id));
+		}
+	};
+
+	const FollowerActivity = () => {
+		let link: React.ReactNode;
+
+		if (props?.rePostedBy?.fullName) {
+			link = (
+				<NavLink to={`/${props.rePostedBy.username}`}>
+					<FontAwesomeIcon icon={faRetweet} className="mr-3" />
+					Retweeted by {props.rePostedBy.fullName}
+				</NavLink>
+			);
+		} else if (props?.likedBy?.fullName) {
+			link = (
+				<NavLink to={`/${props.likedBy.username}`}>
 					<FontAwesomeIcon icon={faHeart} className="mr-3" />
 					Liked by {props.likedBy.fullName}
-				</h3>
-			)}
+				</NavLink>
+			);
+		}
+
+		return !!link ? (
+			<h3 className="text-gray-700 font-semibold ml-9 mb-1 text-sm hover:underline">{link}</h3>
+		) : (
+			<React.Fragment />
+		);
+	};
+
+	return (
+		<article className="border-b p-3">
+			<FollowerActivity />
 			<div className="flex">
 				<UserPicture pictureId={props?.createdBy?.pictureId} className="h-12 w-12 mr-3 mt-1" />
 				<div className="flex flex-1 flex-col">
@@ -51,7 +87,13 @@ const PostCard: React.FC<IPostDto> = (props) => {
 					)}
 					<div className="flex text-gray-500 font-light w-full text-md">
 						<PostCardButton icon={faComment} color="primary" />
-						<PostCardButton icon={faRetweet} color="green-400" />
+						<PostCardButton
+							icon={faRetweet}
+							color="green-400"
+							onClick={onRePostClick}
+							active={rePosted}
+							value={rePosts}
+						/>
 						<PostCardButton
 							icon={faHeart}
 							color="pink-500"

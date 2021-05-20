@@ -514,6 +514,93 @@ export class PostsClient extends ClientBase implements IPostsClient {
     }
 }
 
+export interface IRePostsClient {
+    createRePost(postId: number): Promise<void>;
+    removeRePost(postId: number): Promise<void>;
+}
+
+export class RePostsClient extends ClientBase implements IRePostsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    createRePost(postId: number): Promise<void> {
+        let url_ = this.baseUrl + "/posts/{postId}/re-post";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateRePost(_response);
+        });
+    }
+
+    protected processCreateRePost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    removeRePost(postId: number): Promise<void> {
+        let url_ = this.baseUrl + "/posts/{postId}/re-post";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRemoveRePost(_response);
+        });
+    }
+
+    protected processRemoveRePost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
     get(applicationUserId: string | null | undefined): Promise<UserDto5>;
@@ -791,6 +878,9 @@ export class PostDto implements IPostDto {
     likedBy?: UserDto | undefined;
     likedByMe?: boolean;
     likes?: number;
+    rePostedBy?: UserDto | undefined;
+    rePostedByMe?: boolean;
+    rePosts?: number;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -811,6 +901,9 @@ export class PostDto implements IPostDto {
             this.likedBy = _data["likedBy"] ? UserDto.fromJS(_data["likedBy"]) : <any>undefined;
             this.likedByMe = _data["likedByMe"];
             this.likes = _data["likes"];
+            this.rePostedBy = _data["rePostedBy"] ? UserDto.fromJS(_data["rePostedBy"]) : <any>undefined;
+            this.rePostedByMe = _data["rePostedByMe"];
+            this.rePosts = _data["rePosts"];
         }
     }
 
@@ -831,6 +924,9 @@ export class PostDto implements IPostDto {
         data["likedBy"] = this.likedBy ? this.likedBy.toJSON() : <any>undefined;
         data["likedByMe"] = this.likedByMe;
         data["likes"] = this.likes;
+        data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
+        data["rePostedByMe"] = this.rePostedByMe;
+        data["rePosts"] = this.rePosts;
         return data; 
     }
 }
@@ -844,6 +940,9 @@ export interface IPostDto {
     likedBy?: UserDto | undefined;
     likedByMe?: boolean;
     likes?: number;
+    rePostedBy?: UserDto | undefined;
+    rePostedByMe?: boolean;
+    rePosts?: number;
 }
 
 export class UserDto implements IUserDto {

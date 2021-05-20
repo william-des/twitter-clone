@@ -24,6 +24,7 @@ namespace TwitterClone.Infrastructure.Persistence
         public DbSet<Like> Likes { get; set; }
         public DbSet<Media> Medias { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<RePost> RePosts { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,

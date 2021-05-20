@@ -1,15 +1,27 @@
-import { ADD_POSTS, ADD_USER_POSTS, PostsActions, SET_POSTS_LOADING, SET_POST_LIKED } from "../actions/PostsActions";
+import {
+	ADD_POSTS,
+	ADD_RE_POST,
+	ADD_USER_POSTS,
+	PostsActions,
+	REMOVE_RE_POST,
+	SET_POSTS_LOADING,
+	SET_POST_LIKED,
+} from "../actions/PostsActions";
 import { IPostDto } from "../WebApiClient";
 
 export interface PostsState {
 	all: IPostDto[];
 	byUser: { [id: number]: IPostDto[] };
+	rePosted: Number[];
+	rePosts: { [id: number]: number };
 	loading: boolean;
 }
 
 const initialState: PostsState = {
 	all: [],
 	byUser: {},
+	rePosted: [],
+	rePosts: {},
 	loading: false,
 };
 
@@ -22,6 +34,14 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					...state.all.filter((p) => !action.payload.find((updated) => updated.id == p.id)),
 					...action.payload,
 				],
+				rePosted: [
+					...state.rePosted,
+					...action.payload.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe).map((p) => p.id),
+				],
+				rePosts: {
+					...state.rePosts,
+					...action.payload.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.likes }), {}),
+				},
 				loading: false,
 			};
 		case ADD_USER_POSTS:
@@ -49,6 +69,19 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					},
 					...state.all.slice(index + 1),
 				],
+			};
+		case ADD_RE_POST:
+			if (state.rePosted.includes(action.payload)) return state;
+			return {
+				...state,
+				rePosted: [...state.rePosted, action.payload],
+				rePosts: { ...state.rePosts, [action.payload]: state.rePosts[action.payload] + 1 },
+			};
+		case REMOVE_RE_POST:
+			return {
+				...state,
+				rePosted: state.rePosted.filter((r) => r != action.payload),
+				rePosts: { ...state.rePosts, [action.payload]: state.rePosts[action.payload] - 1 },
 			};
 		case SET_POSTS_LOADING:
 			return { ...state, loading: action.payload };

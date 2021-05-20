@@ -70,5 +70,27 @@ namespace TwitterClone.Application.IntegrationTests.Posts.Queries
             result.Should().NotContain(p => p.Id == postByNonFollowedUser.Id);
             result.Should().Contain(p => p.Id == postByFollowedUser.Id);
         }
+
+        [Test]
+        public async Task ShouldReturnPostsRePostedByFollowedUsers()
+        {
+            var authorId = await RunAsDomainUserAsync("author", "Author1234!", Array.Empty<string>());
+            var rePostedPost = new Post { Content = "Liked post" };
+            await AddAsync(rePostedPost);
+            var otherPost = new Post { Content = "Liked post" };
+            await AddAsync(otherPost);
+
+            var followedId = await RunAsDomainUserAsync("followed", "Followed1234!", Array.Empty<string>());
+            await AddAsync(new RePost { PostId = rePostedPost.Id});
+
+            var userId = await RunAsDefaultDomainUserAsync();
+            await AddAsync(new Follow { FollowedId = followedId, FollowerId = userId });
+
+            var query = new GetPostsQuery();
+            var result = await SendAsync(query);
+
+            result.Should().Contain(p => p.Id == rePostedPost.Id);
+            result.Should().NotContain(p => p.Id == otherPost.Id);
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace TwitterClone.Application.Common.Interfaces
         DbSet<Like> Likes { get; set; }
         DbSet<Media> Medias { get; set; }
         DbSet<Post> Posts { get; set; }
+        DbSet<RePost> RePosts { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

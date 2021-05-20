@@ -27,11 +27,14 @@ namespace TwitterClone.Application.Posts.Queries.GetPosts
 
         public async Task<IEnumerable<PostDto>> Handle(GetPostsQuery request, CancellationToken cancellationToken)
         {
+            var user = await _context.DomainUsers.FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUser.UserId, cancellationToken);
             var postsQuery = _context.Posts.AsQueryable();
 
-            var user = await _context.DomainUsers.FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUser.UserId, cancellationToken);
             if(user != null)
-                postsQuery = postsQuery.Where(Post.AuthorFollowedBy(user.Id).Or(Post.LikedBySomeoneFollowedBy(user.Id).Or(p => p.CreatedById == user.Id)));
+                postsQuery = postsQuery.Where(Post.AuthorFollowedBy(user.Id)
+                    .Or(Post.LikedBySomeoneFollowedBy(user.Id)
+                    .Or(Post.RePostedBySomeoneFollowedBy(user.Id))
+                    .Or(p => p.CreatedById == user.Id)));
 
             var posts = await postsQuery.OrderByDescending(p => p.Created)
                 .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { userId = user?.Id ?? 0})

@@ -343,6 +343,54 @@
         }
       }
     },
+    "/posts/{postId}/re-post": {
+      "post": {
+        "tags": [
+          "RePosts"
+        ],
+        "operationId": "RePosts_CreateRePost",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RePosts"
+        ],
+        "operationId": "RePosts_RemoveRePost",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users": {
       "post": {
         "tags": [
@@ -577,6 +625,21 @@
             "type": "boolean"
           },
           "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rePostedBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            ]
+          },
+          "rePostedByMe": {
+            "type": "boolean"
+          },
+          "rePosts": {
             "type": "integer",
             "format": "int32"
           }

@@ -13,9 +13,14 @@ namespace TwitterClone.Domain.Entities
         public Guid? MediaId { get; set; }
         public Media Media { get; set; }
         public IEnumerable<Like> Likes { get; set; }
+        public IEnumerable<RePost> RePosts { get; set; }
 
         public static Expression<Func<Post,bool>> LikedBySomeoneFollowedBy(int userId) {
             return p => p.Likes.Any(l => l.CreatedBy.Followers.Any(f => f.FollowerId == userId));
+        }
+
+        public static Expression<Func<Post,bool>> RePostedBySomeoneFollowedBy(int userId) {
+            return p => p.RePosts.Any(r => r.CreatedBy.Followers.Any(f => f.FollowerId == userId));
         }
 
         public static Expression<Func<Post,bool>> AuthorFollowedBy(int userId) {
@@ -26,8 +31,16 @@ namespace TwitterClone.Domain.Entities
             return p => p.Likes.Select(l => l.CreatedBy).FirstOrDefault(u => u.Followers.Any(f => f.FollowerId == userId));
         }
 
+        public static Expression<Func<Post, User>> GetUserWhoRePostedFollowedBy(int userId) {
+            return p => p.RePosts.Select(r => r.CreatedBy).FirstOrDefault(u => u.Followers.Any(f => f.FollowerId == userId));
+        }
+
         public static Expression<Func<Post, bool>> IsLikedBy(int userId) {
             return p => p.Likes.Any(l => l.CreatedById == userId);
+        }
+
+        public static Expression<Func<Post, bool>> IsRePostedBy(int userId) {
+            return p => p.RePosts.Any(r => r.CreatedById == userId);
         }
     }
 }
