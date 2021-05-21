@@ -11,7 +11,7 @@ const AuthorizeRoute: React.FC<any> = (props) => {
 
 	const populateAuthenticationState = async () => {
 		const authenticated = await authService.isAuthenticated();
-		setState({ ready: true, authenticated });
+		setState((state) => ({ ...state, ready: true, authenticated: authenticated }));
 	};
 
 	const authenticationChanged = async () => {
@@ -20,10 +20,10 @@ const AuthorizeRoute: React.FC<any> = (props) => {
 	};
 
 	React.useEffect(() => {
-		const subscription = authService.subscribe(() => authenticationChanged());
+		// const subscription = authService.subscribe(() => authenticationChanged());
 		populateAuthenticationState();
 		return () => {
-			authService.unsubscribe(subscription);
+			// authService.unsubscribe(subscription);
 		};
 	}, []);
 

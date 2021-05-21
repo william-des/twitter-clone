@@ -129,9 +129,10 @@ export class Login extends Component<any, any> {
 		window.location.replace(redirectUrl);
 	}
 
-	navigateToReturnUrl(returnUrl) {
+	async navigateToReturnUrl(returnUrl) {
 		// It's important that we do a replace here so that we remove the callback uri with the
 		// fragment containing the tokens from the browser history.
-		window.location.replace(returnUrl);
+		const profileCreated = !!await authService.getDomainUser();
+		window.location.replace(profileCreated ? returnUrl : ApplicationPaths.CompleteRegistration);
 	}
 }

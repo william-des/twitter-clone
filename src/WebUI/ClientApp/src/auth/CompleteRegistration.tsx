@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import authService from "./AuthorizeService";
 import { CreateUserCommand, ICreateUserCommand, UsersClient } from "../core/WebApiClient";
 
-export const Register: React.FC = () => {
+export const CompleteRegistration: React.FC = () => {
 	const [state, setState] = useState<ICreateUserCommand>({ fullName: "", username: "" });
 	const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
 	const history = useHistory();
