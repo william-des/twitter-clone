@@ -4,7 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TwitterClone.Application.Posts.Queries.GetUserPosts;
 using TwitterClone.Domain.Entities;
-using static Testing;
+using static TwitterClone.Application.IntegrationTests.Testing;
 
 namespace TwitterClone.Application.IntegrationTests.Posts.Queries
 {

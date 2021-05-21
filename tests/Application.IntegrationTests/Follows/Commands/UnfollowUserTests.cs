@@ -4,7 +4,7 @@ using NUnit.Framework;
 using TwitterClone.Application.Common.Exceptions;
 using TwitterClone.Application.Follows.Commands.UnfollowUserCommand;
 using TwitterClone.Domain.Entities;
-using static Testing;
+using static TwitterClone.Application.IntegrationTests.Testing;
 
 namespace TwitterClone.Application.IntegrationTests.Follows.Commands
 {

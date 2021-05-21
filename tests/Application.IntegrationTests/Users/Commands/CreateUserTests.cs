@@ -5,7 +5,7 @@ using NUnit.Framework;
 using TwitterClone.Application.Users.Commands.CreateUser;
 using TwitterClone.Application.Common.Exceptions;
 using TwitterClone.Domain.Entities;
-using static Testing;
+using static TwitterClone.Application.IntegrationTests.Testing;
 
 namespace TwitterClone.Application.IntegrationTests.Users.Commands
 {

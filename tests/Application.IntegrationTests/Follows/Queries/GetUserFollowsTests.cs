@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TwitterClone.Application.Follows.Queries.GetUserFollows;
 using TwitterClone.Domain.Entities;
-using static Testing;
+using static TwitterClone.Application.IntegrationTests.Testing;
 
 namespace TwitterClone.Application.IntegrationTests.Follows.Queries
 {

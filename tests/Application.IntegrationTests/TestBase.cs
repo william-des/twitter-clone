@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace TwitterClone.Application.IntegrationTests
 {
-    using static Testing;
+    using static TwitterClone.Application.IntegrationTests.Testing;
 
     public class TestBase
     {
