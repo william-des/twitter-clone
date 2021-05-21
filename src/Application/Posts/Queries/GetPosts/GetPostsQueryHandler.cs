@@ -36,11 +36,13 @@ namespace TwitterClone.Application.Posts.Queries.GetPosts
                     .Or(Post.RePostedBySomeoneFollowedBy(user.Id))
                     .Or(p => p.CreatedById == user.Id)));
 
-            var posts = await postsQuery.OrderByDescending(p => p.Created)
+            if(request.BeforeId.HasValue)
+                postsQuery = postsQuery.Where(p => p.Id < request.BeforeId);
+
+            return await postsQuery.OrderByDescending(p => p.Created)
+                .Take(request.Count ?? 20)
                 .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { userId = user?.Id ?? 0})
                 .ToListAsync(cancellationToken);
-
-            return posts;
         }
     }
 }

@@ -3,11 +3,17 @@ import { IPostDto } from "../WebApiClient";
 export const ADD_POSTS = "ADD_POSTS";
 export interface AddPosts {
 	type: typeof ADD_POSTS;
-	payload: IPostDto[];
+	payload: {
+		posts: IPostDto[];
+		hasMore?: boolean;
+	};
 }
-export const addPosts = (posts: IPostDto[]) => ({
+export const addPosts = (posts: IPostDto[], hasMore?: boolean) => ({
 	type: ADD_POSTS,
-	payload: posts,
+	payload: {
+		posts,
+		hasMore,
+	},
 });
 
 export const ADD_USER_POSTS = "ADD_USER_POSTS";
@@ -22,13 +28,6 @@ export const addUserPosts = (userId: number, posts: IPostDto[]) => ({
 	type: ADD_USER_POSTS,
 	payload: { posts, userId },
 });
-
-export const SET_POSTS_LOADING = "SET_POSTS_LOADING";
-export interface SetPostsLoading {
-	type: typeof SET_POSTS_LOADING;
-	payload: boolean;
-}
-export const setPostsLoading = (loading: boolean = true) => ({ type: SET_POSTS_LOADING, payload: loading });
 
 export const ADD_RE_POST = "ADD_RE_POST";
 export interface AddRePost {
@@ -70,4 +69,4 @@ export const removeLike = (postId: number) => ({
 	payload: postId,
 });
 
-export type PostsActions = AddPosts | AddUserPosts | SetPostsLoading | AddRePost | RemoveRePost | AddLike | RemoveLike;
+export type PostsActions = AddPosts | AddUserPosts | AddRePost | RemoveRePost | AddLike | RemoveLike;

@@ -5,7 +5,6 @@ import {
 	ADD_USER_POSTS,
 	PostsActions,
 	REMOVE_RE_POST,
-	SET_POSTS_LOADING,
 } from "../actions/PostsActions";
 import { IPostDto } from "../WebApiClient";
 
@@ -16,7 +15,7 @@ export interface PostsState {
 	rePosts: { [id: number]: number };
 	liked: number[];
 	likes: { [id: number]: number };
-	loading: boolean;
+	hasMore: boolean;
 }
 
 const initialState: PostsState = {
@@ -26,7 +25,7 @@ const initialState: PostsState = {
 	rePosts: {},
 	liked: [],
 	likes: {},
-	loading: false,
+	hasMore: true,
 };
 
 export const PostsReducer = (state: PostsState = initialState, action: PostsActions): PostsState => {
@@ -35,26 +34,28 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 			return {
 				...state,
 				all: [
-					...state.all.filter((p) => !action.payload.find((updated) => updated.id == p.id)),
-					...action.payload,
+					...state.all.filter((p) => !action.payload.posts.find((updated) => updated.id == p.id)),
+					...action.payload.posts,
 				],
 				rePosted: [
 					...state.rePosted,
-					...action.payload.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe).map((p) => p.id),
+					...action.payload.posts
+						.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe)
+						.map((p) => p.id),
 				],
 				rePosts: {
 					...state.rePosts,
-					...action.payload.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.likes }), {}),
+					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.likes }), {}),
 				},
 				liked: [
 					...state.liked,
-					...action.payload.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
+					...action.payload.posts.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
 				],
 				likes: {
 					...state.likes,
-					...action.payload.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
+					...action.payload.posts.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
 				},
-				loading: false,
+				hasMore: action.payload.hasMore == undefined ? state.hasMore : action.payload.hasMore,
 			};
 		case ADD_USER_POSTS:
 			const existingPosts = (state.byUser[action.payload.userId] || []).filter(
@@ -93,8 +94,6 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 				liked: state.liked.filter((r) => r != action.payload),
 				likes: { ...state.likes, [action.payload]: state.likes[action.payload] - 1 },
 			};
-		case SET_POSTS_LOADING:
-			return { ...state, loading: action.payload };
 		default:
 			return state;
 	}

@@ -13,8 +13,8 @@ namespace TwitterClone.WebUI.Controllers
     public class PostsController : ApiControllerBase
     {
         [HttpGet]
-        public async Task<IEnumerable<Application.Posts.Queries.GetPosts.PostDto>> Get() {
-            return await Mediator.Send(new GetPostsQuery());
+        public async Task<IEnumerable<Application.Posts.Queries.GetPosts.PostDto>> Get([FromQuery] GetPostsQuery query) {
+            return await Mediator.Send(query);
         }
 
         [HttpGet("{id}")]

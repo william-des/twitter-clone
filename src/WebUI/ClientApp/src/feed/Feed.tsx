@@ -4,14 +4,15 @@ import authService from "../auth/AuthorizeService";
 import { useReduxState } from "../core/Store";
 import { PostDto, PostsClient } from "../core/WebApiClient";
 import MainContainer from "../layout/MainContainer";
-import { addPosts, setPostsLoading } from "../core/actions/PostsActions";
+import { addPosts } from "../core/actions/PostsActions";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 import LoadingIndicator from "../shared/LoadingIndicator";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Feed: React.FC = () => {
 	const state = useReduxState((state) => ({
-		loading: state.posts.loading,
+		hasMore: state.posts.hasMore,
 		posts: state.posts.all.sort((p1, p2) => p2.created.valueOf() - p1.created.valueOf()),
 	}));
 
@@ -25,11 +26,12 @@ const Feed: React.FC = () => {
 
 	const dispatch = useDispatch();
 	const loadPosts = async () => {
-		const posts = await new PostsClient().getAll();
-		dispatch(addPosts(posts));
+		const beforeIf = state.posts[state.posts.length - 1]?.id;
+		const count = 20;
+		const posts = await new PostsClient().getAll(beforeIf, count);
+		dispatch(addPosts(posts, posts.length >= count));
 	};
 	useEffect(() => {
-		dispatch(setPostsLoading());
 		loadPosts();
 	}, []);
 
@@ -39,12 +41,18 @@ const Feed: React.FC = () => {
 		<MainContainer title="Home">
 			{!!domainUser && (
 				<React.Fragment>
-					<PostForm pictureId={domainUser.pictureId} />
+					<PostForm pictureId={domainUser?.pictureId} />
 					<div className="bg-quaternary h-4 w-full border-t border-b"></div>
 				</React.Fragment>
 			)}
-			{state.posts.map(renderPost)}
-			{!!state.loading && <LoadingIndicator />}
+			<InfiniteScroll
+				dataLength={state.posts.length}
+				next={loadPosts}
+				hasMore={state.hasMore}
+				loader={<LoadingIndicator />}
+			>
+				{state.posts.map(renderPost)}
+			</InfiniteScroll>
 		</MainContainer>
 	);
 };

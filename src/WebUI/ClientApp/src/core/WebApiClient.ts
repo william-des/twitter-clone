@@ -240,7 +240,7 @@ export class LikesClient extends ClientBase implements ILikesClient {
 
 export interface IMediasClient {
     get(id: string): Promise<FileResponse>;
-    create(file: FileParameter | null | undefined): Promise<string>;
+    create(file?: FileParameter | null | undefined): Promise<string>;
 }
 
 export class MediasClient extends ClientBase implements IMediasClient {
@@ -291,7 +291,7 @@ export class MediasClient extends ClientBase implements IMediasClient {
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    create(file: FileParameter | null | undefined): Promise<string> {
+    create(file?: FileParameter | null | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/Medias";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -334,7 +334,7 @@ export class MediasClient extends ClientBase implements IMediasClient {
 }
 
 export interface IPostsClient {
-    getAll(): Promise<PostDto[]>;
+    getAll(beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto[]>;
     create(command: CreatePostCommand): Promise<number>;
     get(id: number): Promise<PostDto2>;
     getUserPosts(id: number): Promise<PostDto3[]>;
@@ -351,8 +351,12 @@ export class PostsClient extends ClientBase implements IPostsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getAll(): Promise<PostDto[]> {
-        let url_ = this.baseUrl + "/api/Posts";
+    getAll(beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto[]> {
+        let url_ = this.baseUrl + "/api/Posts?";
+        if (beforeId !== undefined && beforeId !== null)
+            url_ += "BeforeId=" + encodeURIComponent("" + beforeId) + "&";
+        if (count !== undefined && count !== null)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -603,7 +607,7 @@ export class RePostsClient extends ClientBase implements IRePostsClient {
 
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
-    get(applicationUserId: string | null | undefined): Promise<UserDto5>;
+    get(applicationUserId?: string | null | undefined): Promise<UserDto5>;
     update(command: UpdateUserCommand): Promise<void>;
     get2(id: number): Promise<UserDto4>;
     getUserProfile(username: string | null): Promise<UserProfileVM>;
@@ -660,7 +664,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    get(applicationUserId: string | null | undefined): Promise<UserDto5> {
+    get(applicationUserId?: string | null | undefined): Promise<UserDto5> {
         let url_ = this.baseUrl + "/api/Users?";
         if (applicationUserId !== undefined && applicationUserId !== null)
             url_ += "applicationUserId=" + encodeURIComponent("" + applicationUserId) + "&";

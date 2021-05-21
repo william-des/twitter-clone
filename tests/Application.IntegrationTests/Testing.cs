@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Npgsql;
 using TwitterClone.Domain.Entities;
+using System.Collections.Generic;
 
 [SetUpFixture]
 public class Testing
@@ -185,6 +186,18 @@ public class Testing
         var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
         context.Add(entity);
+
+        await context.SaveChangesAsync();
+    }
+
+    public static async Task AddRangeAsync<TEntity>(IEnumerable<TEntity> entities)
+        where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+        await context.AddRangeAsync(entities);
 
         await context.SaveChangesAsync();
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -91,6 +93,43 @@ namespace TwitterClone.Application.IntegrationTests.Posts.Queries
 
             result.Should().Contain(p => p.Id == rePostedPost.Id);
             result.Should().NotContain(p => p.Id == otherPost.Id);
+        }
+
+        [Test]
+        public async Task ShouldReturnRequestedPostsCount()
+        {
+            await RunAsDefaultDomainUserAsync();
+
+            await AddRangeAsync(new List<Post> {
+                new Post { Content = "Post 1"},
+                new Post { Content = "Post 2"},
+                new Post { Content = "Post 3"},
+            });
+
+            var query = new GetPostsQuery { Count = 2 };
+            var result = await SendAsync(query);
+
+            result.Count().Should().Be(query.Count);
+        }
+
+        
+        [Test]
+        public async Task ShouldReturnPostsBeforeRequestId()
+        {
+            await RunAsDefaultDomainUserAsync();
+
+            var post1 = new Post { Content = "Post 1"};
+            await AddAsync(post1);
+            var post2 = new Post { Content = "Post 2"};
+            await AddAsync(post2);
+            var post3 = new Post { Content = "Post 3"};
+            await AddAsync(post3);
+
+            var query = new GetPostsQuery { BeforeId = post3.Id };
+            var result = await SendAsync(query);
+
+            result.Should().Contain(p => p.Id == post1.Id);
+            result.Should().Contain(p => p.Id == post2.Id);
         }
     }
 }
