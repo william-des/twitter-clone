@@ -39,13 +39,15 @@ namespace TwitterClone.Application.IntegrationTests
 
             _configuration = builder.Build();
 
-            var startup = new Startup(_configuration);
+            var environmentMock = Mock.Of<IWebHostEnvironment>(w =>
+                w.EnvironmentName == "Test" &&
+                w.ApplicationName == "TwitterClone.WebUI");
+
+            var startup = new Startup(_configuration, environmentMock);
 
             var services = new ServiceCollection();
 
-            services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
-                w.EnvironmentName == "Development" &&
-                w.ApplicationName == "TwitterClone.WebUI"));
+            services.AddSingleton(environmentMock);
 
             services.AddLogging();
 
@@ -162,7 +164,7 @@ namespace TwitterClone.Application.IntegrationTests
 
         public static async Task ResetState()
         {
-            using (var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var conn = new NpgsqlConnection(Infrastructure.DependencyInjection.GetDbConnectionString(_configuration, false)))
             {
                 await conn.OpenAsync();
 

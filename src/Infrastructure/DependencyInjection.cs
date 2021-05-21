@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace TwitterClone.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
@@ -23,7 +24,7 @@ namespace TwitterClone.Infrastructure
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseNpgsql(
-                        configuration.GetConnectionString("DefaultConnection"),
+                        GetDbConnectionString(configuration, isDevelopment),
                         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             }
 
@@ -51,6 +52,20 @@ namespace TwitterClone.Infrastructure
             });
 
             return services;
+        }
+
+        public static string GetDbConnectionString(IConfiguration configuration, bool isDevelopment)
+        {
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            
+            if(isDevelopment || string.IsNullOrWhiteSpace(databaseUrl))
+                return configuration.GetConnectionString("DefaultConnection");
+            
+            var databaseUri = new Uri(databaseUrl);
+            var db = databaseUri.LocalPath.TrimStart('/');
+            var userInfo = databaseUri.UserInfo.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+            return $"User ID={userInfo[0]};Password={userInfo[1]};Host={databaseUri.Host};Port={databaseUri.Port};Database={db};SSL Mode=Require;Trust Server Certificate=True;";
         }
     }
 }
