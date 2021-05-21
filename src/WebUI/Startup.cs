@@ -59,7 +59,7 @@ namespace TwitterClone.WebUI
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = "ClientApp/build";
             });
 
             services.AddOpenApiDocument(configure =>
