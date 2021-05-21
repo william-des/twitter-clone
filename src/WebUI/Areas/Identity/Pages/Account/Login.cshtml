@@ -9,9 +9,8 @@
 <div class="flex w-full">
      <form id="account" method="post" class="max-w-screen-sm mx-auto flex-1 text-lg px-4">
         <h1 class="text-center font-semibold text-2xl my-3">Log in</h1>
-        <div asp-validation-summary="All" class="text-red-800 text-sm"></div>
-        <input asp-for="Input.Email" placeholder="Email" class="w-full border rounded border-gray-400 p-2 my-3" />
-        <input asp-for="Input.Password" placeholder="Password" class="w-full border rounded border-gray-400 p-2 my-3" />
+        <input asp-for="Input.Email" placeholder="Email" class="w-full border rounded border-gray-400 p-2 my-3 focus:outline-none" />
+        <input asp-for="Input.Password" placeholder="Password" class="w-full border rounded border-gray-400 p-2 my-3 focus:outline-none" />
         <div class="my-3">
             <div class="checkbox">
                 <label asp-for="Input.RememberMe">
@@ -20,6 +19,7 @@
                 </label>
             </div>
         </div>
+        <div asp-validation-summary="All" class="text-red-800 text-sm"></div>
         <button type="submit" class="text-lg text-white bg-primary rounded-full w-full py-3 font-semibold my-3">Log in</button>
         <p class="mt-4 text-center">
             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-md text-primary">Register as a new user</a>

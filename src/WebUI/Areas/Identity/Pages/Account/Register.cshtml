@@ -8,10 +8,10 @@
 <div class="flex w-full">
      <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="max-w-screen-sm mx-auto flex-1 text-lg px-4">
         <h1 class="text-center font-semibold text-2xl my-3">Create a new account</h1>
+        <input asp-for="Input.Email" placeholder="Email" class="w-full border rounded border-gray-400 p-2 my-3 focus:outline-none" />
+        <input asp-for="Input.Password" placeholder="Password" class="w-full border rounded border-gray-400 p-2 my-3 focus:outline-none" />
+        <input asp-for="Input.ConfirmPassword" placeholder="Confirm password" class="w-full border rounded border-gray-400 p-2 my-3 focus:outline-none" />
         <div asp-validation-summary="All" class="text-red-800 text-sm"></div>
-        <input asp-for="Input.Email" placeholder="Email" class="w-full border rounded border-gray-400 p-2 my-3" />
-        <input asp-for="Input.Password" placeholder="Password" class="w-full border rounded border-gray-400 p-2 my-3" />
-        <input asp-for="Input.ConfirmPassword" placeholder="Confirm password" class="w-full border rounded border-gray-400 p-2 my-3" />
         <button type="submit" class="text-lg text-white bg-primary rounded-full w-full py-3 font-semibold my-3">Register</button>
         <p class="mt-4 text-center">
             <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-md text-primary">Log in to your account</a>
