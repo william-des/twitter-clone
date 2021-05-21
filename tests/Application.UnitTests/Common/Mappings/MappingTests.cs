@@ -39,7 +39,7 @@ namespace TwitterClone.Application.UnitTests.Common.Mappings
             _mapper.Map(instance, source, destination);
         }
 
-        private object GetInstanceOf(Type type)
+        private static object GetInstanceOf(Type type)
         {
             if (type.GetConstructor(Type.EmptyTypes) != null)
                 return Activator.CreateInstance(type);
