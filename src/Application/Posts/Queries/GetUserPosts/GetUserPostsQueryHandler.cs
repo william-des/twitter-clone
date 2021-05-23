@@ -6,7 +6,9 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TwitterClone.Application.Common.Extensions;
 using TwitterClone.Application.Common.Interfaces;
+using TwitterClone.Domain.Entities;
 
 namespace TwitterClone.Application.Posts.Queries.GetUserPosts
 {
@@ -27,7 +29,7 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
         {
             var query = _context.Posts
                 .AsNoTracking()
-                .Where(p => p.CreatedById == request.UserId);
+                .Where(Post.IsRePostedBy(request.UserId).Or(p => p.CreatedById == request.UserId));
 
             if(request.BeforeId.HasValue)
                 query = query.Where(p => p.Id < request.BeforeId);
@@ -36,7 +38,7 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
 
             return await query.OrderByDescending(p => p.Created)
                 .Take(request.Count ?? 20)
-                .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { userId = user?.Id })
+                .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { userId = user?.Id ?? 0 })
                 .ToListAsync(cancellationToken);
         }
     }

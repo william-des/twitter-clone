@@ -1150,6 +1150,7 @@ export class PostDto3 implements IPostDto3 {
     likedByMe?: boolean;
     likes?: number;
     rePostedByMe?: boolean;
+    rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
 
     constructor(data?: IPostDto3) {
@@ -1171,6 +1172,7 @@ export class PostDto3 implements IPostDto3 {
             this.likedByMe = _data["likedByMe"];
             this.likes = _data["likes"];
             this.rePostedByMe = _data["rePostedByMe"];
+            this.rePostedBy = _data["rePostedBy"] ? UserDto3.fromJS(_data["rePostedBy"]) : <any>undefined;
             this.rePosts = _data["rePosts"];
         }
     }
@@ -1192,6 +1194,7 @@ export class PostDto3 implements IPostDto3 {
         data["likedByMe"] = this.likedByMe;
         data["likes"] = this.likes;
         data["rePostedByMe"] = this.rePostedByMe;
+        data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
         data["rePosts"] = this.rePosts;
         return data; 
     }
@@ -1206,6 +1209,7 @@ export interface IPostDto3 {
     likedByMe?: boolean;
     likes?: number;
     rePostedByMe?: boolean;
+    rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
 }
 

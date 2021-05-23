@@ -49,7 +49,7 @@ const UserProfile: React.FC = () => {
 
 	const loadPosts = async () => {
 		if (!userId) return;
-		const beforeId = !!posts && posts[posts.length - 1].id;
+		const beforeId = !!posts?.length ? posts[posts.length - 1].id : undefined;
 		const count = 20;
 		const otherPosts = await new PostsClient().getUserPosts(userId, beforeId, count);
 		dispatch(addUserPosts(userId, otherPosts));

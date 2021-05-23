@@ -814,6 +814,14 @@
           "rePostedByMe": {
             "type": "boolean"
           },
+          "rePostedBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto3"
+              }
+            ]
+          },
           "rePosts": {
             "type": "integer",
             "format": "int32"
