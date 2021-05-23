@@ -24,7 +24,7 @@ const PostCard: React.FC<IPostDto> = (props) => {
 
 	const onLikeClick = async () => {
 		const client = new LikesClient();
-		if (props.likedByMe) {
+		if (state.liked) {
 			await client.removeLike(props.id);
 			dispatch(removeLike(props.id));
 		} else {

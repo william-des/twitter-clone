@@ -28,10 +28,10 @@ namespace TwitterClone.WebUI.Controllers
             return await Mediator.Send(command);
         }
 
-        [HttpGet("~/users/{id}/posts")]
-        public async Task<IEnumerable<Application.Posts.Queries.GetUserPosts.PostDto>> GetUserPosts(int id)
+        [HttpGet("~/users/{userId}/posts")]
+        public async Task<IEnumerable<Application.Posts.Queries.GetUserPosts.PostDto>> GetUserPosts(int userId, int? beforeId, int? count)
         {
-            var query = new GetUserPostsQuery { Id = id };
+            var query = new GetUserPostsQuery { UserId = userId, BeforeId = beforeId, Count = count };
 
             return await Mediator.Send(query);
         }

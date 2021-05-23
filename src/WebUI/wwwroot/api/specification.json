@@ -330,7 +330,7 @@
         }
       }
     },
-    "/users/{id}/posts": {
+    "/users/{userId}/posts": {
       "get": {
         "tags": [
           "Posts"
@@ -338,7 +338,7 @@
         "operationId": "Posts_GetUserPosts",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -346,6 +346,26 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "beforeId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -783,6 +803,20 @@
           "mediaId": {
             "type": "string",
             "nullable": true
+          },
+          "likedByMe": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rePostedByMe": {
+            "type": "boolean"
+          },
+          "rePosts": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

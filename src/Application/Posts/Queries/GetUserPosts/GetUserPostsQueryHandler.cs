@@ -14,20 +14,29 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
     {
         private readonly IMapper _mapper;
         private readonly IApplicationDbContext _context;
+        private readonly ICurrentUserService _currentUser;
 
-        public GetUserPostsQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetUserPostsQueryHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserService currentUser)
         {
+            _currentUser = currentUser;
             _mapper = mapper;
             _context = context;
         }
 
         public async Task<IEnumerable<PostDto>> Handle(GetUserPostsQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Posts
+            var query = _context.Posts
                 .AsNoTracking()
-                .Where(p => p.CreatedById == request.Id)
-                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
-                .OrderByDescending(p => p.Created)
+                .Where(p => p.CreatedById == request.UserId);
+
+            if(request.BeforeId.HasValue)
+                query = query.Where(p => p.Id < request.BeforeId);
+
+            var user = await _context.DomainUsers.FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUser.UserId, cancellationToken);
+
+            return await query.OrderByDescending(p => p.Created)
+                .Take(request.Count ?? 20)
+                .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { userId = user?.Id })
                 .ToListAsync(cancellationToken);
         }
     }

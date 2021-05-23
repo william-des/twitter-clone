@@ -4,6 +4,7 @@ import {
 	ADD_RE_POST,
 	ADD_USER_POSTS,
 	PostsActions,
+	REMOVE_LIKE,
 	REMOVE_RE_POST,
 } from "../actions/PostsActions";
 import { IPostDto } from "../WebApiClient";
@@ -45,7 +46,7 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 				],
 				rePosts: {
 					...state.rePosts,
-					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.likes }), {}),
+					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.rePosts }), {}),
 				},
 				liked: [
 					...state.liked,
@@ -76,6 +77,7 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 				rePosts: { ...state.rePosts, [action.payload]: state.rePosts[action.payload] + 1 },
 			};
 		case REMOVE_RE_POST:
+			if (!state.rePosted.includes(action.payload)) return state;
 			return {
 				...state,
 				rePosted: state.rePosted.filter((r) => r != action.payload),
@@ -88,10 +90,11 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 				liked: [...state.liked, action.payload],
 				likes: { ...state.likes, [action.payload]: state.likes[action.payload] + 1 },
 			};
-		case REMOVE_RE_POST:
+		case REMOVE_LIKE:
+			if (!state.liked.includes(action.payload)) return state;
 			return {
 				...state,
-				liked: state.liked.filter((r) => r != action.payload),
+				liked: state.liked.filter((l) => l != action.payload),
 				likes: { ...state.likes, [action.payload]: state.likes[action.payload] - 1 },
 			};
 		default:

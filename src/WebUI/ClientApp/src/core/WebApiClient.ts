@@ -337,7 +337,7 @@ export interface IPostsClient {
     getAll(beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto[]>;
     create(command: CreatePostCommand): Promise<number>;
     get(id: number): Promise<PostDto2>;
-    getUserPosts(id: number): Promise<PostDto3[]>;
+    getUserPosts(userId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto3[]>;
 }
 
 export class PostsClient extends ClientBase implements IPostsClient {
@@ -474,11 +474,15 @@ export class PostsClient extends ClientBase implements IPostsClient {
         return Promise.resolve<PostDto2>(<any>null);
     }
 
-    getUserPosts(id: number): Promise<PostDto3[]> {
-        let url_ = this.baseUrl + "/users/{id}/posts";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getUserPosts(userId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto3[]> {
+        let url_ = this.baseUrl + "/users/{userId}/posts?";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        if (beforeId !== undefined && beforeId !== null)
+            url_ += "beforeId=" + encodeURIComponent("" + beforeId) + "&";
+        if (count !== undefined && count !== null)
+            url_ += "count=" + encodeURIComponent("" + count) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -1143,6 +1147,10 @@ export class PostDto3 implements IPostDto3 {
     created?: Date;
     createdBy?: UserDto3 | undefined;
     mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
 
     constructor(data?: IPostDto3) {
         if (data) {
@@ -1160,6 +1168,10 @@ export class PostDto3 implements IPostDto3 {
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto3.fromJS(_data["createdBy"]) : <any>undefined;
             this.mediaId = _data["mediaId"];
+            this.likedByMe = _data["likedByMe"];
+            this.likes = _data["likes"];
+            this.rePostedByMe = _data["rePostedByMe"];
+            this.rePosts = _data["rePosts"];
         }
     }
 
@@ -1177,6 +1189,10 @@ export class PostDto3 implements IPostDto3 {
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["mediaId"] = this.mediaId;
+        data["likedByMe"] = this.likedByMe;
+        data["likes"] = this.likes;
+        data["rePostedByMe"] = this.rePostedByMe;
+        data["rePosts"] = this.rePosts;
         return data; 
     }
 }
@@ -1187,6 +1203,10 @@ export interface IPostDto3 {
     created?: Date;
     createdBy?: UserDto3 | undefined;
     mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
 }
 
 export class UserDto3 implements IUserDto3 {
