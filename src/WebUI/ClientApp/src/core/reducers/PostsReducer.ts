@@ -68,6 +68,24 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					...state.byUser,
 					[action.payload.userId]: [...existingPosts, ...action.payload.posts],
 				},
+				rePosted: [
+					...state.rePosted,
+					...action.payload.posts
+						.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe)
+						.map((p) => p.id),
+				],
+				rePosts: {
+					...state.rePosts,
+					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.rePosts }), {}),
+				},
+				liked: [
+					...state.liked,
+					...action.payload.posts.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
+				],
+				likes: {
+					...state.likes,
+					...action.payload.posts.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
+				},
 			};
 		case ADD_RE_POST:
 			if (state.rePosted.includes(action.payload)) return state;
