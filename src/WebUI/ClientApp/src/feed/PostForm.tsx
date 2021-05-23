@@ -12,6 +12,9 @@ import ResponsiveTextArea from "../shared/ResponsiveTextArea";
 
 interface PostFormProps {
 	pictureId?: string;
+	answerToId?: number;
+	className?: string;
+	afterValidSubmit?: VoidFunction;
 }
 
 const PostForm: React.FC<PostFormProps> = (props) => {
@@ -25,11 +28,13 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		if (isContentEmpty()) return;
 
 		const client = new PostsClient();
-		const id = await client.create(new CreatePostCommand(state));
+		const id = await client.create(new CreatePostCommand({ ...state, answerToId: props.answerToId }));
 		const created = await client.get(id);
 		dispatch(addPosts([created]));
 
 		setState({ content: "", mediaId: undefined, imgBlob: undefined });
+
+		props?.afterValidSubmit();
 	};
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -47,14 +52,15 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 	const onDeleteFile = () => setState({ ...state, mediaId: undefined, imgBlob: undefined });
 
 	return (
-		<form onSubmit={onSubmit} className="p-4 flex">
+		<form onSubmit={onSubmit} className={`${props.className || ""} flex`}>
 			<UserPicture pictureId={props.pictureId} className="h-12 w-12 mr-4" />
 			<div className="flex flex-1 flex-col">
 				<ResponsiveTextArea
 					className="w-full mt-3 mb-1 text-xl outline-none"
 					name="post-content"
-					placeholder="What's happening ?"
+					placeholder={!!props.answerToId ? "Tweet your reply" : "What's happening ?"}
 					value={state.content}
+					minHeight={!!props.answerToId && 96}
 					onChange={onChange}
 				/>
 				{!!state.imgBlob && <UploadPreview img={state.imgBlob} onDeleteClick={onDeleteFile} />}
@@ -72,7 +78,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 					<PostFormButton disabled icon={faSmile} />
 					<PostFormButton disabled icon={faCalendarPlus} />
 					<Button className="p-2 px-5 ml-auto disabled:opacity-50" type="submit" disabled={isContentEmpty()}>
-						Tweet
+						{!!props.answerToId ? "Reply" : "Tweet"}
 					</Button>
 				</div>
 			</div>

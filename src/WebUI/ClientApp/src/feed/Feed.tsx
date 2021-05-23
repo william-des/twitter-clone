@@ -41,7 +41,7 @@ const Feed: React.FC = () => {
 		<MainContainer title="Home">
 			{!!domainUser && (
 				<React.Fragment>
-					<PostForm pictureId={domainUser?.pictureId} />
+					<PostForm pictureId={domainUser?.pictureId} className="p-4" />
 					<div className="bg-quaternary h-4 w-full border-t border-b"></div>
 				</React.Fragment>
 			)}

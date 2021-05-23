@@ -1,15 +1,15 @@
 import React, { createRef, useEffect } from "react";
 
-export type ResponsiveTextAreaProps = React.DetailedHTMLProps<
-	React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-	HTMLTextAreaElement
->;
+interface ResponsiveTextAreaProps
+	extends React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
+	minHeight?: number;
+}
 
 const ResponsiveTextArea: React.FC<ResponsiveTextAreaProps> = (props) => {
 	const resizeTextArea = () => {
 		if (ref.current) {
 			ref.current.style.height = "16px";
-			ref.current.style.height = ref.current.scrollHeight + "px";
+			ref.current.style.height = Math.max(ref.current.scrollHeight, props.minHeight || 16) + "px";
 		}
 	};
 

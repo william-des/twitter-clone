@@ -4,7 +4,7 @@ import React from "react";
 import Button from "./Button";
 
 export interface HeaderProps {
-	title: string;
+	title?: string;
 	subtitle?: string;
 	leftButton?: {
 		icon: IconDefinition;

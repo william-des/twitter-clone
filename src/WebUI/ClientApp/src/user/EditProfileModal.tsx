@@ -60,68 +60,60 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
 	};
 
 	return (
-		<Modal>
-			<div className="bg-white rounded-xl w-600px h-600px flex flex-col overflow-hidden">
-				<Header
-					title="Edit profile"
-					leftButton={{ icon: faTimes, onClick: props.onClose }}
-					rightButton={{ text: "Save", onClick: onSave }}
-				/>
-				<div className="flex flex-col flex-grow overflow-y-auto">
-					<UserProfileBanner bannerId={state.bannerId}>
-						<PictureButton onClick={onBannerClick} />
-					</UserProfileBanner>
-					<UserPicture
-						pictureId={state.pictureId}
-						className="h-36 w-36 profile-picture border-4 ml-4 border-white z-10 flex-shrink-0"
-					>
-						<PictureButton onClick={onPictureClick} />
-					</UserPicture>
-					<div className="p-4">
-						<Input
-							name="fullName"
-							label="Name"
-							value={state.fullName}
-							onChange={handleChange}
-							maxLength={50}
-						/>
-						<Input
-							name="description"
-							label="Bio"
-							value={state.description}
-							onChange={handleChange}
-							maxLength={160}
-						/>
-						<Input
-							name="location"
-							label="Location"
-							value={state.location}
-							onChange={handleChange}
-							maxLength={30}
-						/>
-						<Input
-							name="website"
-							label="Website"
-							value={state.website}
-							onChange={handleChange}
-							maxLength={100}
-						/>
-					</div>
-					<input
-						type="file"
-						className="hidden"
-						accept=".png,.jpg,.jpeg,image/jpeg,image/png"
-						ref={bannerInputRef}
-						onChange={(e) => onFileChange("bannerId", e)}
+		<Modal className="h-600px overflow-hidden">
+			<Header
+				title="Edit profile"
+				leftButton={{ icon: faTimes, onClick: props.onClose }}
+				rightButton={{ text: "Save", onClick: onSave }}
+			/>
+			<div className="flex flex-col flex-grow overflow-y-auto">
+				<UserProfileBanner bannerId={state.bannerId}>
+					<PictureButton onClick={onBannerClick} />
+				</UserProfileBanner>
+				<UserPicture
+					pictureId={state.pictureId}
+					className="h-36 w-36 profile-picture border-4 ml-4 border-white z-10 flex-shrink-0"
+				>
+					<PictureButton onClick={onPictureClick} />
+				</UserPicture>
+				<div className="p-4">
+					<Input name="fullName" label="Name" value={state.fullName} onChange={handleChange} maxLength={50} />
+					<Input
+						name="description"
+						label="Bio"
+						value={state.description}
+						onChange={handleChange}
+						maxLength={160}
 					/>
-					<input
-						type="file"
-						className="hidden"
-						accept=".png,.jpg,.jpeg,image/jpeg,image/png"
-						ref={pictureInputRef}
-						onChange={(e) => onFileChange("pictureId", e)}
+					<Input
+						name="location"
+						label="Location"
+						value={state.location}
+						onChange={handleChange}
+						maxLength={30}
+					/>
+					<Input
+						name="website"
+						label="Website"
+						value={state.website}
+						onChange={handleChange}
+						maxLength={100}
 					/>
 				</div>
+				<input
+					type="file"
+					className="hidden"
+					accept=".png,.jpg,.jpeg,image/jpeg,image/png"
+					ref={bannerInputRef}
+					onChange={(e) => onFileChange("bannerId", e)}
+				/>
+				<input
+					type="file"
+					className="hidden"
+					accept=".png,.jpg,.jpeg,image/jpeg,image/png"
+					ref={pictureInputRef}
+					onChange={(e) => onFileChange("pictureId", e)}
+				/>
 			</div>
 		</Modal>
 	);

@@ -12,6 +12,9 @@ namespace TwitterClone.Domain.Entities
         public string Content { get; set; }
         public Guid? MediaId { get; set; }
         public Media Media { get; set; }
+        public Post AnswerTo { get; set; }
+        public int? AnswerToId { get; set; }
+        public IEnumerable<Post> Answers { get; set; }
         public IEnumerable<Like> Likes { get; set; }
         public IEnumerable<RePost> RePosts { get; set; }
 

@@ -1104,6 +1104,7 @@ export interface IUserDto2 {
 export class CreatePostCommand implements ICreatePostCommand {
     content?: string | undefined;
     mediaId?: string | undefined;
+    answerToId?: number | undefined;
 
     constructor(data?: ICreatePostCommand) {
         if (data) {
@@ -1118,6 +1119,7 @@ export class CreatePostCommand implements ICreatePostCommand {
         if (_data) {
             this.content = _data["content"];
             this.mediaId = _data["mediaId"];
+            this.answerToId = _data["answerToId"];
         }
     }
 
@@ -1132,6 +1134,7 @@ export class CreatePostCommand implements ICreatePostCommand {
         data = typeof data === 'object' ? data : {};
         data["content"] = this.content;
         data["mediaId"] = this.mediaId;
+        data["answerToId"] = this.answerToId;
         return data; 
     }
 }
@@ -1139,6 +1142,7 @@ export class CreatePostCommand implements ICreatePostCommand {
 export interface ICreatePostCommand {
     content?: string | undefined;
     mediaId?: string | undefined;
+    answerToId?: number | undefined;
 }
 
 export class PostDto3 implements IPostDto3 {

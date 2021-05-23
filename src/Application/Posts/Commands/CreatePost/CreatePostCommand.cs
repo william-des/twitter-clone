@@ -7,5 +7,6 @@ namespace TwitterClone.Application.Posts.Commands.CreatePost
     {
         public string Content { get; set; }
         public Guid? MediaId { get; set; }
+        public int? AnswerToId { get; set; }
     }
 }

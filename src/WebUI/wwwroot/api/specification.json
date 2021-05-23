@@ -773,6 +773,11 @@
             "type": "string",
             "format": "guid",
             "nullable": true
+          },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },
