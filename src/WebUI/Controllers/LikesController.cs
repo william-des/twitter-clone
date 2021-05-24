@@ -7,7 +7,7 @@ namespace TwitterClone.WebUI.Controllers
 {
     public class LikesController : ApiControllerBase
     {
-        [HttpPost("~/posts/{postId}/like")]
+        [HttpPost("~/api/posts/{postId}/like")]
         public async Task CreateLike(int postId)
         {
             var command = new CreateLikeCommand { PostId = postId };
@@ -15,7 +15,7 @@ namespace TwitterClone.WebUI.Controllers
             await Mediator.Send(command);
         }
 
-        [HttpDelete("~/posts/{postId}/like")]
+        [HttpDelete("~/api/posts/{postId}/like")]
         public async Task RemoveLike(int postId)
         {
             var command = new RemoveLikeCommand { PostId = postId };

@@ -28,7 +28,7 @@ namespace TwitterClone.WebUI.Controllers
             return await Mediator.Send(command);
         }
 
-        [HttpGet("~/users/{userId}/posts")]
+        [HttpGet("~/api/users/{userId}/posts")]
         public async Task<IEnumerable<Application.Posts.Queries.GetUserPosts.PostDto>> GetUserPosts(int userId, int? beforeId, int? count)
         {
             var query = new GetUserPostsQuery { UserId = userId, BeforeId = beforeId, Count = count };

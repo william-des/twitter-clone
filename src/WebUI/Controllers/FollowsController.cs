@@ -8,7 +8,7 @@ namespace TwitterClone.WebUI.Controllers
 {
     public class FollowsController : ApiControllerBase
     {
-        [HttpGet("~/users/{userId}/follows")]
+        [HttpGet("~/api/users/{userId}/follows")]
         public async Task<FollowsVM> GetUserFollows(int userId)
         {
             var query = new GetUserFollowsQuery { UserId = userId };
@@ -16,7 +16,7 @@ namespace TwitterClone.WebUI.Controllers
             return await Mediator.Send(query);
         }
 
-        [HttpPost("~/users/{userId}/follow")]
+        [HttpPost("~/api/users/{userId}/follow")]
         public async Task<ActionResult> FollowUser(int userId)
         {
             var command = new FollowUserCommand { UserId = userId };
@@ -26,7 +26,7 @@ namespace TwitterClone.WebUI.Controllers
             return Ok();
         }
 
-        [HttpPost("~/users/{userId}/unfollow")]
+        [HttpPost("~/api/users/{userId}/unfollow")]
         public async Task<ActionResult> UnfollowUser(int userId)
         {
             var command = new UnfollowUserCommand { UserId = userId };
