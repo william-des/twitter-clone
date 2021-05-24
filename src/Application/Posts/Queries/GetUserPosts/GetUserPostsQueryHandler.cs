@@ -29,7 +29,7 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
         {
             var query = _context.Posts
                 .AsNoTracking()
-                .Where(p => !!p.AnswerToId.HasValue)
+                .Where(p => !p.AnswerToId.HasValue)
                 .Where(Post.IsRePostedBy(request.UserId).Or(p => p.CreatedById == request.UserId));
 
             if(request.BeforeId.HasValue)

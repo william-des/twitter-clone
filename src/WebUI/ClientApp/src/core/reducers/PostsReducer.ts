@@ -16,6 +16,7 @@ export interface PostsState {
 	rePosts: { [id: number]: number };
 	liked: number[];
 	likes: { [id: number]: number };
+	answers: { [id: number]: number };
 	hasMore: boolean;
 }
 
@@ -26,8 +27,25 @@ const initialState: PostsState = {
 	rePosts: {},
 	liked: [],
 	likes: {},
+	answers: {},
 	hasMore: true,
 };
+
+const updatedCountByPost = (state: PostsState, newPosts: IPostDto[], property: keyof IPostDto) => ({
+	...state[property],
+	...newPosts.reduce((countByPost, post) => ({ ...countByPost, [post.id]: post[property] }), {}),
+});
+
+const updatedPostsInformations = (state: PostsState, newPosts: IPostDto[]) => ({
+	rePosted: [
+		...state.rePosted,
+		...newPosts.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe).map((p) => p.id),
+	],
+	liked: [...state.liked, ...newPosts.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id)],
+	rePosts: updatedCountByPost(state, newPosts, "rePosts"),
+	likes: updatedCountByPost(state, newPosts, "likes"),
+	answers: updatedCountByPost(state, newPosts, "answers"),
+});
 
 export const PostsReducer = (state: PostsState = initialState, action: PostsActions): PostsState => {
 	switch (action.type) {
@@ -38,25 +56,8 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					...state.all.filter((p) => !action.payload.posts.find((updated) => updated.id == p.id)),
 					...action.payload.posts,
 				],
-				rePosted: [
-					...state.rePosted,
-					...action.payload.posts
-						.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe)
-						.map((p) => p.id),
-				],
-				rePosts: {
-					...state.rePosts,
-					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.rePosts }), {}),
-				},
-				liked: [
-					...state.liked,
-					...action.payload.posts.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
-				],
-				likes: {
-					...state.likes,
-					...action.payload.posts.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
-				},
 				hasMore: action.payload.hasMore == undefined ? state.hasMore : action.payload.hasMore,
+				...updatedPostsInformations(state, action.payload.posts),
 			};
 		case ADD_USER_POSTS:
 			const existingPosts = (state.byUser[action.payload.userId] || []).filter(
@@ -68,24 +69,7 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 					...state.byUser,
 					[action.payload.userId]: [...existingPosts, ...action.payload.posts],
 				},
-				rePosted: [
-					...state.rePosted,
-					...action.payload.posts
-						.filter((p) => !state.rePosted.includes(p.id) && p.rePostedByMe)
-						.map((p) => p.id),
-				],
-				rePosts: {
-					...state.rePosts,
-					...action.payload.posts.reduce((rePosts, post) => ({ ...rePosts, [post.id]: post.rePosts }), {}),
-				},
-				liked: [
-					...state.liked,
-					...action.payload.posts.filter((p) => !state.liked.includes(p.id) && p.likedByMe).map((p) => p.id),
-				],
-				likes: {
-					...state.likes,
-					...action.payload.posts.reduce((likes, post) => ({ ...likes, [post.id]: post.likes }), {}),
-				},
+				...updatedPostsInformations(state, action.payload.posts),
 			};
 		case ADD_RE_POST:
 			if (state.rePosted.includes(action.payload)) return state;

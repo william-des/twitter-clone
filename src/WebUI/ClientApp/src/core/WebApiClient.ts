@@ -889,6 +889,7 @@ export class PostDto implements IPostDto {
     rePostedBy?: UserDto | undefined;
     rePostedByMe?: boolean;
     rePosts?: number;
+    answers?: number;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -912,6 +913,7 @@ export class PostDto implements IPostDto {
             this.rePostedBy = _data["rePostedBy"] ? UserDto.fromJS(_data["rePostedBy"]) : <any>undefined;
             this.rePostedByMe = _data["rePostedByMe"];
             this.rePosts = _data["rePosts"];
+            this.answers = _data["answers"];
         }
     }
 
@@ -935,6 +937,7 @@ export class PostDto implements IPostDto {
         data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
         data["rePostedByMe"] = this.rePostedByMe;
         data["rePosts"] = this.rePosts;
+        data["answers"] = this.answers;
         return data; 
     }
 }
@@ -951,6 +954,7 @@ export interface IPostDto {
     rePostedBy?: UserDto | undefined;
     rePostedByMe?: boolean;
     rePosts?: number;
+    answers?: number;
 }
 
 export class UserDto implements IUserDto {
@@ -1156,6 +1160,7 @@ export class PostDto3 implements IPostDto3 {
     rePostedByMe?: boolean;
     rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
+    answers?: number;
 
     constructor(data?: IPostDto3) {
         if (data) {
@@ -1178,6 +1183,7 @@ export class PostDto3 implements IPostDto3 {
             this.rePostedByMe = _data["rePostedByMe"];
             this.rePostedBy = _data["rePostedBy"] ? UserDto3.fromJS(_data["rePostedBy"]) : <any>undefined;
             this.rePosts = _data["rePosts"];
+            this.answers = _data["answers"];
         }
     }
 
@@ -1200,6 +1206,7 @@ export class PostDto3 implements IPostDto3 {
         data["rePostedByMe"] = this.rePostedByMe;
         data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
         data["rePosts"] = this.rePosts;
+        data["answers"] = this.answers;
         return data; 
     }
 }
@@ -1215,6 +1222,7 @@ export interface IPostDto3 {
     rePostedByMe?: boolean;
     rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
+    answers?: number;
 }
 
 export class UserDto3 implements IUserDto3 {

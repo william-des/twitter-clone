@@ -18,6 +18,7 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
         public bool RePostedByMe { get; set; }
         public UserDto RePostedBy { get; set; }
         public int RePosts { get; set; }
+        public int Answers { get; set; }
 
         public void Mapping(Profile profile) {
             int userId = 0;
@@ -27,7 +28,8 @@ namespace TwitterClone.Application.Posts.Queries.GetUserPosts
                 .ForMember(dto => dto.Likes, opt => opt.MapFrom(p => p.Likes.Count()))
                 .ForMember(dto => dto.RePostedByMe, opt => opt.MapFrom(Post.IsRePostedBy(userId)))
                 .ForMember(dto => dto.RePostedBy, opt => opt.MapFrom(p => p.RePosts.Select(p => p.CreatedBy).FirstOrDefault(p => p.Id == userId)))
-                .ForMember(dto => dto.RePosts, opt => opt.MapFrom(p => p.RePosts.Count()));
+                .ForMember(dto => dto.RePosts, opt => opt.MapFrom(p => p.RePosts.Count()))
+                .ForMember(dto => dto.Answers, opt => opt.MapFrom(p => p.Answers.Count()));
         }
     }
 }

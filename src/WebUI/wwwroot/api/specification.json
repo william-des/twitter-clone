@@ -684,6 +684,10 @@
           "rePosts": {
             "type": "integer",
             "format": "int32"
+          },
+          "answers": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -828,6 +832,10 @@
             ]
           },
           "rePosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answers": {
             "type": "integer",
             "format": "int32"
           }

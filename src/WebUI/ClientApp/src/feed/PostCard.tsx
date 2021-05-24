@@ -14,6 +14,7 @@ const PostCard: React.FC<IPostDto> = (props) => {
 	const dispatch = useDispatch();
 
 	const state = useReduxState((state) => ({
+		answers: state.posts.answers[props.id],
 		rePosted: state.posts.rePosted.includes(props.id),
 		rePosts: state.posts.rePosts[props.id],
 		liked: state.posts.liked.includes(props.id),
@@ -50,7 +51,12 @@ const PostCard: React.FC<IPostDto> = (props) => {
 			<FollowerActivity {...props} />
 			<Post post={props}>
 				<div className="flex text-gray-500 font-light w-full text-md">
-					<PostCardButton icon={faComment} color="primary" onClick={() => setShowAnswerModal(true)} />
+					<PostCardButton
+						icon={faComment}
+						value={state.answers}
+						color="primary"
+						onClick={() => setShowAnswerModal(true)}
+					/>
 					<PostCardButton
 						icon={faRetweet}
 						color="green-400"
