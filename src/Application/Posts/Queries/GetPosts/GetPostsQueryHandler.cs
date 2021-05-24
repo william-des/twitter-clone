@@ -28,7 +28,7 @@ namespace TwitterClone.Application.Posts.Queries.GetPosts
         public async Task<IEnumerable<PostDto>> Handle(GetPostsQuery request, CancellationToken cancellationToken)
         {
             var user = await _context.DomainUsers.FirstOrDefaultAsync(u => u.ApplicationUserId == _currentUser.UserId, cancellationToken);
-            var postsQuery = _context.Posts.AsQueryable();
+            var postsQuery = _context.Posts.AsNoTracking().Where(p => !p.AnswerToId.HasValue);
 
             if(user != null)
                 postsQuery = postsQuery.Where(Post.AuthorFollowedBy(user.Id)
