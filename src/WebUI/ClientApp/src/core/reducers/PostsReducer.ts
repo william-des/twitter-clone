@@ -1,6 +1,8 @@
 import {
 	ADD_LIKE,
+	ADD_NEW_POST,
 	ADD_POSTS,
+	ADD_POST_ANSWERS,
 	ADD_RE_POST,
 	ADD_USER_POSTS,
 	PostsActions,
@@ -10,25 +12,27 @@ import {
 import { IPostDto } from "../WebApiClient";
 
 export interface PostsState {
-	all: IPostDto[];
+	all: { [id: number]: IPostDto };
 	byUser: { [id: number]: IPostDto[] };
 	rePosted: number[];
 	rePosts: { [id: number]: number };
 	liked: number[];
 	likes: { [id: number]: number };
 	answers: { [id: number]: number };
-	hasMore: boolean;
+	answersIds: { [id: number]: number[] };
+	feed: number[];
 }
 
 const initialState: PostsState = {
-	all: [],
+	all: {},
 	byUser: {},
 	rePosted: [],
 	rePosts: {},
 	liked: [],
 	likes: {},
 	answers: {},
-	hasMore: true,
+	answersIds: {},
+	feed: [],
 };
 
 const updatedCountByPost = (state: PostsState, newPosts: IPostDto[], property: keyof IPostDto) => ({
@@ -52,12 +56,30 @@ export const PostsReducer = (state: PostsState = initialState, action: PostsActi
 		case ADD_POSTS:
 			return {
 				...state,
-				all: [
-					...state.all.filter((p) => !action.payload.posts.find((updated) => updated.id == p.id)),
-					...action.payload.posts,
-				],
-				hasMore: action.payload.hasMore == undefined ? state.hasMore : action.payload.hasMore,
+				all: {
+					...state.all,
+					...action.payload.posts.reduce((posts, post) => ({ ...posts, [post.id]: post }), {}),
+				},
+				feed: !!action.payload.inFeed ? [...state.feed, ...action.payload.posts.map(p => p.id)] : state.feed,
 				...updatedPostsInformations(state, action.payload.posts),
+			};
+		case ADD_NEW_POST:
+			const newState = { ...state, all: { ...state.all, [action.payload.id]: action.payload } };
+
+			return !!action.payload.answerToId ? ({
+				...newState,
+				answersIds: { ...newState.answersIds, [action.payload.answerToId]: [...(newState.answersIds[action.payload.answerToId] || []), action.payload.id] },
+				answers: { ...newState.answers, [action.payload.answerToId]: (newState.answers[action.payload.answerToId] || 0) + 1 }
+			}) : ({ ...newState, feed: [...newState.feed, action.payload.id] })
+		case ADD_POST_ANSWERS:
+			return {
+				...state,
+				all: {
+					...state.all,
+					...action.payload.answers.reduce((posts, post) => ({ ...posts, [post.id]: post }), {}),
+				},
+				answersIds: { ...state.answersIds, [action.payload.postId]: [...(state.answersIds[action.payload.postId] || []), ...action.payload.answers.map(a => a.id)] },
+				...updatedPostsInformations(state, action.payload.answers),
 			};
 		case ADD_USER_POSTS:
 			const existingPosts = (state.byUser[action.payload.userId] || []).filter(

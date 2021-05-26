@@ -12,6 +12,7 @@ import authService from "./auth/AuthorizeService";
 import { FollowsClient } from "./core/WebApiClient";
 import { setFollows } from "./core/actions/FollowsActions";
 import AuthorizeRoute from "./auth/AuthorizeRoute";
+import PostAnswers from "./feed/PostAnswers";
 
 const ApplicationRoutes: React.FC = () => {
 	const dispatch = useDispatch();
@@ -34,7 +35,8 @@ const ApplicationRoutes: React.FC = () => {
 	return (
 		<Layout>
 			<Route exact path="/" component={Feed} />
-			<Route path="/:username" component={UserProfile} />
+			<Route path="/status/:id" component={PostAnswers} />
+			<Route path="/:username" exact component={UserProfile} />
 		</Layout>
 	);
 };

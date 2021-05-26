@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/users/{userId}/follows": {
+    "/api/users/{userId}/follows": {
       "get": {
         "tags": [
           "Follows"
@@ -38,7 +38,7 @@
         }
       }
     },
-    "/users/{userId}/follow": {
+    "/api/users/{userId}/follow": {
       "post": {
         "tags": [
           "Follows"
@@ -71,7 +71,7 @@
         }
       }
     },
-    "/users/{userId}/unfollow": {
+    "/api/users/{userId}/unfollow": {
       "post": {
         "tags": [
           "Follows"
@@ -104,7 +104,7 @@
         }
       }
     },
-    "/posts/{postId}/like": {
+    "/api/posts/{postId}/like": {
       "post": {
         "tags": [
           "Likes"
@@ -330,7 +330,7 @@
         }
       }
     },
-    "/users/{userId}/posts": {
+    "/api/users/{userId}/posts": {
       "get": {
         "tags": [
           "Posts"
@@ -385,7 +385,62 @@
         }
       }
     },
-    "/posts/{postId}/re-post": {
+    "/api/Posts/{postId}/answers": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "operationId": "Posts_GetPostAnswers",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "beforeId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostDto4"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/posts/{postId}/re-post": {
       "post": {
         "tags": [
           "RePosts"
@@ -492,7 +547,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto5"
+                  "$ref": "#/components/schemas/UserDto6"
                 }
               }
             }
@@ -557,7 +612,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto4"
+                  "$ref": "#/components/schemas/UserDto5"
                 }
               }
             }
@@ -634,6 +689,11 @@
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "content": {
             "type": "string",
@@ -721,6 +781,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "content": {
             "type": "string",
             "nullable": true
@@ -740,6 +805,24 @@
           "mediaId": {
             "type": "string",
             "nullable": true
+          },
+          "likedByMe": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rePostedByMe": {
+            "type": "boolean"
+          },
+          "rePosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answers": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -793,6 +876,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "content": {
             "type": "string",
             "nullable": true
@@ -823,14 +911,6 @@
           "rePostedByMe": {
             "type": "boolean"
           },
-          "rePostedBy": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/UserDto3"
-              }
-            ]
-          },
           "rePosts": {
             "type": "integer",
             "format": "int32"
@@ -842,6 +922,81 @@
         }
       },
       "UserDto3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "pictureId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PostDto4": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto4"
+              }
+            ]
+          },
+          "mediaId": {
+            "type": "string",
+            "nullable": true
+          },
+          "likedByMe": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rePostedByMe": {
+            "type": "boolean"
+          },
+          "rePosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answers": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UserDto4": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -881,7 +1036,7 @@
           }
         }
       },
-      "UserDto4": {
+      "UserDto5": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -899,7 +1054,7 @@
           }
         }
       },
-      "UserDto5": {
+      "UserDto6": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

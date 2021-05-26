@@ -9,6 +9,7 @@ interface PostProps {
 	post: IPostDto;
 	children?: React.ReactNode;
 	showAnswerLine?: boolean;
+	large?: boolean;
 }
 
 const Post: React.FC<PostProps> = (props) => {
@@ -19,13 +20,13 @@ const Post: React.FC<PostProps> = (props) => {
 				{!!props.showAnswerLine && <div className="flex-grow w-2px bg-gray-400 mt-1"></div>}
 			</div>
 			<div className="flex flex-1 flex-col">
-				<div className="flex">
+				<div className={`flex ${!!props.large && "flex-col leading-tight"}`}>
 					<h2 className="font-semibold mr-1 hover:underline">
 						<NavLink to={`/${props.post.createdBy.username}`}>{props.post.createdBy.fullName}</NavLink>
 					</h2>
 					<span className="text-gray-500 font-light">
-						@{props.post.createdBy.username} ·{" "}
-						<ReactTimeAgo date={props.post.created} timeStyle="twitter" />
+						@{props.post.createdBy.username} 
+						{props.large != true && <React.Fragment>·{" "}<ReactTimeAgo date={props.post.created} timeStyle="twitter" /></React.Fragment>}
 					</span>
 				</div>
 				<p className="whitespace-pre-line mb-1">

@@ -3,7 +3,7 @@ import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { CreatePostCommand, MediasClient, PostsClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addPosts } from "../core/actions/PostsActions";
+import { addNewPost, addPosts } from "../core/actions/PostsActions";
 import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
 import PostFormButton from "./PostFormButton";
@@ -30,11 +30,11 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 		const client = new PostsClient();
 		const id = await client.create(new CreatePostCommand({ ...state, answerToId: props.answerToId }));
 		const created = await client.get(id);
-		dispatch(addPosts([created]));
+		dispatch(addNewPost(created));
 
 		setState({ content: "", mediaId: undefined, imgBlob: undefined });
 
-		props?.afterValidSubmit();
+		props.afterValidSubmit?.();
 	};
 
 	const fileInputRef = useRef<HTMLInputElement>(null);

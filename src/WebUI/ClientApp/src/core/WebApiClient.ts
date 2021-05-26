@@ -38,7 +38,7 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
     }
 
     getUserFollows(userId: number): Promise<FollowsVM> {
-        let url_ = this.baseUrl + "/users/{userId}/follows";
+        let url_ = this.baseUrl + "/api/users/{userId}/follows";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -77,7 +77,7 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
     }
 
     followUser(userId: number): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/users/{userId}/follow";
+        let url_ = this.baseUrl + "/api/users/{userId}/follow";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -114,7 +114,7 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
     }
 
     unfollowUser(userId: number): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/users/{userId}/unfollow";
+        let url_ = this.baseUrl + "/api/users/{userId}/unfollow";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -168,7 +168,7 @@ export class LikesClient extends ClientBase implements ILikesClient {
     }
 
     createLike(postId: number): Promise<void> {
-        let url_ = this.baseUrl + "/posts/{postId}/like";
+        let url_ = this.baseUrl + "/api/posts/{postId}/like";
         if (postId === undefined || postId === null)
             throw new Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -203,7 +203,7 @@ export class LikesClient extends ClientBase implements ILikesClient {
     }
 
     removeLike(postId: number): Promise<void> {
-        let url_ = this.baseUrl + "/posts/{postId}/like";
+        let url_ = this.baseUrl + "/api/posts/{postId}/like";
         if (postId === undefined || postId === null)
             throw new Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -338,6 +338,7 @@ export interface IPostsClient {
     create(command: CreatePostCommand): Promise<number>;
     get(id: number): Promise<PostDto2>;
     getUserPosts(userId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto3[]>;
+    getPostAnswers(postId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto4[]>;
 }
 
 export class PostsClient extends ClientBase implements IPostsClient {
@@ -475,7 +476,7 @@ export class PostsClient extends ClientBase implements IPostsClient {
     }
 
     getUserPosts(userId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto3[]> {
-        let url_ = this.baseUrl + "/users/{userId}/posts?";
+        let url_ = this.baseUrl + "/api/users/{userId}/posts?";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -520,6 +521,53 @@ export class PostsClient extends ClientBase implements IPostsClient {
         }
         return Promise.resolve<PostDto3[]>(<any>null);
     }
+
+    getPostAnswers(postId: number, beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto4[]> {
+        let url_ = this.baseUrl + "/api/Posts/{postId}/answers?";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+        if (beforeId !== undefined && beforeId !== null)
+            url_ += "beforeId=" + encodeURIComponent("" + beforeId) + "&";
+        if (count !== undefined && count !== null)
+            url_ += "count=" + encodeURIComponent("" + count) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPostAnswers(_response);
+        });
+    }
+
+    protected processGetPostAnswers(response: Response): Promise<PostDto4[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PostDto4.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PostDto4[]>(<any>null);
+    }
 }
 
 export interface IRePostsClient {
@@ -539,7 +587,7 @@ export class RePostsClient extends ClientBase implements IRePostsClient {
     }
 
     createRePost(postId: number): Promise<void> {
-        let url_ = this.baseUrl + "/posts/{postId}/re-post";
+        let url_ = this.baseUrl + "/api/posts/{postId}/re-post";
         if (postId === undefined || postId === null)
             throw new Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -574,7 +622,7 @@ export class RePostsClient extends ClientBase implements IRePostsClient {
     }
 
     removeRePost(postId: number): Promise<void> {
-        let url_ = this.baseUrl + "/posts/{postId}/re-post";
+        let url_ = this.baseUrl + "/api/posts/{postId}/re-post";
         if (postId === undefined || postId === null)
             throw new Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -611,9 +659,9 @@ export class RePostsClient extends ClientBase implements IRePostsClient {
 
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
-    get(applicationUserId?: string | null | undefined): Promise<UserDto5>;
+    get(applicationUserId?: string | null | undefined): Promise<UserDto6>;
     update(command: UpdateUserCommand): Promise<void>;
-    get2(id: number): Promise<UserDto4>;
+    get2(id: number): Promise<UserDto5>;
     getUserProfile(username: string | null): Promise<UserProfileVM>;
 }
 
@@ -668,7 +716,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    get(applicationUserId?: string | null | undefined): Promise<UserDto5> {
+    get(applicationUserId?: string | null | undefined): Promise<UserDto6> {
         let url_ = this.baseUrl + "/api/Users?";
         if (applicationUserId !== undefined && applicationUserId !== null)
             url_ += "applicationUserId=" + encodeURIComponent("" + applicationUserId) + "&";
@@ -688,14 +736,14 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UserDto5> {
+    protected processGet(response: Response): Promise<UserDto6> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto5.fromJS(resultData200);
+            result200 = UserDto6.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -703,7 +751,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto5>(<any>null);
+        return Promise.resolve<UserDto6>(<any>null);
     }
 
     update(command: UpdateUserCommand): Promise<void> {
@@ -742,7 +790,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<void>(<any>null);
     }
 
-    get2(id: number): Promise<UserDto4> {
+    get2(id: number): Promise<UserDto5> {
         let url_ = this.baseUrl + "/api/Users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -763,14 +811,14 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet2(response: Response): Promise<UserDto4> {
+    protected processGet2(response: Response): Promise<UserDto5> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto4.fromJS(resultData200);
+            result200 = UserDto5.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -778,7 +826,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto4>(<any>null);
+        return Promise.resolve<UserDto5>(<any>null);
     }
 
     getUserProfile(username: string | null): Promise<UserProfileVM> {
@@ -879,6 +927,7 @@ export interface IFollowsVM {
 
 export class PostDto implements IPostDto {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto | undefined;
@@ -903,6 +952,7 @@ export class PostDto implements IPostDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.answerToId = _data["answerToId"];
             this.content = _data["content"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
@@ -927,6 +977,7 @@ export class PostDto implements IPostDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["answerToId"] = this.answerToId;
         data["content"] = this.content;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
@@ -944,6 +995,7 @@ export class PostDto implements IPostDto {
 
 export interface IPostDto {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto | undefined;
@@ -1007,10 +1059,16 @@ export interface IUserDto {
 
 export class PostDto2 implements IPostDto2 {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
     mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
 
     constructor(data?: IPostDto2) {
         if (data) {
@@ -1024,10 +1082,16 @@ export class PostDto2 implements IPostDto2 {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.answerToId = _data["answerToId"];
             this.content = _data["content"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto2.fromJS(_data["createdBy"]) : <any>undefined;
             this.mediaId = _data["mediaId"];
+            this.likedByMe = _data["likedByMe"];
+            this.likes = _data["likes"];
+            this.rePostedByMe = _data["rePostedByMe"];
+            this.rePosts = _data["rePosts"];
+            this.answers = _data["answers"];
         }
     }
 
@@ -1041,20 +1105,32 @@ export class PostDto2 implements IPostDto2 {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["answerToId"] = this.answerToId;
         data["content"] = this.content;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["mediaId"] = this.mediaId;
+        data["likedByMe"] = this.likedByMe;
+        data["likes"] = this.likes;
+        data["rePostedByMe"] = this.rePostedByMe;
+        data["rePosts"] = this.rePosts;
+        data["answers"] = this.answers;
         return data; 
     }
 }
 
 export interface IPostDto2 {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
     mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
 }
 
 export class UserDto2 implements IUserDto2 {
@@ -1151,6 +1227,7 @@ export interface ICreatePostCommand {
 
 export class PostDto3 implements IPostDto3 {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto3 | undefined;
@@ -1158,7 +1235,6 @@ export class PostDto3 implements IPostDto3 {
     likedByMe?: boolean;
     likes?: number;
     rePostedByMe?: boolean;
-    rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
     answers?: number;
 
@@ -1174,6 +1250,7 @@ export class PostDto3 implements IPostDto3 {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.answerToId = _data["answerToId"];
             this.content = _data["content"];
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto3.fromJS(_data["createdBy"]) : <any>undefined;
@@ -1181,7 +1258,6 @@ export class PostDto3 implements IPostDto3 {
             this.likedByMe = _data["likedByMe"];
             this.likes = _data["likes"];
             this.rePostedByMe = _data["rePostedByMe"];
-            this.rePostedBy = _data["rePostedBy"] ? UserDto3.fromJS(_data["rePostedBy"]) : <any>undefined;
             this.rePosts = _data["rePosts"];
             this.answers = _data["answers"];
         }
@@ -1197,6 +1273,7 @@ export class PostDto3 implements IPostDto3 {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["answerToId"] = this.answerToId;
         data["content"] = this.content;
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
@@ -1204,7 +1281,6 @@ export class PostDto3 implements IPostDto3 {
         data["likedByMe"] = this.likedByMe;
         data["likes"] = this.likes;
         data["rePostedByMe"] = this.rePostedByMe;
-        data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
         data["rePosts"] = this.rePosts;
         data["answers"] = this.answers;
         return data; 
@@ -1213,6 +1289,7 @@ export class PostDto3 implements IPostDto3 {
 
 export interface IPostDto3 {
     id?: number;
+    answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto3 | undefined;
@@ -1220,7 +1297,6 @@ export interface IPostDto3 {
     likedByMe?: boolean;
     likes?: number;
     rePostedByMe?: boolean;
-    rePostedBy?: UserDto3 | undefined;
     rePosts?: number;
     answers?: number;
 }
@@ -1273,6 +1349,130 @@ export interface IUserDto3 {
     pictureId?: string | undefined;
 }
 
+export class PostDto4 implements IPostDto4 {
+    id?: number;
+    answerToId?: number | undefined;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto4 | undefined;
+    mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
+
+    constructor(data?: IPostDto4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.answerToId = _data["answerToId"];
+            this.content = _data["content"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? UserDto4.fromJS(_data["createdBy"]) : <any>undefined;
+            this.mediaId = _data["mediaId"];
+            this.likedByMe = _data["likedByMe"];
+            this.likes = _data["likes"];
+            this.rePostedByMe = _data["rePostedByMe"];
+            this.rePosts = _data["rePosts"];
+            this.answers = _data["answers"];
+        }
+    }
+
+    static fromJS(data: any): PostDto4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostDto4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["answerToId"] = this.answerToId;
+        data["content"] = this.content;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["mediaId"] = this.mediaId;
+        data["likedByMe"] = this.likedByMe;
+        data["likes"] = this.likes;
+        data["rePostedByMe"] = this.rePostedByMe;
+        data["rePosts"] = this.rePosts;
+        data["answers"] = this.answers;
+        return data; 
+    }
+}
+
+export interface IPostDto4 {
+    id?: number;
+    answerToId?: number | undefined;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto4 | undefined;
+    mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
+}
+
+export class UserDto4 implements IUserDto4 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+
+    constructor(data?: IUserDto4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
+        }
+    }
+
+    static fromJS(data: any): UserDto4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
+        return data; 
+    }
+}
+
+export interface IUserDto4 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+}
+
 export class CreateUserCommand implements ICreateUserCommand {
     fullName?: string | undefined;
     username?: string | undefined;
@@ -1317,12 +1517,12 @@ export interface ICreateUserCommand {
     applicationUserId?: string | undefined;
 }
 
-export class UserDto4 implements IUserDto4 {
+export class UserDto5 implements IUserDto5 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
 
-    constructor(data?: IUserDto4) {
+    constructor(data?: IUserDto5) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1339,9 +1539,9 @@ export class UserDto4 implements IUserDto4 {
         }
     }
 
-    static fromJS(data: any): UserDto4 {
+    static fromJS(data: any): UserDto5 {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto4();
+        let result = new UserDto5();
         result.init(data);
         return result;
     }
@@ -1355,20 +1555,20 @@ export class UserDto4 implements IUserDto4 {
     }
 }
 
-export interface IUserDto4 {
+export interface IUserDto5 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
 }
 
-export class UserDto5 implements IUserDto5 {
+export class UserDto6 implements IUserDto6 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
     applicationUserId?: string | undefined;
     pictureId?: string | undefined;
 
-    constructor(data?: IUserDto5) {
+    constructor(data?: IUserDto6) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1387,9 +1587,9 @@ export class UserDto5 implements IUserDto5 {
         }
     }
 
-    static fromJS(data: any): UserDto5 {
+    static fromJS(data: any): UserDto6 {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto5();
+        let result = new UserDto6();
         result.init(data);
         return result;
     }
@@ -1405,7 +1605,7 @@ export class UserDto5 implements IUserDto5 {
     }
 }
 
-export interface IUserDto5 {
+export interface IUserDto6 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;

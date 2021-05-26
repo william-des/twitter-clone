@@ -5,14 +5,40 @@ export interface AddPosts {
 	type: typeof ADD_POSTS;
 	payload: {
 		posts: IPostDto[];
-		hasMore?: boolean;
+		inFeed?: boolean;
 	};
 }
-export const addPosts = (posts: IPostDto[], hasMore?: boolean) => ({
+export const addPosts = (posts: IPostDto[], inFeed?: boolean) => ({
 	type: ADD_POSTS,
 	payload: {
 		posts,
-		hasMore,
+		inFeed
+	},
+});
+
+export const ADD_NEW_POST = "ADD_NEW_POST";
+export interface AddNewPost {
+	type: typeof ADD_NEW_POST;
+	payload: IPostDto;
+}
+export const addNewPost = (post: IPostDto) => ({
+	type: ADD_NEW_POST,
+	payload: post
+})
+
+export const ADD_POST_ANSWERS = "ADD_POST_ANSWERS";
+export interface AddPostAnswers {
+	type: typeof ADD_POST_ANSWERS;
+	payload: {
+		postId: number,
+		answers: IPostDto[]
+	};
+}
+export const addPostAnswers = (postId: number, answers: IPostDto[]) => ({
+	type: ADD_POST_ANSWERS,
+	payload: {
+		postId,
+		answers
 	},
 });
 
@@ -69,4 +95,4 @@ export const removeLike = (postId: number) => ({
 	payload: postId,
 });
 
-export type PostsActions = AddPosts | AddUserPosts | AddRePost | RemoveRePost | AddLike | RemoveLike;
+export type PostsActions = AddPosts | AddNewPost | AddPostAnswers | AddUserPosts | AddRePost | RemoveRePost | AddLike | RemoveLike;

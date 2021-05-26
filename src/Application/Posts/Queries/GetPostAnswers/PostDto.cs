@@ -4,7 +4,7 @@ using AutoMapper;
 using TwitterClone.Application.Common.Mappings;
 using TwitterClone.Domain.Entities;
 
-namespace TwitterClone.Application.Posts.Queries.GetPost
+namespace TwitterClone.Application.Posts.Queries.GetPostAnswers
 {
     public class PostDto : IMapFrom<Post>
     {

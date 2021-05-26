@@ -12,9 +12,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const Feed: React.FC = () => {
 	const state = useReduxState((state) => ({
-		hasMore: state.posts.hasMore,
-		posts: state.posts.all.sort((p1, p2) => p2.created.valueOf() - p1.created.valueOf()),
+		posts: state.posts.feed.map(id => state.posts.all[id]).sort((p1, p2) => p2.created.valueOf() - p1.created.valueOf()),
 	}));
+
+	const [hasMore, setHasMore] = useState(true);
 
 	const [domainUser, setDomainUser] = useState(undefined);
 	const loadDomainUser = async () => setDomainUser(await authService.getDomainUser());
@@ -29,7 +30,8 @@ const Feed: React.FC = () => {
 		const beforeIf = state.posts[state.posts.length - 1]?.id;
 		const count = 20;
 		const posts = await new PostsClient().getAll(beforeIf, count);
-		dispatch(addPosts(posts, posts.length >= count));
+		dispatch(addPosts(posts, true));
+		setHasMore(posts.length >= count);
 	};
 	useEffect(() => {
 		loadPosts();
@@ -48,7 +50,7 @@ const Feed: React.FC = () => {
 			<InfiniteScroll
 				dataLength={state.posts.length}
 				next={loadPosts}
-				hasMore={state.hasMore}
+				hasMore={hasMore}
 				loader={<LoadingIndicator />}
 			>
 				{state.posts.map(renderPost)}
