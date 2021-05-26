@@ -22,7 +22,7 @@ namespace TwitterClone.Application.IntegrationTests.Posts.Queries
             var otherPost = new Post { Content = "Other post !" };
             await AddAsync(otherPost);
             var otherPostAnswer = new Post { AnswerToId = otherPost.Id, Content = "Other post answer"};
-            await AddAsync(answer);
+            await AddAsync(otherPostAnswer);
 
             var query = new GetPostAnswersQuery { PostId = post.Id };
             var result = await SendAsync(query);
