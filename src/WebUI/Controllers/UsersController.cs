@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using TwitterClone.Application.Users.Commands.UpdateUser;
 using TwitterClone.Application.Users.Queries.GetUser;
 using TwitterClone.Application.Users.Queries.GetUserByApplicationId;
 using TwitterClone.Application.Users.Queries.GetUserProfile;
+using TwitterClone.Application.Users.Queries.UserSearch;
 
 namespace TwitterClone.WebUI.Controllers
 {
@@ -47,6 +49,14 @@ namespace TwitterClone.WebUI.Controllers
         public async Task Update(UpdateUserCommand command) 
         {
             await Mediator.Send(command);
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Application.Users.Queries.UserSearch.UserDto>>> SearchUser(string q)
+        {
+            var query = new UserSearchQuery { Search = q };
+            
+            return Ok(await Mediator.Send(query));
         }
     }
 }

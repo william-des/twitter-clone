@@ -75,7 +75,7 @@ const UserProfile: React.FC = () => {
 		<MainContainer
 			title="Profile"
 			subtitle={state?.profile?.postsCount > 0 && `${state?.profile?.postsCount} posts`}
-			leftButton={{ icon: faArrowLeft, onClick: history.goBack }}
+			leftButton={{ icon: faArrowLeft, onClick: () => history.push("") }}
 		>
 			{!!showEditModal && !!state.profile?.user && (
 				<EditProfileModal onClose={() => setShowEditModal(false)} user={state.profile.user} />

@@ -1,16 +1,12 @@
 import React from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FollowButton from "../user/FollowButton";
+import UserSearch from "./UserSearch";
 
 const Sidebar: React.FC = () => {
 	return (
 		<div className="hidden lg:block w-350px flex-shrink-0">
 			<div className="p-3 pl-7 border-l h-full w-350px fixed">
-				<div className="rounded-full bg-gray-200 text-gray-600 p-2 px-4">
-					<FontAwesomeIcon icon={faSearch} className="mr-4" />
-					Search twitter
-				</div>
+				<UserSearch />
 				<div className="rounded-xl bg-gray-100 mt-4">
 					<h3 className="font-bold border-b py-3 px-4 text-xl">Trends for you</h3>
 					<div className="border-b py-3 px-4 text-sm">

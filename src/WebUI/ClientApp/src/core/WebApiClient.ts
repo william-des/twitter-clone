@@ -663,6 +663,7 @@ export interface IUsersClient {
     update(command: UpdateUserCommand): Promise<void>;
     get2(id: number): Promise<UserDto5>;
     getUserProfile(username: string | null): Promise<UserProfileVM>;
+    searchUser(q?: string | null | undefined): Promise<UserDto7[]>;
 }
 
 export class UsersClient extends ClientBase implements IUsersClient {
@@ -866,6 +867,48 @@ export class UsersClient extends ClientBase implements IUsersClient {
             });
         }
         return Promise.resolve<UserProfileVM>(<any>null);
+    }
+
+    searchUser(q?: string | null | undefined): Promise<UserDto7[]> {
+        let url_ = this.baseUrl + "/api/Users/search?";
+        if (q !== undefined && q !== null)
+            url_ += "q=" + encodeURIComponent("" + q) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearchUser(_response);
+        });
+    }
+
+    protected processSearchUser(response: Response): Promise<UserDto7[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UserDto7.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto7[]>(<any>null);
     }
 }
 
@@ -1783,6 +1826,58 @@ export interface IUpdateUserCommand {
     website?: string | undefined;
     pictureId?: string | undefined;
     bannerId?: string | undefined;
+}
+
+export class UserDto7 implements IUserDto7 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    followedByMe?: boolean;
+
+    constructor(data?: IUserDto7) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
+            this.followedByMe = _data["followedByMe"];
+        }
+    }
+
+    static fromJS(data: any): UserDto7 {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto7();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
+        data["followedByMe"] = this.followedByMe;
+        return data; 
+    }
+}
+
+export interface IUserDto7 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    followedByMe?: boolean;
 }
 
 export interface FileParameter {
