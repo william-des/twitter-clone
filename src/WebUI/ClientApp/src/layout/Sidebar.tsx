@@ -51,12 +51,15 @@ const Sidebar: React.FC = () => {
 					{!!suggestions &&
 						suggestions.map((s) => (
 							<div className="border-b py-3 px-4 flex align-middle" key={s.id}>
-								<UserPicture pictureId={s.pictureId} className="h-12 w-12 mr-4" />
-								<div className="flex flex-col">
+								<UserPicture pictureId={s.pictureId} className="h-12 w-12 mr-4 flex-shrink-0" />
+								<div className="flex flex-col flex-shrink overflow-hidden">
 									<h2 className="font-semibold mr-1">{s.fullName}</h2>
 									<span className="text-gray-500 font-light">@{s.username}</span>
 								</div>
-								<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={s.id} />
+								<FollowButton
+									className="px-4 py-2 ml-auto text-sm my-auto flex-shrink-0"
+									userId={s.id}
+								/>
 							</div>
 						))}
 					{!!suggestions && (
