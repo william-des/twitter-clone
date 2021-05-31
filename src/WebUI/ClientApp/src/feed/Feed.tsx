@@ -12,7 +12,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const Feed: React.FC = () => {
 	const state = useReduxState((state) => ({
-		posts: state.posts.feed.map(id => state.posts.all[id]).sort((p1, p2) => p2.created.valueOf() - p1.created.valueOf()),
+		posts: state.posts.feed
+			.map((id) => state.posts.all[id])
+			.sort((p1, p2) => p2.created.valueOf() - p1.created.valueOf()),
 	}));
 
 	const [hasMore, setHasMore] = useState(true);
@@ -37,7 +39,7 @@ const Feed: React.FC = () => {
 		loadPosts();
 	}, []);
 
-	const renderPost = (post: PostDto) => <PostCard {...post} key={post.id} />;
+	const renderPost = (post: PostDto, index: number) => <PostCard {...post} key={index} />;
 
 	return (
 		<MainContainer title="Home">
