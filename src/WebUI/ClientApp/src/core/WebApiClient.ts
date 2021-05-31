@@ -23,6 +23,7 @@ export class ClientBase {
 export interface IFollowsClient {
     getUserFollows(userId: number): Promise<FollowsVM>;
     followUser(userId: number): Promise<FileResponse>;
+    getSuggestions(count?: number | null | undefined): Promise<SuggestionUserDto[]>;
     unfollowUser(userId: number): Promise<FileResponse>;
 }
 
@@ -77,7 +78,7 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
     }
 
     followUser(userId: number): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/users/{userId}/follow";
+        let url_ = this.baseUrl + "/api/users/{userId}/follows";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -111,6 +112,48 @@ export class FollowsClient extends ClientBase implements IFollowsClient {
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    getSuggestions(count?: number | null | undefined): Promise<SuggestionUserDto[]> {
+        let url_ = this.baseUrl + "/api/Follows/suggestions?";
+        if (count !== undefined && count !== null)
+            url_ += "count=" + encodeURIComponent("" + count) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetSuggestions(_response);
+        });
+    }
+
+    protected processGetSuggestions(response: Response): Promise<SuggestionUserDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SuggestionUserDto.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuggestionUserDto[]>(<any>null);
     }
 
     unfollowUser(userId: number): Promise<FileResponse> {
@@ -966,6 +1009,54 @@ export class FollowsVM implements IFollowsVM {
 export interface IFollowsVM {
     followerIds?: number[] | undefined;
     followedIds?: number[] | undefined;
+}
+
+export class SuggestionUserDto implements ISuggestionUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+
+    constructor(data?: ISuggestionUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
+        }
+    }
+
+    static fromJS(data: any): SuggestionUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuggestionUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
+        return data; 
+    }
+}
+
+export interface ISuggestionUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
 }
 
 export class PostDto implements IPostDto {

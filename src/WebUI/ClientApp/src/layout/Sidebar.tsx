@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { FollowsClient, ISuggestionUserDto } from "../core/WebApiClient";
+import LoadingIndicator from "../shared/LoadingIndicator";
 import FollowButton from "../user/FollowButton";
+import UserPicture from "../user/UserPicture";
 import UserSearch from "./UserSearch";
 
 const Sidebar: React.FC = () => {
+	const [suggestions, setSuggestions] = useState<ISuggestionUserDto[]>(undefined);
+
+	const loadSuggestions = async () => {
+		const suggestions = await new FollowsClient().getSuggestions(3);
+		setSuggestions(suggestions);
+	};
+	useEffect(() => {
+		loadSuggestions();
+	}, []);
+
 	return (
 		<div className="hidden lg:block w-350px flex-shrink-0">
 			<div className="p-3 pl-7 border-l h-full w-350px fixed">
@@ -34,23 +47,23 @@ const Sidebar: React.FC = () => {
 				</div>
 				<div className="rounded-xl bg-gray-100 mt-4">
 					<h3 className="font-bold border-b py-3 px-4 text-xl">Who to follow</h3>
-					<div className="border-b py-3 px-4 flex align-middle">
-						<img src={"https://thispersondoesnotexist.com/image"} className="h-12 w-12 rounded-full mr-4" />
-						<div className="flex flex-col">
-							<h2 className="font-semibold mr-1">Elon Musk</h2>
-							<span className="text-gray-500 font-light">@ToTheMoon</span>
+					{suggestions == undefined && <LoadingIndicator />}
+					{!!suggestions &&
+						suggestions.map((s) => (
+							<div className="border-b py-3 px-4 flex align-middle" key={s.id}>
+								<UserPicture pictureId={s.pictureId} className="h-12 w-12 mr-4" />
+								<div className="flex flex-col">
+									<h2 className="font-semibold mr-1">{s.fullName}</h2>
+									<span className="text-gray-500 font-light">@{s.username}</span>
+								</div>
+								<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={s.id} />
+							</div>
+						))}
+					{!!suggestions && (
+						<div className="text-primary py-3 px-4 cursor-pointer" onClick={loadSuggestions}>
+							Show more
 						</div>
-						<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={1} />
-					</div>
-					<div className="border-b py-3 px-4 flex align-middle">
-						<img src={"https://thispersondoesnotexist.com/image"} className="h-12 w-12 rounded-full mr-4" />
-						<div className="flex flex-col">
-							<h2 className="font-semibold mr-1">Elon Musk</h2>
-							<span className="text-gray-500 font-light">@ToTheMoon</span>
-						</div>
-						<FollowButton className="px-4 py-2 ml-auto text-sm my-auto" userId={1} />
-					</div>
-					<div className="text-primary py-3 px-4">Show more</div>
+					)}
 				</div>
 				<p className="text-sm text-gray-600 m-3">
 					This website is a copy of twitter for demo purposes. Learn more on{" "}
