@@ -28,6 +28,7 @@ namespace TwitterClone.Application.IntegrationTests.Follows.Queries
             result.Should().Contain(u => u.Id == notFollowed.Id);
             result.Should().Contain(u => u.Id == notFollowed2.Id);
             result.Should().NotContain(u => u.Id == followed.Id);
+            result.Should().NotContain(u => u.Id == userId);
         }
     }
 }

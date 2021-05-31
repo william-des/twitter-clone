@@ -33,7 +33,7 @@ namespace TwitterClone.Application.Follows.Queries.GetFollowSuggestions
 
             var requestedCount = request.Count ?? 10;
 
-            var notFollowed = _context.DomainUsers.Where(u => !u.Followers.Any(f => f.FollowerId == user.Id));
+            var notFollowed = _context.DomainUsers.Where(u => u.Id != user.Id && !u.Followers.Any(f => f.FollowerId == user.Id));
             var notFollowedCount = await notFollowed.CountAsync(cancellationToken);
 
             var randomSkip = notFollowedCount > requestedCount ? new Random().Next(notFollowedCount - requestedCount) : 0;
