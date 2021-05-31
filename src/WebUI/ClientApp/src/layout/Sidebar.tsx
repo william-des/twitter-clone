@@ -53,12 +53,12 @@ const Sidebar: React.FC = () => {
 						suggestions.map((s) => (
 							<div className="border-b py-3 px-4 flex align-middle" key={s.id}>
 								<UserPicture pictureId={s.pictureId} className="h-12 w-12 mr-4 flex-shrink-0" />
-								<div className="flex flex-col flex-shrink overflow-hidden">
-									<h2 className="font-semibold mr-1">
-										{s.fullName}
+								<div className="flex flex-col flex-shrink overflow-hidden mr-2">
+									<h2 className="font-semibold mr-1 flex items-center">
+										<div className="truncate whitespace-nowrap flex-shrink">{s.fullName}</div>
 										{s.isCertified && <CertifiedBadge />}
 									</h2>
-									<span className="text-gray-500 font-light">@{s.username}</span>
+									<span className="text-gray-500 font-light truncate">@{s.username}</span>
 								</div>
 								<FollowButton
 									className="px-4 py-2 ml-auto text-sm my-auto flex-shrink-0"
