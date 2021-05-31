@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authService from "../auth/AuthorizeService";
+import PostFormModal from "../feed/PostFormModal";
 import Button from "../shared/Button";
 import { UserCard } from "../user/UserCard";
 import NavLink from "./NavLink";
@@ -29,6 +30,8 @@ export const NavMenu: React.FC = () => {
 		populateState();
 		return authService.unsubscribe(subscription);
 	}, []);
+
+	const [showPostModal, setShowPostModal] = useState(false);
 
 	return (
 		<nav className="flex-none w-56px md:w-275px">
@@ -86,11 +89,14 @@ export const NavMenu: React.FC = () => {
 				</ul>
 				{state.isAuthenticated && (
 					<React.Fragment>
-						<Button className="mr-7 p-3 mt-4 hidden md:inline">Tweet</Button>
+						<Button className="mr-7 p-3 mt-4 hidden md:inline" onClick={() => setShowPostModal(true)}>
+							Tweet
+						</Button>
 						<UserCard {...state.domainUser} />
 					</React.Fragment>
 				)}
 			</div>
+			{showPostModal && <PostFormModal onClose={() => setShowPostModal(false)} />}
 		</nav>
 	);
 };

@@ -3,7 +3,7 @@ import { faPollH } from "@fortawesome/free-solid-svg-icons";
 import { faSmile, faCalendarPlus, faFileImage } from "@fortawesome/free-regular-svg-icons";
 import { CreatePostCommand, MediasClient, PostsClient } from "../core/WebApiClient";
 import { useDispatch } from "react-redux";
-import { addNewPost, addPosts } from "../core/actions/PostsActions";
+import { addNewPost } from "../core/actions/PostsActions";
 import UserPicture from "../user/UserPicture";
 import UploadPreview from "./UploadPreview";
 import PostFormButton from "./PostFormButton";
@@ -14,6 +14,7 @@ interface PostFormProps {
 	pictureId?: string;
 	answerToId?: number;
 	className?: string;
+	largeInput?: boolean;
 	afterValidSubmit?: VoidFunction;
 }
 
@@ -60,7 +61,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
 					name="post-content"
 					placeholder={!!props.answerToId ? "Tweet your reply" : "What's happening ?"}
 					value={state.content}
-					minHeight={!!props.answerToId && 96}
+					minHeight={!!props.largeInput && 96}
 					onChange={onChange}
 				/>
 				{!!state.imgBlob && <UploadPreview img={state.imgBlob} onDeleteClick={onDeleteFile} />}

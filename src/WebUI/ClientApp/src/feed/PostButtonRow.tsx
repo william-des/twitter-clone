@@ -6,7 +6,7 @@ import { IPostDto, LikesClient, RePostsClient } from "../core/WebApiClient";
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faRetweet, faShareSquare } from "@fortawesome/free-solid-svg-icons";
 import PostButton from "./PostButton";
-import AnswerFormModal from "./AnswerFormModal";
+import PostFormModal from "./PostFormModal";
 
 interface PostButtonRowProps {
     post: IPostDto,
@@ -50,7 +50,7 @@ const PostButtonRow: React.FC<PostButtonRowProps> = props => {
     };
 
     return <React.Fragment>
-        {showAnswerModal && <AnswerFormModal answerTo={props.post} onClose={() => setShowAnswerModal(false)} />}
+        {showAnswerModal && <PostFormModal answerTo={props.post} onClose={() => setShowAnswerModal(false)} />}
         {!!props.large && <div className="border-t border-b py-3 mt-3">
             <span className="font-bold">{state.rePosts || 0}</span>
             <span className="text-gray-600 mr-5"> Retweets</span>
