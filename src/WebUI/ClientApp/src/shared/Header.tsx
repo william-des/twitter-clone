@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = (props) => {
 			{!!props.leftButton && (
 				<button
 					onClick={props.leftButton.onClick}
-					className="rounded-full w-8 h-8 items-center justify-center flex hover:bg-primary hover:bg-opacity-10 mr-8"
+					className="rounded-full w-8 h-8 items-center justify-center flex hover:bg-primary hover:bg-opacity-10 mr-8 focus:outline-none"
 				>
 					<FontAwesomeIcon icon={props.leftButton.icon} className="text-primary " />
 				</button>
