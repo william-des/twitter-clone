@@ -17,6 +17,7 @@ namespace TwitterClone.Domain.Entities
         public string Location { get; set; }
         public string Website { get; set; }
         public string Description { get; set; }
+        public bool IsCertified { get; set; }
         public IEnumerable<Follow> Followers { get; set; } = new List<Follow>();
         public IEnumerable<Follow> Followeds { get; set; } = new List<Follow>();
     }

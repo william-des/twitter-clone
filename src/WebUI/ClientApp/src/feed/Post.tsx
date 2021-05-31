@@ -4,6 +4,7 @@ import { IPostDto } from "../core/WebApiClient";
 import UserPicture from "../user/UserPicture";
 import LinkParser from "./LinkParser";
 import ReactTimeAgo from "react-time-ago";
+import CertifiedBadge from "../shared/CertifiedBadge";
 
 interface PostProps {
 	post: IPostDto;
@@ -21,12 +22,22 @@ const Post: React.FC<PostProps> = (props) => {
 			</div>
 			<div className="flex flex-1 flex-col">
 				<div className={`flex ${!!props.large && "flex-col leading-tight"}`}>
-					<h2 className="font-semibold mr-1 hover:underline">
-						<NavLink to={`/${props.post.createdBy.username}`}>{props.post.createdBy.fullName}</NavLink>
+					<h2 className="font-semibold mr-2 hover:underline">
+						<NavLink to={`/${props.post.createdBy.username}`}>
+							{props.post.createdBy.fullName}
+							{props.post.createdBy.isCertified && (
+								<CertifiedBadge />
+							)}
+						</NavLink>
 					</h2>
 					<span className="text-gray-500 font-light">
-						@{props.post.createdBy.username} 
-						{props.large != true && <React.Fragment>·{" "}<ReactTimeAgo date={props.post.created} timeStyle="twitter" /></React.Fragment>}
+						@{props.post.createdBy.username}
+						{props.large != true && (
+							<React.Fragment>
+								{" · "}
+								<ReactTimeAgo date={props.post.created} timeStyle="twitter" />
+							</React.Fragment>
+						)}
 					</span>
 				</div>
 				<p className="whitespace-pre-line mb-1">

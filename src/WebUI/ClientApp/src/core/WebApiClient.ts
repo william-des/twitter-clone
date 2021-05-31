@@ -1016,6 +1016,7 @@ export class SuggestionUserDto implements ISuggestionUserDto {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: ISuggestionUserDto) {
         if (data) {
@@ -1032,6 +1033,7 @@ export class SuggestionUserDto implements ISuggestionUserDto {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1048,6 +1050,7 @@ export class SuggestionUserDto implements ISuggestionUserDto {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1057,6 +1060,7 @@ export interface ISuggestionUserDto {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class PostDto implements IPostDto {
@@ -1148,6 +1152,7 @@ export class UserDto implements IUserDto {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -1164,6 +1169,7 @@ export class UserDto implements IUserDto {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1180,6 +1186,7 @@ export class UserDto implements IUserDto {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1189,6 +1196,7 @@ export interface IUserDto {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class PostDto2 implements IPostDto2 {
@@ -1272,6 +1280,7 @@ export class UserDto2 implements IUserDto2 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: IUserDto2) {
         if (data) {
@@ -1288,6 +1297,7 @@ export class UserDto2 implements IUserDto2 {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1304,6 +1314,7 @@ export class UserDto2 implements IUserDto2 {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1313,6 +1324,7 @@ export interface IUserDto2 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
@@ -1440,6 +1452,7 @@ export class UserDto3 implements IUserDto3 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: IUserDto3) {
         if (data) {
@@ -1456,6 +1469,7 @@ export class UserDto3 implements IUserDto3 {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1472,6 +1486,7 @@ export class UserDto3 implements IUserDto3 {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1481,6 +1496,7 @@ export interface IUserDto3 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class PostDto4 implements IPostDto4 {
@@ -1564,6 +1580,7 @@ export class UserDto4 implements IUserDto4 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: IUserDto4) {
         if (data) {
@@ -1580,6 +1597,7 @@ export class UserDto4 implements IUserDto4 {
             this.fullName = _data["fullName"];
             this.username = _data["username"];
             this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1596,6 +1614,7 @@ export class UserDto4 implements IUserDto4 {
         data["fullName"] = this.fullName;
         data["username"] = this.username;
         data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1605,6 +1624,7 @@ export interface IUserDto4 {
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class CreateUserCommand implements ICreateUserCommand {
@@ -1805,6 +1825,7 @@ export class ProfileUserDto implements IProfileUserDto {
     description?: string | undefined;
     website?: string | undefined;
     location?: string | undefined;
+    isCertified?: boolean;
 
     constructor(data?: IProfileUserDto) {
         if (data) {
@@ -1826,6 +1847,7 @@ export class ProfileUserDto implements IProfileUserDto {
             this.description = _data["description"];
             this.website = _data["website"];
             this.location = _data["location"];
+            this.isCertified = _data["isCertified"];
         }
     }
 
@@ -1847,6 +1869,7 @@ export class ProfileUserDto implements IProfileUserDto {
         data["description"] = this.description;
         data["website"] = this.website;
         data["location"] = this.location;
+        data["isCertified"] = this.isCertified;
         return data; 
     }
 }
@@ -1861,6 +1884,7 @@ export interface IProfileUserDto {
     description?: string | undefined;
     website?: string | undefined;
     location?: string | undefined;
+    isCertified?: boolean;
 }
 
 export class UpdateUserCommand implements IUpdateUserCommand {

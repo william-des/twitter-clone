@@ -773,6 +773,9 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },
@@ -864,6 +867,9 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },
@@ -939,6 +945,9 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },
@@ -1034,6 +1043,9 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },
@@ -1109,6 +1121,9 @@
           "pictureId": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },
@@ -1239,6 +1254,9 @@
           "location": {
             "type": "string",
             "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
           }
         }
       },

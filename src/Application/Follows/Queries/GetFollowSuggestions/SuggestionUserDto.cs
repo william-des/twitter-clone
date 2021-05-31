@@ -9,5 +9,6 @@ namespace TwitterClone.Application.Follows.Queries.GetFollowSuggestions
         public string FullName { get; set; }
         public string Username { get; set; }
         public string PictureId { get; set; }
+        public bool IsCertified { get; set; }
     }
 }

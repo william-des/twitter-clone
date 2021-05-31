@@ -15,5 +15,6 @@ namespace TwitterClone.Application.Users.Queries.GetUserProfile
         public string Description { get; set; }
         public string Website { get; set; }
         public string Location { get; set; }
+        public bool IsCertified { get; set; }
     }
 }

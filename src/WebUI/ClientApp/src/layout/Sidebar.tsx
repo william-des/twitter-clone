@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FollowsClient, ISuggestionUserDto } from "../core/WebApiClient";
+import CertifiedBadge from "../shared/CertifiedBadge";
 import LoadingIndicator from "../shared/LoadingIndicator";
 import FollowButton from "../user/FollowButton";
 import UserPicture from "../user/UserPicture";
@@ -53,7 +54,10 @@ const Sidebar: React.FC = () => {
 							<div className="border-b py-3 px-4 flex align-middle" key={s.id}>
 								<UserPicture pictureId={s.pictureId} className="h-12 w-12 mr-4 flex-shrink-0" />
 								<div className="flex flex-col flex-shrink overflow-hidden">
-									<h2 className="font-semibold mr-1">{s.fullName}</h2>
+									<h2 className="font-semibold mr-1">
+										{s.fullName}
+										{s.isCertified && <CertifiedBadge />}
+									</h2>
 									<span className="text-gray-500 font-light">@{s.username}</span>
 								</div>
 								<FollowButton

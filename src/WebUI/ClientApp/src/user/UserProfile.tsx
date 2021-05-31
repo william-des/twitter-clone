@@ -19,6 +19,7 @@ import LinkParser from "../feed/LinkParser";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { addUserPosts } from "../core/actions/PostsActions";
 import LoadingIndicator from "../shared/LoadingIndicator";
+import CertifiedBadge from "../shared/CertifiedBadge";
 
 const UserProfile: React.FC = () => {
 	const { username } = useParams() as any;
@@ -107,6 +108,9 @@ const UserProfile: React.FC = () => {
 						</div>
 						<h3 className="text-xl font-bold leading-1">
 							{state?.profile?.user?.fullName || `@${username}`}
+							{!!state?.profile?.user?.isCertified && (
+								<CertifiedBadge />
+							)}
 						</h3>
 						{state?.profile?.user?.username && (
 							<h4 className="leading-none text-gray-500">{`@${username}`}</h4>
