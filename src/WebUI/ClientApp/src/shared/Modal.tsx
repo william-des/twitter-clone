@@ -17,14 +17,12 @@ const Modal: React.FC<ModalProps> = (props) => {
 	}, []);
 
 	return (
-		<div
-			className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-20 z-50 flex items-center justify-center"
-			onClick={(e) => {
-				e.stopPropagation();
-				e.preventDefault();
-			}}
-		>
-			<div className={`${!!props.className && props.className} bg-white rounded-xl w-600px flex flex-col`}>
+		<div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-20 z-50 flex items-center justify-center">
+			<div
+				className={`${
+					!!props.className && props.className
+				} bg-white rounded-xl w-600px flex flex-col`}
+			>
 				{props.children}
 			</div>
 		</div>

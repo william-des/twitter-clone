@@ -25,7 +25,7 @@ const PostFormModal: React.FC<PostFormModalProps> = (props) => {
 	return (
 		<Modal>
 			<Header leftButton={{ icon: faTimes, onClick: props.onClose }} />
-			<div className="p-4">
+			<div className="p-4" onClick={e => e.stopPropagation()}>
 				{!!props.answerTo && (
 					<Post post={props.answerTo} showAnswerLine>
 						<h4 className="my-3 text-gray-500">
