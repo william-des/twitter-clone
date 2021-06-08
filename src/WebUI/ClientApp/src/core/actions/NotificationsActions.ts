@@ -10,4 +10,11 @@ export const addNotifications = (vm: INotificationsVM) => ({
 	payload: vm,
 });
 
-export type NotificationsActions = AddNotification;
+export const MARK_AS_READ = "MARK_AS_READ";
+export interface MarkAsRead {
+	type: typeof MARK_AS_READ;
+	payload: number;
+}
+export const markAsRead = (id: number) => ({ type: MARK_AS_READ, payload: id });
+
+export type NotificationsActions = AddNotification | MarkAsRead;

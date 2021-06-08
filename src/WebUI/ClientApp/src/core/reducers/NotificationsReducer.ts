@@ -1,4 +1,4 @@
-import { ADD_NOTIFICATIONS, NotificationsActions } from "../actions/NotificationsActions";
+import { ADD_NOTIFICATIONS, MARK_AS_READ, NotificationsActions } from "../actions/NotificationsActions";
 import { INotificationDto } from "../WebApiClient";
 
 export interface NotificationsState {
@@ -21,6 +21,14 @@ export const NotificationsReducer = (
 				...state,
 				totalUnread: action.payload.totalUnread,
 				all: [...state.all, ...action.payload.notifications],
+			};
+		case MARK_AS_READ:
+			const index = state.all.findIndex((n) => n.id == action.payload);
+			if (index == -1) return state;
+			return {
+				...state,
+				totalUnread: state.totalUnread - 1,
+				all: [...state.all.slice(0, index), { ...state.all[index], read: true }, ...state.all.slice(index + 1)],
 			};
 		default:
 			return state;
