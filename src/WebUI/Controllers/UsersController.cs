@@ -52,7 +52,7 @@ namespace TwitterClone.WebUI.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Application.Users.Queries.UserSearch.UserDto>>> SearchUser(string q)
+        public async Task<ActionResult<IEnumerable<SearchUserDto>>> SearchUser(string q)
         {
             var query = new UserSearchQuery { Search = q };
             

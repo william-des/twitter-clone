@@ -2,12 +2,12 @@ import { faSearch, faTimesCircle, faUser } from "@fortawesome/free-solid-svg-ico
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { IUserDto7, UsersClient } from "../core/WebApiClient";
+import { ISearchUserDto, UsersClient } from "../core/WebApiClient";
 import LoadingIndicator from "../shared/LoadingIndicator";
 import UserPicture from "../user/UserPicture";
 
 const UserSearch: React.FC = () => {
-	const [state, setState] = useState<{ search: string; users: IUserDto7[]; loading: boolean }>({
+	const [state, setState] = useState<{ search: string; users: ISearchUserDto[]; loading: boolean }>({
 		search: "",
 		users: [],
 		loading: false,

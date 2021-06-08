@@ -5,7 +5,7 @@ using TwitterClone.Domain.Entities;
 
 namespace TwitterClone.Application.Users.Queries.UserSearch
 {
-    public class UserDto : IMapFrom<User>
+    public class SearchUserDto : IMapFrom<User>
     {
         public int Id { get; set; }
         public string FullName { get; set; }
@@ -16,7 +16,7 @@ namespace TwitterClone.Application.Users.Queries.UserSearch
         public void Mapping(Profile profile) {
             var applicationUserId = "";
 
-            profile.CreateMap<User,UserDto>()
+            profile.CreateMap<User,SearchUserDto>()
                 .ForMember(
                     dto => dto.FollowedByMe, 
                     opt => opt.MapFrom(u => !string.IsNullOrWhiteSpace(applicationUserId) 
