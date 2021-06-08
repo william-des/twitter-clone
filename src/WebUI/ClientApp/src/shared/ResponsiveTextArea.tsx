@@ -6,10 +6,11 @@ interface ResponsiveTextAreaProps
 }
 
 const ResponsiveTextArea: React.FC<ResponsiveTextAreaProps> = (props) => {
+	const { minHeight, ...textareaProps } = props;
 	const resizeTextArea = () => {
 		if (ref.current) {
 			ref.current.style.height = "16px";
-			ref.current.style.height = Math.max(ref.current.scrollHeight, props.minHeight || 16) + "px";
+			ref.current.style.height = Math.max(ref.current.scrollHeight, minHeight || 16) + "px";
 		}
 	};
 
@@ -25,7 +26,7 @@ const ResponsiveTextArea: React.FC<ResponsiveTextAreaProps> = (props) => {
 		resizeTextArea();
 	}, [props.value]);
 
-	return <textarea {...props} ref={ref} style={{ overflowY: "hidden", resize: "none" }} />;
+	return <textarea {...textareaProps} ref={ref} style={{ overflowY: "hidden", resize: "none" }} />;
 };
 
 export default ResponsiveTextArea;
