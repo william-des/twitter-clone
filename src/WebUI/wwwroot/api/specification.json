@@ -255,6 +255,48 @@
         }
       }
     },
+    "/api/Notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "operationId": "Notifications_Get",
+        "parameters": [
+          {
+            "name": "Count",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "BeforeId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationsVM"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Posts": {
       "get": {
         "tags": [
@@ -580,7 +622,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto6"
+                  "$ref": "#/components/schemas/UserDto7"
                 }
               }
             }
@@ -645,7 +687,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto5"
+                  "$ref": "#/components/schemas/UserDto6"
                 }
               }
             }
@@ -715,7 +757,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserDto7"
+                    "$ref": "#/components/schemas/SearchUserDto"
                   }
                 }
               }
@@ -779,7 +821,24 @@
           }
         }
       },
-      "PostDto": {
+      "NotificationsVM": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "notifications": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/NotificationDto"
+            }
+          },
+          "totalUnread": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NotificationDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -787,18 +846,8 @@
             "type": "integer",
             "format": "int32"
           },
-          "answerToId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "content": {
-            "type": "string",
-            "nullable": true
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
+          "read": {
+            "type": "boolean"
           },
           "createdBy": {
             "nullable": true,
@@ -808,43 +857,8 @@
               }
             ]
           },
-          "mediaId": {
-            "type": "string",
-            "nullable": true
-          },
-          "likedBy": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            ]
-          },
-          "likedByMe": {
-            "type": "boolean"
-          },
-          "likes": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "rePostedBy": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            ]
-          },
-          "rePostedByMe": {
-            "type": "boolean"
-          },
-          "rePosts": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "answers": {
-            "type": "integer",
-            "format": "int32"
+          "type": {
+            "$ref": "#/components/schemas/NotificationType"
           }
         }
       },
@@ -873,7 +887,21 @@
           }
         }
       },
-      "PostDto2": {
+      "NotificationType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Follow",
+          "Mention",
+          "Answer"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "PostDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -906,12 +934,28 @@
             "type": "string",
             "nullable": true
           },
+          "likedBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto2"
+              }
+            ]
+          },
           "likedByMe": {
             "type": "boolean"
           },
           "likes": {
             "type": "integer",
             "format": "int32"
+          },
+          "rePostedBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto2"
+              }
+            ]
           },
           "rePostedByMe": {
             "type": "boolean"
@@ -951,27 +995,7 @@
           }
         }
       },
-      "CreatePostCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "content": {
-            "type": "string",
-            "nullable": true
-          },
-          "mediaId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "answerToId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          }
-        }
-      },
-      "PostDto3": {
+      "PostDto2": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1049,7 +1073,27 @@
           }
         }
       },
-      "PostDto4": {
+      "CreatePostCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "mediaId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "PostDto3": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1127,21 +1171,56 @@
           }
         }
       },
-      "CreateUserCommand": {
+      "PostDto4": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "fullName": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answerToId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "content": {
             "type": "string",
             "nullable": true
           },
-          "username": {
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserDto5"
+              }
+            ]
+          },
+          "mediaId": {
             "type": "string",
             "nullable": true
           },
-          "applicationUserId": {
-            "type": "string",
-            "nullable": true
+          "likedByMe": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rePostedByMe": {
+            "type": "boolean"
+          },
+          "rePosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answers": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -1160,10 +1239,53 @@
           "username": {
             "type": "string",
             "nullable": true
+          },
+          "pictureId": {
+            "type": "string",
+            "nullable": true
+          },
+          "isCertified": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationUserId": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
       "UserDto6": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserDto7": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1292,7 +1414,7 @@
           }
         }
       },
-      "UserDto7": {
+      "SearchUserDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

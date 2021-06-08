@@ -376,6 +376,62 @@ export class MediasClient extends ClientBase implements IMediasClient {
     }
 }
 
+export interface INotificationsClient {
+    get(count?: number | null | undefined, beforeId?: number | null | undefined): Promise<NotificationsVM>;
+}
+
+export class NotificationsClient extends ClientBase implements INotificationsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(count?: number | null | undefined, beforeId?: number | null | undefined): Promise<NotificationsVM> {
+        let url_ = this.baseUrl + "/api/Notifications?";
+        if (count !== undefined && count !== null)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
+        if (beforeId !== undefined && beforeId !== null)
+            url_ += "BeforeId=" + encodeURIComponent("" + beforeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<NotificationsVM> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NotificationsVM.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NotificationsVM>(<any>null);
+    }
+}
+
 export interface IPostsClient {
     getAll(beforeId?: number | null | undefined, count?: number | null | undefined): Promise<PostDto[]>;
     create(command: CreatePostCommand): Promise<number>;
@@ -702,11 +758,11 @@ export class RePostsClient extends ClientBase implements IRePostsClient {
 
 export interface IUsersClient {
     create(command: CreateUserCommand): Promise<number>;
-    get(applicationUserId?: string | null | undefined): Promise<UserDto6>;
+    get(applicationUserId?: string | null | undefined): Promise<UserDto7>;
     update(command: UpdateUserCommand): Promise<void>;
-    get2(id: number): Promise<UserDto5>;
+    get2(id: number): Promise<UserDto6>;
     getUserProfile(username: string | null): Promise<UserProfileVM>;
-    searchUser(q?: string | null | undefined): Promise<UserDto7[]>;
+    searchUser(q?: string | null | undefined): Promise<SearchUserDto[]>;
 }
 
 export class UsersClient extends ClientBase implements IUsersClient {
@@ -760,7 +816,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    get(applicationUserId?: string | null | undefined): Promise<UserDto6> {
+    get(applicationUserId?: string | null | undefined): Promise<UserDto7> {
         let url_ = this.baseUrl + "/api/Users?";
         if (applicationUserId !== undefined && applicationUserId !== null)
             url_ += "applicationUserId=" + encodeURIComponent("" + applicationUserId) + "&";
@@ -780,14 +836,14 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UserDto6> {
+    protected processGet(response: Response): Promise<UserDto7> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto6.fromJS(resultData200);
+            result200 = UserDto7.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -795,7 +851,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto6>(<any>null);
+        return Promise.resolve<UserDto7>(<any>null);
     }
 
     update(command: UpdateUserCommand): Promise<void> {
@@ -834,7 +890,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<void>(<any>null);
     }
 
-    get2(id: number): Promise<UserDto5> {
+    get2(id: number): Promise<UserDto6> {
         let url_ = this.baseUrl + "/api/Users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -855,14 +911,14 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processGet2(response: Response): Promise<UserDto5> {
+    protected processGet2(response: Response): Promise<UserDto6> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto5.fromJS(resultData200);
+            result200 = UserDto6.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -870,7 +926,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto5>(<any>null);
+        return Promise.resolve<UserDto6>(<any>null);
     }
 
     getUserProfile(username: string | null): Promise<UserProfileVM> {
@@ -912,7 +968,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         return Promise.resolve<UserProfileVM>(<any>null);
     }
 
-    searchUser(q?: string | null | undefined): Promise<UserDto7[]> {
+    searchUser(q?: string | null | undefined): Promise<SearchUserDto[]> {
         let url_ = this.baseUrl + "/api/Users/search?";
         if (q !== undefined && q !== null)
             url_ += "q=" + encodeURIComponent("" + q) + "&";
@@ -932,7 +988,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
         });
     }
 
-    protected processSearchUser(response: Response): Promise<UserDto7[]> {
+    protected processSearchUser(response: Response): Promise<SearchUserDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -942,7 +998,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(UserDto7.fromJS(item));
+                    result200!.push(SearchUserDto.fromJS(item));
             }
             return result200;
             });
@@ -951,7 +1007,7 @@ export class UsersClient extends ClientBase implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDto7[]>(<any>null);
+        return Promise.resolve<SearchUserDto[]>(<any>null);
     }
 }
 
@@ -1063,22 +1119,61 @@ export interface ISuggestionUserDto {
     isCertified?: boolean;
 }
 
-export class PostDto implements IPostDto {
-    id?: number;
-    answerToId?: number | undefined;
-    content?: string | undefined;
-    created?: Date;
-    createdBy?: UserDto | undefined;
-    mediaId?: string | undefined;
-    likedBy?: UserDto | undefined;
-    likedByMe?: boolean;
-    likes?: number;
-    rePostedBy?: UserDto | undefined;
-    rePostedByMe?: boolean;
-    rePosts?: number;
-    answers?: number;
+export class NotificationsVM implements INotificationsVM {
+    notifications?: NotificationDto[] | undefined;
+    totalUnread?: number;
 
-    constructor(data?: IPostDto) {
+    constructor(data?: INotificationsVM) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["notifications"])) {
+                this.notifications = [] as any;
+                for (let item of _data["notifications"])
+                    this.notifications!.push(NotificationDto.fromJS(item));
+            }
+            this.totalUnread = _data["totalUnread"];
+        }
+    }
+
+    static fromJS(data: any): NotificationsVM {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationsVM();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.notifications)) {
+            data["notifications"] = [];
+            for (let item of this.notifications)
+                data["notifications"].push(item.toJSON());
+        }
+        data["totalUnread"] = this.totalUnread;
+        return data; 
+    }
+}
+
+export interface INotificationsVM {
+    notifications?: NotificationDto[] | undefined;
+    totalUnread?: number;
+}
+
+export class NotificationDto implements INotificationDto {
+    id?: number;
+    read?: boolean;
+    createdBy?: UserDto | undefined;
+    type?: NotificationType;
+
+    constructor(data?: INotificationDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1090,24 +1185,15 @@ export class PostDto implements IPostDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.answerToId = _data["answerToId"];
-            this.content = _data["content"];
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.read = _data["read"];
             this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
-            this.mediaId = _data["mediaId"];
-            this.likedBy = _data["likedBy"] ? UserDto.fromJS(_data["likedBy"]) : <any>undefined;
-            this.likedByMe = _data["likedByMe"];
-            this.likes = _data["likes"];
-            this.rePostedBy = _data["rePostedBy"] ? UserDto.fromJS(_data["rePostedBy"]) : <any>undefined;
-            this.rePostedByMe = _data["rePostedByMe"];
-            this.rePosts = _data["rePosts"];
-            this.answers = _data["answers"];
+            this.type = _data["type"];
         }
     }
 
-    static fromJS(data: any): PostDto {
+    static fromJS(data: any): NotificationDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PostDto();
+        let result = new NotificationDto();
         result.init(data);
         return result;
     }
@@ -1115,36 +1201,18 @@ export class PostDto implements IPostDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["answerToId"] = this.answerToId;
-        data["content"] = this.content;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["read"] = this.read;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["mediaId"] = this.mediaId;
-        data["likedBy"] = this.likedBy ? this.likedBy.toJSON() : <any>undefined;
-        data["likedByMe"] = this.likedByMe;
-        data["likes"] = this.likes;
-        data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
-        data["rePostedByMe"] = this.rePostedByMe;
-        data["rePosts"] = this.rePosts;
-        data["answers"] = this.answers;
+        data["type"] = this.type;
         return data; 
     }
 }
 
-export interface IPostDto {
+export interface INotificationDto {
     id?: number;
-    answerToId?: number | undefined;
-    content?: string | undefined;
-    created?: Date;
+    read?: boolean;
     createdBy?: UserDto | undefined;
-    mediaId?: string | undefined;
-    likedBy?: UserDto | undefined;
-    likedByMe?: boolean;
-    likes?: number;
-    rePostedBy?: UserDto | undefined;
-    rePostedByMe?: boolean;
-    rePosts?: number;
-    answers?: number;
+    type?: NotificationType;
 }
 
 export class UserDto implements IUserDto {
@@ -1199,20 +1267,28 @@ export interface IUserDto {
     isCertified?: boolean;
 }
 
-export class PostDto2 implements IPostDto2 {
+export enum NotificationType {
+    Follow = 0,
+    Mention = 1,
+    Answer = 2,
+}
+
+export class PostDto implements IPostDto {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
     mediaId?: string | undefined;
+    likedBy?: UserDto2 | undefined;
     likedByMe?: boolean;
     likes?: number;
+    rePostedBy?: UserDto2 | undefined;
     rePostedByMe?: boolean;
     rePosts?: number;
     answers?: number;
 
-    constructor(data?: IPostDto2) {
+    constructor(data?: IPostDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1229,17 +1305,19 @@ export class PostDto2 implements IPostDto2 {
             this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"] ? UserDto2.fromJS(_data["createdBy"]) : <any>undefined;
             this.mediaId = _data["mediaId"];
+            this.likedBy = _data["likedBy"] ? UserDto2.fromJS(_data["likedBy"]) : <any>undefined;
             this.likedByMe = _data["likedByMe"];
             this.likes = _data["likes"];
+            this.rePostedBy = _data["rePostedBy"] ? UserDto2.fromJS(_data["rePostedBy"]) : <any>undefined;
             this.rePostedByMe = _data["rePostedByMe"];
             this.rePosts = _data["rePosts"];
             this.answers = _data["answers"];
         }
     }
 
-    static fromJS(data: any): PostDto2 {
+    static fromJS(data: any): PostDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PostDto2();
+        let result = new PostDto();
         result.init(data);
         return result;
     }
@@ -1252,8 +1330,10 @@ export class PostDto2 implements IPostDto2 {
         data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["mediaId"] = this.mediaId;
+        data["likedBy"] = this.likedBy ? this.likedBy.toJSON() : <any>undefined;
         data["likedByMe"] = this.likedByMe;
         data["likes"] = this.likes;
+        data["rePostedBy"] = this.rePostedBy ? this.rePostedBy.toJSON() : <any>undefined;
         data["rePostedByMe"] = this.rePostedByMe;
         data["rePosts"] = this.rePosts;
         data["answers"] = this.answers;
@@ -1261,15 +1341,17 @@ export class PostDto2 implements IPostDto2 {
     }
 }
 
-export interface IPostDto2 {
+export interface IPostDto {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
     created?: Date;
     createdBy?: UserDto2 | undefined;
     mediaId?: string | undefined;
+    likedBy?: UserDto2 | undefined;
     likedByMe?: boolean;
     likes?: number;
+    rePostedBy?: UserDto2 | undefined;
     rePostedByMe?: boolean;
     rePosts?: number;
     answers?: number;
@@ -1327,51 +1409,7 @@ export interface IUserDto2 {
     isCertified?: boolean;
 }
 
-export class CreatePostCommand implements ICreatePostCommand {
-    content?: string | undefined;
-    mediaId?: string | undefined;
-    answerToId?: number | undefined;
-
-    constructor(data?: ICreatePostCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.content = _data["content"];
-            this.mediaId = _data["mediaId"];
-            this.answerToId = _data["answerToId"];
-        }
-    }
-
-    static fromJS(data: any): CreatePostCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreatePostCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["content"] = this.content;
-        data["mediaId"] = this.mediaId;
-        data["answerToId"] = this.answerToId;
-        return data; 
-    }
-}
-
-export interface ICreatePostCommand {
-    content?: string | undefined;
-    mediaId?: string | undefined;
-    answerToId?: number | undefined;
-}
-
-export class PostDto3 implements IPostDto3 {
+export class PostDto2 implements IPostDto2 {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
@@ -1384,7 +1422,7 @@ export class PostDto3 implements IPostDto3 {
     rePosts?: number;
     answers?: number;
 
-    constructor(data?: IPostDto3) {
+    constructor(data?: IPostDto2) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1409,9 +1447,9 @@ export class PostDto3 implements IPostDto3 {
         }
     }
 
-    static fromJS(data: any): PostDto3 {
+    static fromJS(data: any): PostDto2 {
         data = typeof data === 'object' ? data : {};
-        let result = new PostDto3();
+        let result = new PostDto2();
         result.init(data);
         return result;
     }
@@ -1433,7 +1471,7 @@ export class PostDto3 implements IPostDto3 {
     }
 }
 
-export interface IPostDto3 {
+export interface IPostDto2 {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
@@ -1499,7 +1537,51 @@ export interface IUserDto3 {
     isCertified?: boolean;
 }
 
-export class PostDto4 implements IPostDto4 {
+export class CreatePostCommand implements ICreatePostCommand {
+    content?: string | undefined;
+    mediaId?: string | undefined;
+    answerToId?: number | undefined;
+
+    constructor(data?: ICreatePostCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.content = _data["content"];
+            this.mediaId = _data["mediaId"];
+            this.answerToId = _data["answerToId"];
+        }
+    }
+
+    static fromJS(data: any): CreatePostCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePostCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["content"] = this.content;
+        data["mediaId"] = this.mediaId;
+        data["answerToId"] = this.answerToId;
+        return data; 
+    }
+}
+
+export interface ICreatePostCommand {
+    content?: string | undefined;
+    mediaId?: string | undefined;
+    answerToId?: number | undefined;
+}
+
+export class PostDto3 implements IPostDto3 {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
@@ -1512,7 +1594,7 @@ export class PostDto4 implements IPostDto4 {
     rePosts?: number;
     answers?: number;
 
-    constructor(data?: IPostDto4) {
+    constructor(data?: IPostDto3) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1537,9 +1619,9 @@ export class PostDto4 implements IPostDto4 {
         }
     }
 
-    static fromJS(data: any): PostDto4 {
+    static fromJS(data: any): PostDto3 {
         data = typeof data === 'object' ? data : {};
-        let result = new PostDto4();
+        let result = new PostDto3();
         result.init(data);
         return result;
     }
@@ -1561,7 +1643,7 @@ export class PostDto4 implements IPostDto4 {
     }
 }
 
-export interface IPostDto4 {
+export interface IPostDto3 {
     id?: number;
     answerToId?: number | undefined;
     content?: string | undefined;
@@ -1627,6 +1709,134 @@ export interface IUserDto4 {
     isCertified?: boolean;
 }
 
+export class PostDto4 implements IPostDto4 {
+    id?: number;
+    answerToId?: number | undefined;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto5 | undefined;
+    mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
+
+    constructor(data?: IPostDto4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.answerToId = _data["answerToId"];
+            this.content = _data["content"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? UserDto5.fromJS(_data["createdBy"]) : <any>undefined;
+            this.mediaId = _data["mediaId"];
+            this.likedByMe = _data["likedByMe"];
+            this.likes = _data["likes"];
+            this.rePostedByMe = _data["rePostedByMe"];
+            this.rePosts = _data["rePosts"];
+            this.answers = _data["answers"];
+        }
+    }
+
+    static fromJS(data: any): PostDto4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostDto4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["answerToId"] = this.answerToId;
+        data["content"] = this.content;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["mediaId"] = this.mediaId;
+        data["likedByMe"] = this.likedByMe;
+        data["likes"] = this.likes;
+        data["rePostedByMe"] = this.rePostedByMe;
+        data["rePosts"] = this.rePosts;
+        data["answers"] = this.answers;
+        return data; 
+    }
+}
+
+export interface IPostDto4 {
+    id?: number;
+    answerToId?: number | undefined;
+    content?: string | undefined;
+    created?: Date;
+    createdBy?: UserDto5 | undefined;
+    mediaId?: string | undefined;
+    likedByMe?: boolean;
+    likes?: number;
+    rePostedByMe?: boolean;
+    rePosts?: number;
+    answers?: number;
+}
+
+export class UserDto5 implements IUserDto5 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    isCertified?: boolean;
+
+    constructor(data?: IUserDto5) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
+        }
+    }
+
+    static fromJS(data: any): UserDto5 {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto5();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
+        return data; 
+    }
+}
+
+export interface IUserDto5 {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    isCertified?: boolean;
+}
+
 export class CreateUserCommand implements ICreateUserCommand {
     fullName?: string | undefined;
     username?: string | undefined;
@@ -1671,12 +1881,12 @@ export interface ICreateUserCommand {
     applicationUserId?: string | undefined;
 }
 
-export class UserDto5 implements IUserDto5 {
+export class UserDto6 implements IUserDto6 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
 
-    constructor(data?: IUserDto5) {
+    constructor(data?: IUserDto6) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1693,9 +1903,9 @@ export class UserDto5 implements IUserDto5 {
         }
     }
 
-    static fromJS(data: any): UserDto5 {
+    static fromJS(data: any): UserDto6 {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto5();
+        let result = new UserDto6();
         result.init(data);
         return result;
     }
@@ -1709,20 +1919,20 @@ export class UserDto5 implements IUserDto5 {
     }
 }
 
-export interface IUserDto5 {
+export interface IUserDto6 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
 }
 
-export class UserDto6 implements IUserDto6 {
+export class UserDto7 implements IUserDto7 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
     applicationUserId?: string | undefined;
     pictureId?: string | undefined;
 
-    constructor(data?: IUserDto6) {
+    constructor(data?: IUserDto7) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1741,9 +1951,9 @@ export class UserDto6 implements IUserDto6 {
         }
     }
 
-    static fromJS(data: any): UserDto6 {
+    static fromJS(data: any): UserDto7 {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto6();
+        let result = new UserDto7();
         result.init(data);
         return result;
     }
@@ -1759,7 +1969,7 @@ export class UserDto6 implements IUserDto6 {
     }
 }
 
-export interface IUserDto6 {
+export interface IUserDto7 {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
@@ -1943,14 +2153,14 @@ export interface IUpdateUserCommand {
     bannerId?: string | undefined;
 }
 
-export class UserDto7 implements IUserDto7 {
+export class SearchUserDto implements ISearchUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;
     pictureId?: string | undefined;
     followedByMe?: boolean;
 
-    constructor(data?: IUserDto7) {
+    constructor(data?: ISearchUserDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1969,9 +2179,9 @@ export class UserDto7 implements IUserDto7 {
         }
     }
 
-    static fromJS(data: any): UserDto7 {
+    static fromJS(data: any): SearchUserDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserDto7();
+        let result = new SearchUserDto();
         result.init(data);
         return result;
     }
@@ -1987,7 +2197,7 @@ export class UserDto7 implements IUserDto7 {
     }
 }
 
-export interface IUserDto7 {
+export interface ISearchUserDto {
     id?: number;
     fullName?: string | undefined;
     username?: string | undefined;

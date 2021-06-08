@@ -21,6 +21,9 @@ module.exports = {
 			boxShadow: {
 				"offset-0": "0 0 4px 2px rgba(0, 0, 0, 0.1)",
 			},
+			minWidth: {
+				4: "1rem",
+			},
 		},
 	},
 	variants: {

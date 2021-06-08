@@ -9,18 +9,24 @@ import store from "./core/Store";
 import "./styles.css";
 import UserProfile from "./user/UserProfile";
 import authService from "./auth/AuthorizeService";
-import { FollowsClient } from "./core/WebApiClient";
+import { FollowsClient, NotificationsClient } from "./core/WebApiClient";
 import { setFollows } from "./core/actions/FollowsActions";
 import AuthorizeRoute from "./auth/AuthorizeRoute";
 import PostAnswers from "./feed/PostAnswers";
+import { addNotifications } from "./core/actions/NotificationsActions";
+import Notifications from "./notifcations/Notifications";
 
 const ApplicationRoutes: React.FC = () => {
 	const dispatch = useDispatch();
 	const loadFollows = async () => {
 		let follows = undefined;
+		let notifications = undefined;
+
 		const domainUser = await authService.getDomainUser();
 		if (!!domainUser) {
 			follows = await new FollowsClient().getUserFollows(domainUser.id);
+			notifications = await new NotificationsClient().get();
+			dispatch(addNotifications(notifications));
 		}
 		dispatch(setFollows(follows));
 	};
@@ -30,13 +36,16 @@ const ApplicationRoutes: React.FC = () => {
 		return () => {
 			authService.unsubscribe(subscription);
 		};
-	});
+	}, []);
 
 	return (
 		<Layout>
-			<Route exact path="/" component={Feed} />
-			<Route path="/status/:id" component={PostAnswers} />
-			<Route path="/:username" exact component={UserProfile} />
+			<Switch>
+				<Route exact path="/" component={Feed} />
+				<Route path="/status/:id" component={PostAnswers} />
+				<Route path="/notifications" component={Notifications} />
+				<Route path="/:username" exact component={UserProfile} />
+			</Switch>
 		</Layout>
 	);
 };

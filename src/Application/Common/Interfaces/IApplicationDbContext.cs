@@ -11,6 +11,7 @@ namespace TwitterClone.Application.Common.Interfaces
         DbSet<Follow> Follows { get; set; }
         DbSet<Like> Likes { get; set; }
         DbSet<Media> Medias { get; set; }
+        DbSet<Notification> Notifications { get; set; }
         DbSet<Post> Posts { get; set; }
         DbSet<RePost> RePosts { get; set; }
 

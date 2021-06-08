@@ -4,12 +4,14 @@ import { PostsReducer } from "./reducers/PostsReducer";
 import { FollowsReducer } from "./reducers/FollowsReducer";
 import { ProfileReducer } from "./reducers/ProfileReducer";
 import { LayoutReducer } from "./reducers/LayoutReducer";
+import { NotificationsReducer } from "./reducers/NotificationsReducer";
 
 const reducers = combineReducers({
 	posts: PostsReducer,
 	profile: ProfileReducer,
 	follows: FollowsReducer,
 	layout: LayoutReducer,
+	notifications: NotificationsReducer,
 });
 
 const store = createStore(reducers, (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?.() || compose);

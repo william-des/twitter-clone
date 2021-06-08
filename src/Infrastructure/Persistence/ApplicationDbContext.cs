@@ -23,6 +23,7 @@ namespace TwitterClone.Infrastructure.Persistence
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Media> Medias { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<RePost> RePosts { get; set; }
 

@@ -9,7 +9,7 @@ const MainContainer: React.FC<MainContainerProps> = (props) => {
 	const { children, ...headerProps } = props;
 	return (
 		<main className="w-full">
-			{!!headerProps && <Header {...headerProps} />}
+			{Object.keys(headerProps).length > 0 && <Header {...headerProps} />}
 			{props.children}
 		</main>
 	);
