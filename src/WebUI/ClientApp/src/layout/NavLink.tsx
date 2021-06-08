@@ -8,6 +8,7 @@ interface MenuLinkProps {
 	children: React.ReactNode;
 	icon: IconDefinition;
 	exact?: boolean;
+	notifications?: number;
 }
 
 const NavLink: React.FC<MenuLinkProps> = (props) => {
@@ -18,11 +19,15 @@ const NavLink: React.FC<MenuLinkProps> = (props) => {
 			to={props.to}
 			exact={props.exact}
 		>
-			<div className="w-6 flex items-center justify-center">
+			<div className="w-6 flex items-center justify-center relative">
+				{!!props.notifications && (
+					<div className="min-w-4 h-4 bg-primary text-white rounded-xl text-xs absolute ml-4 mb-4 text-center px-1">
+						{props.notifications}
+					</div>
+				)}
 				<FontAwesomeIcon icon={props.icon} />
 			</div>
 			<span className="ml-4 hidden md:inline">{props.children}</span>
-			
 		</ReactNavLink>
 	);
 };

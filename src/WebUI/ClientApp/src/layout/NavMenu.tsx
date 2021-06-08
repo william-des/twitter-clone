@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import authService from "../auth/AuthorizeService";
+import { useReduxState } from "../core/Store";
 import PostFormModal from "../feed/PostFormModal";
 import Button from "../shared/Button";
 import { UserCard } from "../user/UserCard";
@@ -11,6 +12,8 @@ import NavLink from "./NavLink";
 
 export const NavMenu: React.FC = () => {
 	const [state, setState] = useState({ isAuthenticated: false, user: undefined, domainUser: undefined });
+
+	const unreadNotifications = useReduxState((state) => state.notifications.totalUnread);
 
 	const populateState = async () => {
 		const [isAuthenticated, user, domainUser] = await Promise.all([
@@ -58,7 +61,7 @@ export const NavMenu: React.FC = () => {
 					{state.isAuthenticated && (
 						<React.Fragment>
 							<li className="my-1">
-								<NavLink to="/notifications" icon={faBell}>
+								<NavLink to="/notifications" icon={faBell} notifications={unreadNotifications}>
 									Notifications
 								</NavLink>
 							</li>
