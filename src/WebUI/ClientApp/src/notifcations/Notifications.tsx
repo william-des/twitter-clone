@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { addNotifications } from "../core/actions/NotificationsActions";
 import { useReduxState } from "../core/Store";
-import { NotificationsClient } from "../core/WebApiClient";
+import { NotificationsClient, NotificationType } from "../core/WebApiClient";
 import MainContainer from "../layout/MainContainer";
 import Header from "../shared/Header";
 import LoadingIndicator from "../shared/LoadingIndicator";
@@ -29,6 +29,7 @@ const Notifications: React.FC = () => {
 	}, []);
 
 	const location = useLocation();
+	const onlyMentions = location.pathname == "/notifications/mentions";
 
 	return (
 		<MainContainer>
@@ -41,7 +42,7 @@ const Notifications: React.FC = () => {
 						exact
 					>
 						All
-						{location.pathname == "/notifications" && (
+						{!onlyMentions && (
 							<div className="bg-primary w-24 h-1 rounded absolute bottom-0"></div>
 						)}
 					</NavLink>
@@ -51,9 +52,7 @@ const Notifications: React.FC = () => {
 						activeClassName="text-primary"
 					>
 						Mentions
-						{location.pathname == "/notifications/mentions" && (
-							<div className="bg-primary w-24 h-1 rounded absolute bottom-0"></div>
-						)}
+						{onlyMentions && <div className="bg-primary w-24 h-1 rounded absolute bottom-0"></div>}
 					</NavLink>
 				</div>
 			</Header>
@@ -63,7 +62,7 @@ const Notifications: React.FC = () => {
 				hasMore={hasMore}
 				loader={<LoadingIndicator />}
 			>
-				{notifications.map((n, index) => (
+				{notifications.filter(n => !onlyMentions || n.type == NotificationType.Mention).map((n, index) => (
 					<NotificationItem {...n} key={index} />
 				))}
 			</InfiniteScroll>
