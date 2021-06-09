@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TwitterClone.Application.Common.Exceptions;
 using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Entities;
+using TwitterClone.Domain.Events;
 
 namespace TwitterClone.Application.Follows.Commands.FollowUserCommand
 {
@@ -30,10 +31,15 @@ namespace TwitterClone.Application.Follows.Commands.FollowUserCommand
                 throw new NotFoundException(nameof(User), request.UserId);
 
             var alreadyFollowed = await _context.Follows.AnyAsync(f => f.FollowedId == request.UserId && f.FollowerId == user.Id, cancellationToken);
-            if(!alreadyFollowed) {
-                _context.Follows.Add(new Follow { FollowedId = followed.Id, FollowerId = user.Id});
-                await _context.SaveChangesAsync(cancellationToken);
-            }
+            if(alreadyFollowed)
+                return Unit.Value;
+
+            var follow = new Follow { FollowedId = followed.Id, FollowerId = user.Id};
+
+            follow.DomainEvents.Add(new FollowCreatedEvent(follow));
+
+            _context.Follows.Add(follow);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

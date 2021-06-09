@@ -11,6 +11,7 @@ namespace TwitterClone.Infrastructure.Persistence.Configurations
             builder.HasKey(f => new { f.FollowerId, f.FollowedId});
             builder.HasOne(f => f.Followed).WithMany(u => u.Followers);
             builder.HasOne(f => f.Follower).WithMany(u => u.Followeds);
+            builder.Ignore(f => f.DomainEvents);
         }
     }
 }
