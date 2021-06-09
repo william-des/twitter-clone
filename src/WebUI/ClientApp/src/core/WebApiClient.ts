@@ -1206,6 +1206,8 @@ export interface INotificationsVM {
 export class NotificationDto implements INotificationDto {
     id?: number;
     read?: boolean;
+    postId?: number;
+    postContent?: string | undefined;
     createdBy?: UserDto | undefined;
     type?: NotificationType;
 
@@ -1222,6 +1224,8 @@ export class NotificationDto implements INotificationDto {
         if (_data) {
             this.id = _data["id"];
             this.read = _data["read"];
+            this.postId = _data["postId"];
+            this.postContent = _data["postContent"];
             this.createdBy = _data["createdBy"] ? UserDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.type = _data["type"];
         }
@@ -1238,6 +1242,8 @@ export class NotificationDto implements INotificationDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["read"] = this.read;
+        data["postId"] = this.postId;
+        data["postContent"] = this.postContent;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["type"] = this.type;
         return data; 
@@ -1247,6 +1253,8 @@ export class NotificationDto implements INotificationDto {
 export interface INotificationDto {
     id?: number;
     read?: boolean;
+    postId?: number;
+    postContent?: string | undefined;
     createdBy?: UserDto | undefined;
     type?: NotificationType;
 }

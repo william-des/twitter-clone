@@ -6,7 +6,7 @@ using TwitterClone.Domain.Common;
 
 namespace TwitterClone.Domain.Entities
 {
-    public class Post : AuthorAuditableEntity
+    public class Post : AuthorAuditableEntity, IHasDomainEvent
     {
         public int Id { get; set; }
         public string Content { get; set; }
@@ -17,6 +17,7 @@ namespace TwitterClone.Domain.Entities
         public IEnumerable<Post> Answers { get; set; }
         public IEnumerable<Like> Likes { get; set; }
         public IEnumerable<RePost> RePosts { get; set; }
+        public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
 
         public static Expression<Func<Post,bool>> LikedBySomeoneFollowedBy(int userId) {
             return p => p.Likes.Any(l => l.CreatedBy.Followers.Any(f => f.FollowerId == userId));

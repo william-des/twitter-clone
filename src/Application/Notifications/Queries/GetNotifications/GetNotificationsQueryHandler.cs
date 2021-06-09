@@ -29,7 +29,11 @@ namespace TwitterClone.Application.Notifications.Queries.GetNotifications
             if (user == null)
                 throw new ForbiddenAccessException();
 
-            var query = _context.Notifications.Where(n => n.ForUserId == user.Id);
+            var query = _context.Notifications
+                .AsNoTracking()
+                .Include(n => n.Post)
+                .Where(n => n.ForUserId == user.Id);
+                
             if (request.BeforeId.HasValue)
                 query = query.Where(n => n.Id < request.BeforeId);
 

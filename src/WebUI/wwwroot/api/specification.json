@@ -874,6 +874,14 @@
           "read": {
             "type": "boolean"
           },
+          "postId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "postContent": {
+            "type": "string",
+            "nullable": true
+          },
           "createdBy": {
             "nullable": true,
             "oneOf": [
