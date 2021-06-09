@@ -29,6 +29,8 @@ const NotificationItem: React.FC<INotificationDto> = (props) => {
 				return "replied to your tweet";
 			case NotificationType.Mention:
 				return "mentioned you in a tweet";
+			case NotificationType.RePost:
+				return "retweeted your tweet";
 			default:
 				return "";
 		}

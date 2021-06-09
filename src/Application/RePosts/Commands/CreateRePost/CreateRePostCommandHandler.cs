@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TwitterClone.Application.Common.Exceptions;
 using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Entities;
+using TwitterClone.Domain.Events;
 
 namespace TwitterClone.Application.RePosts.Commands.CreateRePost
 {
@@ -30,10 +31,14 @@ namespace TwitterClone.Application.RePosts.Commands.CreateRePost
                 throw new NotFoundException(nameof(Post), request.PostId);
 
             var alreadyRePosted = await _context.RePosts.AnyAsync(r => r.PostId == post.Id && r.CreatedById == user.Id, cancellationToken);
-            if(!alreadyRePosted) {
-                _context.RePosts.Add(new RePost { PostId = post.Id });
-                await _context.SaveChangesAsync(cancellationToken);
-            }
+            if(alreadyRePosted) 
+                return Unit.Value;
+
+            var rePost = new RePost { PostId = post.Id };
+            rePost.DomainEvents.Add(new RePostCreatedEvent(rePost));
+
+            _context.RePosts.Add(rePost);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

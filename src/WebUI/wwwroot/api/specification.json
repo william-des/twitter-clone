@@ -926,12 +926,14 @@
         "x-enumNames": [
           "Follow",
           "Mention",
-          "Answer"
+          "Answer",
+          "RePost"
         ],
         "enum": [
           0,
           1,
-          2
+          2,
+          3
         ]
       },
       "PostDto": {

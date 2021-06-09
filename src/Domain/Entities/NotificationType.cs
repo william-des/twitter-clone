@@ -4,6 +4,7 @@ namespace TwitterClone.Domain.Entities
     {
         Follow,
         Mention,
-        Answer
+        Answer,
+        RePost
     }
 }

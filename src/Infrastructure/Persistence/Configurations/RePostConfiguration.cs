@@ -9,6 +9,7 @@ namespace TwitterClone.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<RePost> builder)
         {
             builder.HasKey(r => new { r.CreatedById, r.PostId });
+            builder.Ignore(r => r.DomainEvents);
         }
     }
 }
