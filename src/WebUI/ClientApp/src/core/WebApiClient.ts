@@ -1316,6 +1316,7 @@ export enum NotificationType {
     Mention = 1,
     Answer = 2,
     RePost = 3,
+    Like = 4,
 }
 
 export class PostDto implements IPostDto {

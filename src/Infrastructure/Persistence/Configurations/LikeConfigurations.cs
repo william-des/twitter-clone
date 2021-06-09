@@ -9,6 +9,7 @@ namespace TwitterClone.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Like> builder)
         {
             builder.HasKey(l => new { l.CreatedById, l.PostId });
+            builder.Ignore(l => l.DomainEvents);    
         }
     }
 }

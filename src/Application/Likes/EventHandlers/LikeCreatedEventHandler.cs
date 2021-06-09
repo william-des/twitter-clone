@@ -7,27 +7,27 @@ using TwitterClone.Application.Common.Models;
 using TwitterClone.Domain.Entities;
 using TwitterClone.Domain.Events;
 
-namespace TwitterClone.Application.RePosts.Commands.EventHandlers
+namespace TwitterClone.Application.Likes.EventHandlers
 {
-    public class RePostCreatedEventHandler : INotificationHandler<DomainEventNotification<RePostCreatedEvent>>
+    public class LikeCreatedEventHandler : INotificationHandler<DomainEventNotification<LikeCreatedEvent>>
     {
         private readonly IApplicationDbContext _context;
 
-        public RePostCreatedEventHandler(IApplicationDbContext context)
+        public LikeCreatedEventHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task Handle(DomainEventNotification<RePostCreatedEvent> notification, CancellationToken cancellationToken)
+        public async Task Handle(DomainEventNotification<LikeCreatedEvent> notification, CancellationToken cancellationToken)
         {
-            var rePost = notification.DomainEvent.Item;
+            var like = notification.DomainEvent.Item;
 
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == rePost.PostId, cancellationToken);
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == like.PostId, cancellationToken);
             if(post == null) 
                 return;
 
             var alreadyNotified = await _context.Notifications.AnyAsync(
-                    n => n.ForUserId == post.CreatedById && n.CreatedById == rePost.CreatedById && n.PostId == post.Id && n.Type == NotificationType.RePost, 
+                    n => n.ForUserId == post.CreatedById && n.CreatedById == like.CreatedById && n.PostId == post.Id && n.Type == NotificationType.Like, 
                     cancellationToken);
 
             if(alreadyNotified)
@@ -37,7 +37,7 @@ namespace TwitterClone.Application.RePosts.Commands.EventHandlers
             {
                 ForUserId = post.CreatedById,
                 PostId = post.Id,
-                Type = NotificationType.RePost,
+                Type = NotificationType.Like,
             };
             
             _context.Notifications.Add(notif);

@@ -18,7 +18,9 @@ const NotificationItem: React.FC<INotificationDto> = (props) => {
 			dispatch(markAsRead(props.id));
 		}
 
-		history.push(props.type == NotificationType.Follow ? `/${props.createdBy.username}` : `/status/${props.postId}`);
+		history.push(
+			props.type == NotificationType.Follow ? `/${props.createdBy.username}` : `/status/${props.postId}`
+		);
 	};
 
 	const getLabel = (type: NotificationType) => {
@@ -31,6 +33,8 @@ const NotificationItem: React.FC<INotificationDto> = (props) => {
 				return "mentioned you in a tweet";
 			case NotificationType.RePost:
 				return "retweeted your tweet";
+			case NotificationType.Like:
+				return "liked your tweet";
 			default:
 				return "";
 		}

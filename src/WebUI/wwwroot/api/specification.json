@@ -927,13 +927,15 @@
           "Follow",
           "Mention",
           "Answer",
-          "RePost"
+          "RePost",
+          "Like"
         ],
         "enum": [
           0,
           1,
           2,
-          3
+          3,
+          4
         ]
       },
       "PostDto": {

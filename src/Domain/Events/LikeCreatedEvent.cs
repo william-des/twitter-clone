@@ -3,11 +3,11 @@ using TwitterClone.Domain.Entities;
 
 namespace TwitterClone.Domain.Events
 {
-    public class RePostCreatedEvent : DomainEvent
+    public class LikeCreatedEvent : DomainEvent
     {
-        public RePost Item { get; private set; }
-
-        public RePostCreatedEvent(RePost item)
+        public Like Item { get; private set; }
+        
+        public LikeCreatedEvent(Like item)
         {
             Item = item;
         }

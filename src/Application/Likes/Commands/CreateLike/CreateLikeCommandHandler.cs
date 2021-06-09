@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TwitterClone.Application.Common.Exceptions;
 using TwitterClone.Application.Common.Interfaces;
 using TwitterClone.Domain.Entities;
+using TwitterClone.Domain.Events;
 
 namespace TwitterClone.Application.Posts.Commands.CreateLike
 {
@@ -31,7 +32,10 @@ namespace TwitterClone.Application.Posts.Commands.CreateLike
 
             var alreadyLiked = await _context.Likes.AnyAsync(l => l.PostId == post.Id && l.CreatedById == user.Id, cancellationToken);
             if(!alreadyLiked) {
-                _context.Likes.Add(new Like { PostId = post.Id });
+                var like = new Like { PostId = post.Id };
+                like.DomainEvents.Add(new LikeCreatedEvent(like));
+
+                _context.Likes.Add(like);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
