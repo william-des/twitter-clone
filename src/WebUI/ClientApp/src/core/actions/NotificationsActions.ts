@@ -1,7 +1,17 @@
-import { INotificationsVM } from "../WebApiClient";
+import { INotificationDto, INotificationsVM } from "../WebApiClient";
+
+export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
+export interface AddNotification {
+	type: typeof ADD_NOTIFICATION;
+	payload: INotificationDto;
+}
+export const addNotification = (notif: INotificationDto) => ({
+	type: ADD_NOTIFICATION,
+	payload: notif,
+});
 
 export const ADD_NOTIFICATIONS = "ADD_NOTIFICATIONS";
-export interface AddNotification {
+export interface AddNotifications {
 	type: typeof ADD_NOTIFICATIONS;
 	payload: INotificationsVM;
 }
@@ -17,4 +27,4 @@ export interface MarkAsRead {
 }
 export const markAsRead = (id: number) => ({ type: MARK_AS_READ, payload: id });
 
-export type NotificationsActions = AddNotification | MarkAsRead;
+export type NotificationsActions = AddNotification | AddNotifications | MarkAsRead;

@@ -15,6 +15,11 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using TwitterClone.WebUI.Hubs;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using TwitterClone.WebUI.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TwitterClone.WebUI
 {
@@ -35,9 +40,14 @@ namespace TwitterClone.WebUI
             services.AddApplication();
             services.AddInfrastructure(Configuration, Environment.IsDevelopment());
 
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>, 
+                    ConfigureJwtBearerOptions>());
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<IUserNotifierService, UserNotifierService>();
 
             services.AddHttpContextAccessor();
 
@@ -49,6 +59,8 @@ namespace TwitterClone.WebUI
                     .AddFluentValidation();
 
             services.AddRazorPages();
+
+            services.AddSignalR();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -120,6 +132,7 @@ namespace TwitterClone.WebUI
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<NotificationsHub>("/hubs/notifications");
             });
 
             app.UseSpa(spa =>

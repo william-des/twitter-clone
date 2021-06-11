@@ -36,7 +36,7 @@ namespace TwitterClone.Application.RePosts.Commands.EventHandlers
             var notif = new Notification
             {
                 ForUserId = post.CreatedById,
-                PostId = post.Id,
+                Post = post,
                 Type = NotificationType.RePost,
             };
             

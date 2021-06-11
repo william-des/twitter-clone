@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TwitterClone.Infrastructure.Persistence
 {
@@ -18,6 +19,7 @@ namespace TwitterClone.Infrastructure.Persistence
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
         private readonly IDomainEventService _domainEventService;
+        private readonly IUserNotifierService _userNotifierService;
 
         public DbSet<User> DomainUsers { get; set; }
         public DbSet<Follow> Follows { get; set; }
@@ -32,16 +34,43 @@ namespace TwitterClone.Infrastructure.Persistence
             IOptions<OperationalStoreOptions> operationalStoreOptions,
             ICurrentUserService currentUserService,
             IDomainEventService domainEventService,
+            IUserNotifierService userNotifierService,
             IDateTime dateTime) : base(options, operationalStoreOptions)
         {
             _currentUserService = currentUserService;
             _domainEventService = domainEventService;
+            _userNotifierService = userNotifierService;
             _dateTime = dateTime;
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            await HandleAuditedEntities(cancellationToken);            
 
+            var addedNotifications = ChangeTracker
+                .Entries<Notification>()
+                .Where(c => c.State == EntityState.Added)
+                .Select(e => e.Entity)
+                .ToList();
+
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            await SendNotifications(addedNotifications, cancellationToken);
+
+            await DispatchEvents(); 
+
+            return result;
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            base.OnModelCreating(builder);
+        }
+
+        private async Task HandleAuditedEntities(CancellationToken cancellationToken)
+        {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
                 switch (entry.State)
@@ -68,19 +97,6 @@ namespace TwitterClone.Infrastructure.Persistence
                     entry.Entity.CreatedBy = currentUser;
                 }
             }
-
-            var result = await base.SaveChangesAsync(cancellationToken);
-
-            await DispatchEvents();
-
-            return result;
-        }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            base.OnModelCreating(builder);
         }
 
         private async Task DispatchEvents()
@@ -96,6 +112,19 @@ namespace TwitterClone.Infrastructure.Persistence
 
                 domainEventEntity.IsPublished = true;
                 await _domainEventService.Publish(domainEventEntity);
+            }
+        }
+
+        private async Task SendNotifications(IEnumerable<Notification> notifications, CancellationToken cancellationToken)
+        {
+            foreach (var notification in notifications)
+{                var notificationWithRelateds = await Notifications
+                    .Include(n => n.Post)
+                    .Include(n => n.CreatedBy)
+                    .Include(n => n.ForUser)
+                    .FirstAsync(n => n.Id == notification.Id, cancellationToken);
+
+                _userNotifierService.SendNotification(notificationWithRelateds);
             }
         }
     }

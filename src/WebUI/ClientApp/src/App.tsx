@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router";
 import ApiAuthorizationRoutes from "./auth/ApiAuthorizationRoutes";
 import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
@@ -13,26 +13,49 @@ import { FollowsClient, NotificationsClient } from "./core/WebApiClient";
 import { setFollows } from "./core/actions/FollowsActions";
 import AuthorizeRoute from "./auth/AuthorizeRoute";
 import PostAnswers from "./feed/PostAnswers";
-import { addNotifications } from "./core/actions/NotificationsActions";
+import { addNotification, addNotifications } from "./core/actions/NotificationsActions";
 import Notifications from "./notifcations/Notifications";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 const ApplicationRoutes: React.FC = () => {
 	const dispatch = useDispatch();
-	const loadFollows = async () => {
-		let follows = undefined;
-		let notifications = undefined;
+	const [hubConnection, setHubConnection] = useState<HubConnection>(undefined);
 
+	const onLoggedIn = async (id: number) => {
+		const follows = await new FollowsClient().getUserFollows(id);
+		dispatch(setFollows(follows));
+
+		const notifications = await new NotificationsClient().get();
+		dispatch(addNotifications(notifications));
+
+		const connection = new HubConnectionBuilder()
+			.withAutomaticReconnect()
+			.withUrl("/hubs/notifications", { accessTokenFactory: () => authService.getAccessToken() })
+			.build();
+		await connection.start();
+		connection.on("Notification", (notif) => dispatch(addNotification(notif)));
+	};
+
+	const onLoggedOut = async () => {
+		dispatch(setFollows(undefined));
+		if (!!hubConnection) {
+			await hubConnection.stop();
+			setHubConnection(undefined);
+		}
+	};
+
+	const onAuthStateChanged = async () => {
 		const domainUser = await authService.getDomainUser();
 		if (!!domainUser) {
-			follows = await new FollowsClient().getUserFollows(domainUser.id);
-			notifications = await new NotificationsClient().get();
-			dispatch(addNotifications(notifications));
+			await onLoggedIn(domainUser.id);
+		} else {
+			await onLoggedOut();
 		}
-		dispatch(setFollows(follows));
 	};
+
 	useEffect(() => {
-		loadFollows();
-		const subscription = authService.subscribe(() => loadFollows());
+		onAuthStateChanged();
+		const subscription = authService.subscribe(() => onAuthStateChanged());
 		return () => {
 			authService.unsubscribe(subscription);
 		};

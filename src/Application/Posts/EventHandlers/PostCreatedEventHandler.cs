@@ -26,12 +26,12 @@ namespace TwitterClone.Application.Posts.EventHandlers
 
             if(post.AnswerToId.HasValue)
             {
-                var answeredPost =  await _context.Posts.FirstOrDefaultAsync(p => p.Id == post.AnswerToId, cancellationToken);
+                var answeredPost = await _context.Posts.FirstOrDefaultAsync(p => p.Id == post.AnswerToId, cancellationToken);
                 
                 var answerNotification = new Notification
                 {
                     ForUserId = answeredPost.CreatedById,
-                    PostId = post.Id,
+                    Post = post,
                     Type = NotificationType.Answer
                 };
                 _context.Notifications.Add(answerNotification);
@@ -46,7 +46,7 @@ namespace TwitterClone.Application.Posts.EventHandlers
                 var mentionNotification = new Notification
                 {
                     ForUserId = user.Id,
-                    PostId = post.Id,
+                    Post = post,
                     Type = NotificationType.Mention
                 };
                 _context.Notifications.Add(mentionNotification);
