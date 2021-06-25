@@ -21,10 +21,12 @@ namespace TwitterClone.Infrastructure.Persistence
         private readonly IDomainEventService _domainEventService;
         private readonly IUserNotifierService _userNotifierService;
 
+        public DbSet<Conversation> Conversations { get; set; }
         public DbSet<User> DomainUsers { get; set; }
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Media> Medias { get; set; }
+        public DbSet<Message> Messages { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<RePost> RePosts { get; set; }

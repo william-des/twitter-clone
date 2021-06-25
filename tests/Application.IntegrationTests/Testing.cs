@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using TwitterClone.Domain.Entities;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace TwitterClone.Application.IntegrationTests
 {
@@ -182,6 +183,20 @@ namespace TwitterClone.Application.IntegrationTests
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             return await context.FindAsync<TEntity>(keyValues);
+        }
+
+        public static async Task<TEntity> FirstOrDefaultAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, Object>> include = null)
+            where TEntity : class
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            
+            var query = context.Set<TEntity>().AsQueryable();
+            if(include != null)
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
 
         public static async Task AddAsync<TEntity>(TEntity entity)

@@ -14,6 +14,7 @@ namespace TwitterClone.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Description).HasMaxLength(160);
             builder.Property(u => u.Website).HasMaxLength(100);
             builder.Property(u => u.Location).HasMaxLength(30);
+            builder.HasMany(u => u.Conversations).WithMany(c => c.Members);
             builder.HasIndex(u => u.Username).IsUnique();
         }
     }

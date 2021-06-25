@@ -20,5 +20,6 @@ namespace TwitterClone.Domain.Entities
         public bool IsCertified { get; set; }
         public IEnumerable<Follow> Followers { get; set; } = new List<Follow>();
         public IEnumerable<Follow> Followeds { get; set; } = new List<Follow>();
+        public IEnumerable<Conversation> Conversations { get; set; } = new List<Conversation>();
     }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch } from "react-router";
+import { Route, Switch, useLocation } from "react-router";
 import ApiAuthorizationRoutes from "./auth/ApiAuthorizationRoutes";
 import { ApplicationPaths } from "./auth/ApiAuthorizationConstants";
 import Layout from "./layout/Layout";
@@ -16,6 +16,7 @@ import PostAnswers from "./feed/PostAnswers";
 import { addNotification, addNotifications } from "./core/actions/NotificationsActions";
 import Notifications from "./notifcations/Notifications";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import Conversations from "./conversations/Conversations";
 
 const ApplicationRoutes: React.FC = () => {
 	const dispatch = useDispatch();
@@ -61,11 +62,14 @@ const ApplicationRoutes: React.FC = () => {
 		};
 	}, []);
 
+	const location = useLocation();
+	
 	return (
-		<Layout>
+		<Layout showSidebar={!location.pathname.startsWith("/messages")}>
 			<Switch>
 				<Route exact path="/" component={Feed} />
 				<Route path="/status/:id" component={PostAnswers} />
+				<Route path="/messages" component={Conversations} />
 				<Route path="/notifications" component={Notifications} />
 				<Route path="/:username" exact component={UserProfile} />
 			</Switch>

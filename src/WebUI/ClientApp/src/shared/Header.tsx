@@ -11,7 +11,9 @@ export interface HeaderProps {
 		onClick: VoidFunction;
 	};
 	rightButton?: {
-		text: string;
+		text?: string;
+		icon?: IconDefinition;
+		disabled?: boolean;
 		onClick: VoidFunction;
 	};
 	children?: React.ReactNode;
@@ -33,10 +35,19 @@ const Header: React.FC<HeaderProps> = (props) => {
 					<h1 className="text-xl font-bold leading-none">{props.title}</h1>
 					<h2 className="leading-none text-sm text-gray-500">{props.subtitle}</h2>
 				</div>
-				{!!props.rightButton && (
-					<Button className="ml-auto px-4 py-1" onClick={props.rightButton.onClick}>
+				{!!props.rightButton?.text && (
+					<Button disabled={props?.rightButton?.disabled} className="ml-auto px-4 py-1 disabled:opacity-60" onClick={props.rightButton.onClick}>
 						{props.rightButton.text}
+						{!!props.rightButton?.icon && <FontAwesomeIcon icon={props.rightButton.icon} />}
 					</Button>
+				)}
+				{!!props.rightButton?.icon && (
+					<button
+						onClick={props.rightButton.onClick}
+						className="ml-auto w-8 h-8 rounded-full items-center justify-center flex hover:bg-primary hover:bg-opacity-10 focus:outline-none"
+					>
+						<FontAwesomeIcon icon={props.rightButton.icon} className="text-primary " />
+					</button>
 				)}
 			</div>
 			{props.children}
