@@ -1,6 +1,5 @@
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import React, { useState } from "react";
-import Button from "../shared/Button";
 import Header from "../shared/Header";
 import NewConversation from "./NewConversation";
 import Placeholder from "./Placeholder";

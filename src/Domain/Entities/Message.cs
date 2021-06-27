@@ -9,5 +9,7 @@ namespace TwitterClone.Domain.Entities
         public string Content { get; set; }
         public Media Media { get; set; }
         public Guid? MediaId { get; set; }
+        public Conversation Conversation { get; set; }
+        public int ConversationId { get; set; }
     }
 }

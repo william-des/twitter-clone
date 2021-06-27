@@ -22,6 +22,7 @@ export class ClientBase {
 
 export interface IConversationsClient {
     create(command: CreateConversationCommand): Promise<number>;
+    getConversations(): Promise<ConversationDto[]>;
 }
 
 export class ConversationsClient extends ClientBase implements IConversationsClient {
@@ -73,6 +74,46 @@ export class ConversationsClient extends ClientBase implements IConversationsCli
             });
         }
         return Promise.resolve<number>(<any>null);
+    }
+
+    getConversations(): Promise<ConversationDto[]> {
+        let url_ = this.baseUrl + "/api/Conversations";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetConversations(_response);
+        });
+    }
+
+    protected processGetConversations(response: Response): Promise<ConversationDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ConversationDto.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ConversationDto[]>(<any>null);
     }
 }
 
@@ -1145,6 +1186,162 @@ export class CreateConversationCommand implements ICreateConversationCommand {
 
 export interface ICreateConversationCommand {
     members?: number[] | undefined;
+}
+
+export class ConversationDto implements IConversationDto {
+    id?: number;
+    members?: ConversationUserDto[] | undefined;
+    lastMessage?: MessageDto | undefined;
+
+    constructor(data?: IConversationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(ConversationUserDto.fromJS(item));
+            }
+            this.lastMessage = _data["lastMessage"] ? MessageDto.fromJS(_data["lastMessage"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ConversationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConversationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        data["lastMessage"] = this.lastMessage ? this.lastMessage.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IConversationDto {
+    id?: number;
+    members?: ConversationUserDto[] | undefined;
+    lastMessage?: MessageDto | undefined;
+}
+
+export class ConversationUserDto implements IConversationUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    isCertified?: boolean;
+
+    constructor(data?: IConversationUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.username = _data["username"];
+            this.pictureId = _data["pictureId"];
+            this.isCertified = _data["isCertified"];
+        }
+    }
+
+    static fromJS(data: any): ConversationUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConversationUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["username"] = this.username;
+        data["pictureId"] = this.pictureId;
+        data["isCertified"] = this.isCertified;
+        return data; 
+    }
+}
+
+export interface IConversationUserDto {
+    id?: number;
+    fullName?: string | undefined;
+    username?: string | undefined;
+    pictureId?: string | undefined;
+    isCertified?: boolean;
+}
+
+export class MessageDto implements IMessageDto {
+    id?: number;
+    content?: string | undefined;
+    mediaId?: string | undefined;
+    createdById?: number;
+    created?: Date | undefined;
+
+    constructor(data?: IMessageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.content = _data["content"];
+            this.mediaId = _data["mediaId"];
+            this.createdById = _data["createdById"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MessageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MessageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["content"] = this.content;
+        data["mediaId"] = this.mediaId;
+        data["createdById"] = this.createdById;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IMessageDto {
+    id?: number;
+    content?: string | undefined;
+    mediaId?: string | undefined;
+    createdById?: number;
+    created?: Date | undefined;
 }
 
 export class FollowsVM implements IFollowsVM {
